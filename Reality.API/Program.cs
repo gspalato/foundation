@@ -13,6 +13,7 @@ namespace Reality
         public static IWebHost BuildWebHost(string[] args)
         {
             return WebHost.CreateDefaultBuilder(args)
+                .UseUrls("http://localhost:5000", "https://localhost:5001")
                 .UseStartup<Startup>()
                 .Build();
         }

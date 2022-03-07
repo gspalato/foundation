@@ -60,14 +60,19 @@ namespace Reality.API
 
             // GraphQL
             services
+                .AddHttpClient("auth", (sp, client) =>
+                {
+                    client.BaseAddress = new Uri("http://127.0.0.1:5010/");
+                });
+            services
                 .AddHttpClient("database", (sp, client) =>
                 {
-                    client.BaseAddress = new Uri("http://127.0.0.1:5000/api/database");
+                    client.BaseAddress = new Uri("http://127.0.0.1:5020/");
                 });
 
             services
                 .AddGraphQLServer()
-                //.AddQueryType<Query>()
+                .AddRemoteSchema("auth")
                 .AddRemoteSchema("database");
         }
 

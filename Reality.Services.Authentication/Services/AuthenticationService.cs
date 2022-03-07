@@ -27,7 +27,6 @@ namespace Reality.Services.Authentication.Services
         public AuthenticationService(IPasswordHasher<string> hasher,
             IUserService userService, JwtSecurityTokenHandler jwtTokenHandler)
         {
-            DatabaseContext = databaseContext;
             Hasher = hasher;
             UserService = userService;
 

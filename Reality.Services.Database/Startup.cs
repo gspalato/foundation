@@ -56,7 +56,7 @@ namespace Reality.Services.Database
 
             app.UseEndpoints(endpoints =>
             {
-                endpoints.MapGraphQL("/api/database");
+                endpoints.MapGraphQL("/");
             });
         }
     }

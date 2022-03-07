@@ -13,6 +13,7 @@ namespace Reality.Services.Authentication
         public static IWebHost BuildWebHost(string[] args)
         {
             return WebHost.CreateDefaultBuilder(args)
+                .UseUrls("http://localhost:5010", "https://localhost:5011")
                 .UseStartup<Startup>()
                 .Build();
         }

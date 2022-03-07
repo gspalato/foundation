@@ -6,7 +6,7 @@ namespace Reality.Services.Authentication.Mutations
 {
     public class Mutation
     {
-        public async Task<User> CreateUserAsync(string username, string password,
+        public async Task<User?> CreateUserAsync(string username, string password,
             [Service] IUserService userService) => await userService.CreateUserAsync(username, password);
 
         public async Task<AuthenticationPayload> AuthenticateAsync(string username, string password,
@@ -14,10 +14,5 @@ namespace Reality.Services.Authentication.Mutations
         {
             return await authService.AuthenticateAsync(username, password);
         }
-
-        public async Task SignOut(string jwt)
-        {
-
-        } 
     }
 }

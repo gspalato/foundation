@@ -1,5 +1,4 @@
 using Microsoft.AspNetCore;
-using Reality.Services.Database;
 
 namespace Reality.Services.Database
 {
@@ -13,6 +12,7 @@ namespace Reality.Services.Database
         public static IWebHost BuildWebHost(string[] args)
         {
             return WebHost.CreateDefaultBuilder(args)
+                .UseUrls("http://localhost:5020", "https://localhost:5021")
                 .UseStartup<Startup>()
                 .Build();
         }

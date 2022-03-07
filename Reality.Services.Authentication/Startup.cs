@@ -67,7 +67,7 @@ namespace Reality.Services.Authentication
 
             app.UseEndpoints(endpoints =>
             {
-                endpoints.MapGraphQL("/api/auth");
+                endpoints.MapGraphQL("/");
             });
         }
     }
