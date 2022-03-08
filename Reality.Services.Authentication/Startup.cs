@@ -1,11 +1,11 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Reality.Common.Configurations;
 using Reality.Common.Data;
-using Reality.Common.Entities;
 using Reality.Services.Authentication.Mutations;
 using Reality.Services.Authentication.Queries;
 using Reality.Services.Authentication.Services;
 using System.IdentityModel.Tokens.Jwt;
+using System.Reflection;
 
 namespace Reality.Services.Authentication
 {
@@ -17,7 +17,7 @@ namespace Reality.Services.Authentication
         {
             var builder = new ConfigurationBuilder()
                 .SetBasePath(env.ContentRootPath)
-                .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true);
+                .AddUserSecrets(Assembly.GetExecutingAssembly());
 
             Configuration = builder.Build();
         }

@@ -3,6 +3,7 @@ using Reality.Common.Data;
 using Reality.Services.Database.Queries;
 using Reality.Services.Database.Repositories;
 using Reality.Services.Database.Types;
+using System.Reflection;
 
 namespace Reality.Services.Database
 {
@@ -14,7 +15,7 @@ namespace Reality.Services.Database
         {
             var builder = new ConfigurationBuilder()
                 .SetBasePath(env.ContentRootPath)
-                .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true);
+                .AddUserSecrets(Assembly.GetExecutingAssembly());
 
             Configuration = builder.Build();
         }

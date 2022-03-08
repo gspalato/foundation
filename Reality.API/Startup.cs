@@ -2,9 +2,9 @@
 using Hangfire.Mongo;
 using Hangfire.Mongo.Migration.Strategies;
 using Hangfire.Mongo.Migration.Strategies.Backup;
-using Reality.API.Queries;
 using Reality.Common.Configurations;
 using Reality.Common.Data;
+using System.Reflection;
 
 namespace Reality.API
 {
@@ -16,7 +16,7 @@ namespace Reality.API
         {
             var builder = new ConfigurationBuilder()
                 .SetBasePath(env.ContentRootPath)
-                .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true);
+                .AddUserSecrets(Assembly.GetExecutingAssembly());
 
             Configuration = builder.Build();
         }
