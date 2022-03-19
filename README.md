@@ -17,21 +17,23 @@
 *** for contributors-url, forks-url, etc. This is an optional, concise syntax you may use.
 *** https://www.markdownguide.org/basic-syntax/#reference-style-links
 -->
-[![Contributors][contributors-shield]][contributors-url]
-[![Forks][forks-shield]][forks-url]
-[![Stargazers][stars-shield]][stars-url]
-[![Issues][issues-shield]][issues-url]
 
 
 
 <!-- PROJECT LOGO -->
 <br />
 <div align="center">
+  <img src="https://img.shields.io/github/languages/top/gspalato/reality?style=for-the-badge"/>
+  <img src="https://img.shields.io/github/issues-raw/gspalato/reality?style=for-the-badge"/>
+  <img src="https://img.shields.io/github/contributors/gspalato/reality?style=for-the-badge">
+
+  <br />
+
   <a href="https://github.com/gspalato/reality">
-    <img src="images/logo.png" alt="Logo" width="80" height="80">
+    <img src="https://i.ibb.co/rZwb5Mq/Reality-Logo-Small.png" alt="Logo" width="150" height="150">
   </a>
 
-<h3 align="center">Reality</h3>
+<h3 align="center"><b>Reality</b></h3>
 
   <p align="center">
     A microservice platform and back-end for my projects and deployments.
