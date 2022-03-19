@@ -3,13 +3,15 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.0.31912.275
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Reality.API", "Reality.API\Reality.API.csproj", "{7BDB2F34-4424-44A7-98E9-00A1E624CC43}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Reality.Gateway", "Reality.Gateway\Reality.Gateway.csproj", "{7BDB2F34-4424-44A7-98E9-00A1E624CC43}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Reality.Common", "Reality.Common\Reality.Common.csproj", "{0272ADBE-8C1F-4031-A5CD-78311865CB81}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Reality.Common", "Reality.Common\Reality.Common.csproj", "{0272ADBE-8C1F-4031-A5CD-78311865CB81}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Reality.Services.Database", "Reality.Services.Database\Reality.Services.Database.csproj", "{B21BA571-8598-4003-97E9-01C2756A6F7E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Reality.Services.Portfolio.BlogService", "Reality.Services.Portfolio.BlogService\Reality.Services.Portfolio.BlogService.csproj", "{B21BA571-8598-4003-97E9-01C2756A6F7E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Reality.Services.Authentication", "Reality.Services.Authentication\Reality.Services.Authentication.csproj", "{E1056567-7F43-475B-8373-46CE6EE5C8E4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Reality.Services.Identity", "Reality.Services.Identity\Reality.Services.Identity.csproj", "{E1056567-7F43-475B-8373-46CE6EE5C8E4}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Reality.Services.Portfolio.ProjectService", "Reality.Services.Portfolio.ProjectService\Reality.Services.Portfolio.ProjectService.csproj", "{B8BD55BF-C6AE-4172-BD92-92C201739C41}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,6 +35,10 @@ Global
 		{E1056567-7F43-475B-8373-46CE6EE5C8E4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E1056567-7F43-475B-8373-46CE6EE5C8E4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E1056567-7F43-475B-8373-46CE6EE5C8E4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B8BD55BF-C6AE-4172-BD92-92C201739C41}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B8BD55BF-C6AE-4172-BD92-92C201739C41}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B8BD55BF-C6AE-4172-BD92-92C201739C41}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B8BD55BF-C6AE-4172-BD92-92C201739C41}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

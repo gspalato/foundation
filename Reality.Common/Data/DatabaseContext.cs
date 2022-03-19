@@ -14,10 +14,10 @@ namespace Reality.Common.Data
         private readonly MongoClient Client;
         private readonly IMongoDatabase Database;
 
-        public DatabaseContext(MongoDbConfiguration mongoConfig)
+        public DatabaseContext(BaseConfiguration config)
         {
-            Client = new MongoClient(mongoConfig.ConnectionString);
-            Database = Client.GetDatabase(mongoConfig.Database);
+            Client = new MongoClient(new MongoUrl(config.Database_Url));
+            Database = Client.GetDatabase(config.Database_Name);
         }
 
         public MongoClient GetClient()

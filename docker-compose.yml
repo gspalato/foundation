@@ -1,0 +1,57 @@
+services:
+  # Reality Services
+  gateway:
+    build:
+      context: ./
+      dockerfile: ./Reality.Gateway/Dockerfile
+    ports:
+      - 80:80
+    environment:
+      - DATABASE_URL=mongodb://root:example@db
+      - DATABASE_NAME=portfolio
+      - SERVICE_URLS=http://identity_service,http://blog_service,http://project_service
+      - Logging__Console__FormatterName=Simple
+    depends_on:
+      - identity_service
+      - blog_service
+      - project_service
+
+  identity_service:
+    build:
+      context: ./
+      dockerfile: ./Reality.Services.Identity/Dockerfile
+    environment:
+      - DATABASE_URL=mongodb://root:example@db
+      - DATABASE_NAME=auth
+      - Logging__Console__FormatterName=Simple
+
+  blog_service:
+    build:
+      context: ./
+      dockerfile: ./Reality.Services.Portfolio.BlogService/Dockerfile
+    environment:
+      - DATABASE_URL=mongodb://root:example@db
+      - DATABASE_NAME=portfolio
+      - Logging__Console__FormatterName=Simple
+
+  project_service:
+    build:
+      context: ./
+      dockerfile: ./Reality.Services.Portfolio.ProjectService/Dockerfile
+    environment:
+      - DATABASE_URL=mongodb://root:example@db
+      - DATABASE_NAME=portfolio
+      - Logging__Console__FormatterName=Simple
+
+  # Database
+  db:
+    image: mongo
+    restart: always
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: example
+    volumes:
+      - mongodbdata:/data/db
+
+volumes:
+  mongodbdata:
