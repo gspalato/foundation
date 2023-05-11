@@ -9,12 +9,14 @@ services:
     environment:
       - DATABASE_URL=mongodb://root:example@db
       - DATABASE_NAME=portfolio
-      - SERVICE_URLS=http://identity_service,http://blog_service,http://project_service
+      - SERVICE_URLS=http://identity_service,http://blog_service,http://project_service,http://upx_service
       - Logging__Console__FormatterName=Simple
     depends_on:
       - identity_service
       - blog_service
       - project_service
+      - upx_service
+      - db
 
   identity_service:
     build:
@@ -41,6 +43,15 @@ services:
     environment:
       - DATABASE_URL=mongodb://root:example@db
       - DATABASE_NAME=portfolio
+      - Logging__Console__FormatterName=Simple
+
+  upx_service:
+    build:
+      context: ./
+      dockerfile: ./Reality.Services.IoT.UPx/Dockerfile
+    environment:
+      - DATABASE_URL=mongodb://root:example@db
+      - DATABASE_NAME=upx
       - Logging__Console__FormatterName=Simple
 
   # Database

@@ -11,7 +11,7 @@ namespace Reality.Gateway
 {
     public class Startup
     {
-        public IConfiguration Configuration { get; set; }
+        public IConfiguration Configuration { get; }
 
         public Startup(IWebHostEnvironment env)
         {
