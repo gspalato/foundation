@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore;
 
-namespace Reality.Services.IoT.UPx
+namespace Reality.Services.IoT.UPx {
     public class Program
     {
         public static void Main(string[] args)
