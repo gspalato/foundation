@@ -9,7 +9,7 @@ FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
 WORKDIR /src
 COPY ["Reality.Services.IoT.UPx/Reality.Services.IoT.UPx.csproj", "Reality.Services.IoT.UPx/"]
 COPY ["Reality.Common/Reality.Common.csproj", "Reality.Common/"]
-RUN dotnet restore "Reality.Services.IoT.UPx/Reality.Services..IoT.UPx.csproj"
+RUN dotnet restore "Reality.Services.IoT.UPx/Reality.Services.IoT.UPx.csproj"
 COPY . .
 WORKDIR "/src/Reality.Services.IoT.UPx"
 RUN dotnet build "Reality.Services.IoT.UPx.csproj" -c Release -o /app/build

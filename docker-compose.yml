@@ -5,7 +5,7 @@ services:
       context: ./
       dockerfile: ./Reality.Gateway/Dockerfile
     ports:
-      - 80:80
+      - "80:80"
     environment:
       - DATABASE_URL=mongodb://root:example@db
       - DATABASE_NAME=portfolio
