@@ -27,15 +27,17 @@ namespace Reality.Services.IoT.UPx.Services
 
 		public async Task<bool> CheckAuthenticationAsync(string jwt)
 		{
-			using (var client = new GraphQLHttpClient("https://0.0.0.0/", new NewtonsoftJsonSerializer()))
+			/*
+			using (var client = new GraphQLHttpClient("http://upx_service/", new NewtonsoftJsonSerializer()))
 			{
 				var request = new GraphQLRequest
 				{
 					Query = @"
-						query {
-							isAuthenticated(token: $token)
-						}
+					query CheckIdentity($token: String!) {
+						isAuthenticated(token: $token)
+					}
 					",
+					OperationName = "CheckIdentity",
 					Variables = new
 					{
 						token = jwt
@@ -52,6 +54,20 @@ namespace Reality.Services.IoT.UPx.Services
 
 				return response.Data;
 			}
+			*/
+
+			var result = await JwtTokenHandler.ValidateTokenAsync(jwt, new TokenValidationParameters()
+            {
+                ValidIssuer = "realityapibyunreaalism",
+                ValidAudience = "unreaalism",
+                ValidateIssuerSigningKey = true,
+                IssuerSigningKey = JwtSecurityKey
+            });
+
+            if (result.Exception != null)
+                Console.WriteLine(result.Exception.Message);
+
+            return result!.IsValid;
 		}
 	}
 }

@@ -5,10 +5,12 @@ using Hangfire.Mongo.Migration.Strategies.Backup;
 using Reality.Common;
 using Reality.Common.Configurations;
 using Reality.Common.Data;
+using Reality.Services.IoT.UPx.Mutations;
 using Reality.Services.IoT.UPx.Queries;
 using Reality.Services.IoT.UPx.Repositories;
 using Reality.Services.IoT.UPx.Services;
 using Reality.Services.IoT.UPx.Types;
+using System.IdentityModel.Tokens.Jwt;
 using System.Reflection;
 
 namespace Reality.Services.IoT.UPx
@@ -73,14 +75,19 @@ namespace Reality.Services.IoT.UPx
 			services
 				.AddGraphQLServer()
 				.AddQueryType<Query>()
+				.AddMutationType<Mutation>()
 				.AddType<UseType>()
+				.ModifyRequestOptions(opt => opt.IncludeExceptionDetails = true)
 				.AddMongoDbFiltering()
 				.AddMongoDbPagingProviders()
 				.AddMongoDbProjections()
 				.AddMongoDbSorting();
 
 			services
-				.AddSingleton<IUseService>();
+				.AddSingleton<JwtSecurityTokenHandler>();
+
+			services
+				.AddSingleton<UseService>();
 		}
 
 		public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
