@@ -59,7 +59,7 @@ namespace Reality.Services.Identity.Services
             };
         }
 
-        public async Task<bool> CheckAuthenticationAsync(string jwt)
+        public async Task<(bool, Dictionary<string, object>)> CheckAuthenticationAsync(string jwt)
         {
             var result = await JwtTokenHandler.ValidateTokenAsync(jwt, new TokenValidationParameters()
             {
@@ -72,7 +72,7 @@ namespace Reality.Services.Identity.Services
             if (result.Exception != null)
                 Console.WriteLine(result.Exception.Message);
 
-            return result!.IsValid;
+            return (result!.IsValid, result!.Claims);
         }
 
         private string GenerateAccessToken(string username, string userId, Role[] roles)
