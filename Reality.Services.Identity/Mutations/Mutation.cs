@@ -1,22 +1,25 @@
 ﻿using Reality.Common;
 using Reality.Common.Entities;
 using Reality.Common.Payloads;
+using Reality.Common.Services;
 using Reality.Services.Identity.Services;
+using System.Net;
+using System.Security.Claims;
 
 namespace Reality.Services.Identity.Mutations
 {
     public class Mutation
     {
         public async Task<User?> CreateUserAsync(string username, string password, string token,
-            [Service] IAuthenticationService authService, [Service] IUserService userService)
+            [Service] IAuthorizationService authorizationService, [Service] IUserService userService)
         {
-            bool (isAuthenticated, claims) = authService.CheckAuthenticationAsync(token);
-            var roles = claims.Where(x => x.Key == ClaimTypes.Role).Select(x => x.Value);
+            var result = await authorizationService.CheckAuthorizationAsync(token);
+            var roles = authorizationService.ExtractRoles(result);
             
             if (!roles.Contains(Role.Owner))
                 return null;
 
-            await userService.CreateUserAsync(username, password)
+            return await userService.CreateUserAsync(username, password);
         }
 
         public async Task<AuthenticationPayload> AuthenticateAsync(string username, string password,

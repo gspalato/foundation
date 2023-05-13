@@ -1,6 +1,6 @@
 ﻿using Reality.Common.Entities;
+using Reality.Common.Services;
 using Reality.Services.IoT.UPx.Repositories;
-using Reality.Services.IoT.UPx.Services;
 
 namespace Reality.Services.IoT.UPx.Mutations
 {
@@ -8,9 +8,13 @@ namespace Reality.Services.IoT.UPx.Mutations
     {
         public async Task<bool> RegisterFountainUseAsync(int startTimestamp, int endTimestamp, int duration,
             double economizedWater, double economizedPlastic, string token,
-            [Service] IUseRepository useRepository, [Service] UseService useService)
+            [Service] IUseRepository useRepository, [Service] IAuthorizationService authorizationService)
         {
-            if (!(await useService.CheckAuthenticationAsync(token)))
+            var result = authorizationService.CheckAuthorizationAsync(token);
+            var roles = authorizationService.ExtractRoles(result).Select(r => (int)r);
+
+            // Check if role is Project or above.
+            if (!roles.Any(r => r >= 2))
                 return false;
 
             await useRepository.InsertAsync(new() {

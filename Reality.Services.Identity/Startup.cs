@@ -1,11 +1,15 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Reality.Common.Configurations;
 using Reality.Common.Data;
+using Reality.Common.Services;
 using Reality.Services.Identity.Mutations;
 using Reality.Services.Identity.Queries;
 using Reality.Services.Identity.Services;
 using System.IdentityModel.Tokens.Jwt;
 using System.Reflection;
+
+using RCommonServices = Reality.Common.Services;
 
 namespace Reality.Services.Identity
 {
@@ -38,6 +42,7 @@ namespace Reality.Services.Identity
             // Services
             services
                 .AddSingleton<IAuthenticationService, AuthenticationService>()
+                .AddSingleton<RCommonServices::IAuthorizationService, RCommonServices::AuthorizationService>()
                 .AddSingleton<IUserService, UserService>()
                 .AddSingleton<IPasswordHasher<string>, PasswordHasher<string>>();
 

@@ -13,7 +13,6 @@ namespace Reality.Services.Identity.Services
     public interface IAuthenticationService
     {
         Task<AuthenticationPayload> AuthenticateAsync(string username, string password);
-        Task<bool> CheckAuthenticationAsync(string jwt);
     }
 
     public class AuthenticationService : IAuthenticationService
@@ -57,22 +56,6 @@ namespace Reality.Services.Identity.Services
                 Token = GenerateAccessToken(username, Guid.NewGuid().ToString(), roles.ToArray()),
                 Error = ""
             };
-        }
-
-        public async Task<(bool, Dictionary<string, object>)> CheckAuthenticationAsync(string jwt)
-        {
-            var result = await JwtTokenHandler.ValidateTokenAsync(jwt, new TokenValidationParameters()
-            {
-                ValidIssuer = "realityapibyunreaalism",
-                ValidAudience = "unreaalism",
-                ValidateIssuerSigningKey = true,
-                IssuerSigningKey = JwtSecurityKey
-            });
-
-            if (result.Exception != null)
-                Console.WriteLine(result.Exception.Message);
-
-            return (result!.IsValid, result!.Claims);
         }
 
         private string GenerateAccessToken(string username, string userId, Role[] roles)

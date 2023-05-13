@@ -8,7 +8,6 @@ using Reality.Common.Data;
 using Reality.Services.IoT.UPx.Mutations;
 using Reality.Services.IoT.UPx.Queries;
 using Reality.Services.IoT.UPx.Repositories;
-using Reality.Services.IoT.UPx.Services;
 using Reality.Services.IoT.UPx.Types;
 using System.IdentityModel.Tokens.Jwt;
 using System.Reflection;
@@ -85,9 +84,6 @@ namespace Reality.Services.IoT.UPx
 
 			services
 				.AddSingleton<JwtSecurityTokenHandler>();
-
-			services
-				.AddSingleton<UseService>();
 		}
 
 		public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
