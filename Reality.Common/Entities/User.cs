@@ -1,4 +1,6 @@
-﻿namespace Reality.Common.Entities
+﻿using Reality.Common.Roles;
+
+namespace Reality.Common.Entities
 {
     public class User : BaseEntity
     {

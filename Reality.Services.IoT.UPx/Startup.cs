@@ -5,6 +5,7 @@ using Hangfire.Mongo.Migration.Strategies.Backup;
 using Reality.Common;
 using Reality.Common.Configurations;
 using Reality.Common.Data;
+using Reality.Common.Services;
 using Reality.Services.IoT.UPx.Mutations;
 using Reality.Services.IoT.UPx.Queries;
 using Reality.Services.IoT.UPx.Repositories;
@@ -81,6 +82,9 @@ namespace Reality.Services.IoT.UPx
 				.AddMongoDbPagingProviders()
 				.AddMongoDbProjections()
 				.AddMongoDbSorting();
+
+			services
+				.AddSingleton<IAuthorizationService, AuthorizationService>();
 
 			services
 				.AddSingleton<JwtSecurityTokenHandler>();

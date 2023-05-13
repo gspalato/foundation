@@ -1,4 +1,5 @@
-﻿using Reality.Common.Entities;
+﻿using HotChocolate.Types;
+using Reality.Common.Entities;
 
 namespace Reality.Services.Portfolio.BlogService.Types
 {

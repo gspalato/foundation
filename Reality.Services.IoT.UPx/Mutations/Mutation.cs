@@ -1,6 +1,8 @@
-﻿using Reality.Common.Entities;
+﻿using HotChocolate;
+using Reality.Common.Entities;
 using Reality.Common.Services;
 using Reality.Services.IoT.UPx.Repositories;
+using System.Linq;
 
 namespace Reality.Services.IoT.UPx.Mutations
 {
@@ -10,11 +12,31 @@ namespace Reality.Services.IoT.UPx.Mutations
             double economizedWater, double economizedPlastic, string token,
             [Service] IUseRepository useRepository, [Service] IAuthorizationService authorizationService)
         {
-            var result = authorizationService.CheckAuthorizationAsync(token);
+            if (token.Length is 0)
+                return false;
+
+            var result = await authorizationService.CheckAuthorizationAsync(token);
             var roles = authorizationService.ExtractRoles(result).Select(r => (int)r);
+            bool allowed;
+
+            if (!result.IsValid)
+                return false;
+
+            try
+            {
+                allowed = roles.Any(r => r >= 2);
+            }
+            catch(Exception e)
+            {
+                Console.WriteLine(e);
+                allowed = false;
+            }
+
+            Console.WriteLine($"---------- RESULT: {result.IsValid}");
+            Console.WriteLine($"---------- ROLE: {roles.First()}");
 
             // Check if role is Project or above.
-            if (!roles.Any(r => r >= 2))
+            if (!allowed)
                 return false;
 
             await useRepository.InsertAsync(new() {

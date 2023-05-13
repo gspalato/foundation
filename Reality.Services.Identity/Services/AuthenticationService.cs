@@ -4,6 +4,7 @@ using MongoDB.Driver;
 using Reality.Common;
 using Reality.Common.Data;
 using Reality.Common.Payloads;
+using Reality.Common.Roles;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
@@ -30,17 +31,21 @@ namespace Reality.Services.Identity.Services
             UserService = userService;
 
             JwtSecurityKey = new SymmetricSecurityKey(
-                Encoding.UTF8.GetBytes("ADD_SECRET_HERE_WHEN_POSSIBLE_128BITS"));
+                Encoding.UTF8.GetBytes(
+                    Environment.GetEnvironmentVariable("REALITY_JWT_SECURITY_KEY") ?? "insecure_placeholder"
+                )
+            );
+
             JwtTokenHandler = jwtTokenHandler;
         }
 
         public async Task<AuthenticationPayload> AuthenticateAsync(string username, string password)
         {
-            var roles = new List<Role>();
-
             var found = await UserService.GetUserAsync(username);
             if (found is null)
                 return new AuthenticationPayload();
+
+            var roles = found.Roles;
 
             var verify = Hasher.VerifyHashedPassword(username, found.PasswordHash, password);
             Console.WriteLine(verify.ToString());
@@ -66,7 +71,7 @@ namespace Reality.Services.Identity.Services
                 new Claim(ClaimTypes.Name, username)
             };
 
-            claims = claims.Concat(roles.Select(role => new Claim(ClaimTypes.Role, role.ToString()))).ToList();
+            claims = claims.Concat(roles.Select(role => new Claim(ClaimTypes.Role, role.ToString("d")))).ToList();
 
             var signingCredentials = new SigningCredentials(JwtSecurityKey, SecurityAlgorithms.HmacSha256);
 

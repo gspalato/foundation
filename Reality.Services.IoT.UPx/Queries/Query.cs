@@ -1,4 +1,5 @@
-﻿using Reality.Services.IoT.UPx.Entities;
+﻿using HotChocolate;
+using Reality.Services.IoT.UPx.Entities;
 using Reality.Services.IoT.UPx.Repositories;
 
 namespace Reality.Services.IoT.UPx.Queries

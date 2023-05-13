@@ -1,6 +1,8 @@
-﻿using Reality.Common;
+﻿using HotChocolate;
+using Reality.Common;
 using Reality.Common.Entities;
 using Reality.Common.Payloads;
+using Reality.Common.Roles;
 using Reality.Common.Services;
 using Reality.Services.Identity.Services;
 using System.Net;
@@ -10,13 +12,13 @@ namespace Reality.Services.Identity.Mutations
 {
     public class Mutation
     {
-        public async Task<User?> CreateUserAsync(string username, string password, string token,
+        public async Task<Reality.Common.Entities.User?> CreateUserAsync(string username, string password, string token,
             [Service] IAuthorizationService authorizationService, [Service] IUserService userService)
         {
             var result = await authorizationService.CheckAuthorizationAsync(token);
             var roles = authorizationService.ExtractRoles(result);
             
-            if (!roles.Contains(Role.Owner))
+            if (!roles.Any(r => r == Role.Owner))
                 return null;
 
             return await userService.CreateUserAsync(username, password);

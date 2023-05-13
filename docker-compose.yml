@@ -6,6 +6,8 @@ services:
       dockerfile: ./Reality.Gateway/Dockerfile
     ports:
       - "80:80"
+    env_file:
+      - .env
     environment:
       - DATABASE_URL=mongodb://root:example@db
       - DATABASE_NAME=portfolio
@@ -22,6 +24,8 @@ services:
     build:
       context: ./
       dockerfile: ./Reality.Services.Identity/Dockerfile
+    env_file:
+      - .env
     environment:
       - DATABASE_URL=mongodb://root:example@db
       - DATABASE_NAME=auth
@@ -31,6 +35,8 @@ services:
     build:
       context: ./
       dockerfile: ./Reality.Services.Portfolio.BlogService/Dockerfile
+    env_file:
+      - .env
     environment:
       - DATABASE_URL=mongodb://root:example@db
       - DATABASE_NAME=portfolio
@@ -40,6 +46,8 @@ services:
     build:
       context: ./
       dockerfile: ./Reality.Services.Portfolio.ProjectService/Dockerfile
+    env_file:
+      - .env
     environment:
       - DATABASE_URL=mongodb://root:example@db
       - DATABASE_NAME=portfolio
@@ -49,6 +57,8 @@ services:
     build:
       context: ./
       dockerfile: ./Reality.Services.IoT.UPx/Dockerfile
+    env_file:
+      - .env
     environment:
       - DATABASE_URL=mongodb://root:example@db
       - DATABASE_NAME=upx

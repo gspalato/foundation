@@ -1,4 +1,5 @@
 ﻿using Microsoft.IdentityModel.Tokens;
+using Reality.Common.Roles;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
@@ -8,7 +9,7 @@ namespace Reality.Common.Services
     public interface IAuthorizationService
     {
         Task<TokenValidationResult> CheckAuthorizationAsync(string jwt);
-        IEnumerable<object> ExtractRoles(TokenValidationResult validationResult);
+        List<Role> ExtractRoles(TokenValidationResult validationResult);
     }
 
     public class AuthorizationService : IAuthorizationService
@@ -29,7 +30,7 @@ namespace Reality.Common.Services
                 ValidateIssuerSigningKey = true,
                 IssuerSigningKey = new SymmetricSecurityKey(
                     Encoding.UTF8.GetBytes(
-                        Environment.GetEnvironmentVariable("REALITY_JWT_SECURITY_KEY") ?? "development"
+                        Environment.GetEnvironmentVariable("REALITY_JWT_SECURITY_KEY") ?? "insecure_placeholder"
                     )
                 )
             });
@@ -40,9 +41,17 @@ namespace Reality.Common.Services
             return result;
         }
 
-        public IEnumerable<object> ExtractRoles(TokenValidationResult validationResult)
+        public List<Role> ExtractRoles(TokenValidationResult validationResult)
         {
-            return validationResult.Claims.Where(x => x.Key is ClaimTypes.Role).Select(x => x.Value);
+            return validationResult.Claims.Where(x => x.Key is ClaimTypes.Role).Select(x => {
+                int enumValue = Int32.Parse((string)x.Value);
+                Role role = (Role)enumValue;
+
+                Console.WriteLine($"=========== PARSED: {enumValue} ===========");
+                Console.WriteLine($"=========== ROLE: {role.GetName()} ===========");
+
+                return role;
+            }).ToList();
         }
     }
 }

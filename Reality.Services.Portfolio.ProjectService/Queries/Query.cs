@@ -1,4 +1,5 @@
-﻿using Reality.Common.Entities;
+﻿using HotChocolate;
+using Reality.Common.Entities;
 using Reality.Services.Portfolio.ProjectService.Repositories;
 
 namespace Reality.Services.Portfolio.ProjectService.Queries

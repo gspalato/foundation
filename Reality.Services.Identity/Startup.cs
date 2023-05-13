@@ -59,7 +59,8 @@ namespace Reality.Services.Identity
                 .AddMongoDbPagingProviders()
                 .AddMongoDbProjections()
                 .AddMongoDbSorting()
-                .AddDefaultTransactionScopeHandler();
+                .AddDefaultTransactionScopeHandler()
+                .ModifyRequestOptions(opt => opt.IncludeExceptionDetails = true);
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
