@@ -2,6 +2,7 @@
 using Hangfire.Mongo;
 using Hangfire.Mongo.Migration.Strategies;
 using Hangfire.Mongo.Migration.Strategies.Backup;
+using HotChocolate.AspNetCore;
 using Reality.Common;
 using Reality.Common.Configurations;
 using Reality.Common.Data;
@@ -101,7 +102,11 @@ namespace Reality.Services.IoT.UPx
 
 			app.UseEndpoints(endpoints =>
 			{
-				endpoints.MapGraphQL("/");
+				endpoints.MapGraphQL("/gql")
+                    .WithOptions(new GraphQLServerOptions()
+                    {
+                        Tool = { Enable = false }
+                    });
 			});
 		}
 	}

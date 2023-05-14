@@ -1,11 +1,32 @@
 services:
-  # Reality Services
+  # Reverse Proxy
+  proxy:
+    hostname: "proxy"
+    build:
+      context: ./
+      dockerfile: ./Reality.Proxy/Dockerfile
+    depends_on:
+      - gateway
+
+  # Portfolio Front-end
+  portfolio:
+    hostname: "portfolio"
+    ports:
+      - "80:8080"
+    build:
+      context: ./
+      dockerfile: ./Portfolio/Dockerfile
+    depends_on:
+      - gateway
+
+  # Reality API Gateway
   gateway:
+    hostname: "gateway"
+    ports:
+      - "4000:80"
     build:
       context: ./
       dockerfile: ./Reality.Gateway/Dockerfile
-    ports:
-      - "80:80"
     env_file:
       - .env
     environment:
@@ -17,9 +38,10 @@ services:
       - blog_service
       - project_service
       - upx_service
-      - db
 
+  # Reality API Microservices
   identity_service:
+    hostname: "identity_service"
     build:
       context: ./
       dockerfile: ./Reality.Services.Identity/Dockerfile
@@ -28,8 +50,11 @@ services:
     environment:
       - DATABASE_NAME=auth
       - Logging__Console__FormatterName=Simple
+    depends_on:
+      - db
 
   blog_service:
+    hostname: "blog_service"
     build:
       context: ./
       dockerfile: ./Reality.Services.Portfolio.BlogService/Dockerfile
@@ -38,8 +63,11 @@ services:
     environment:
       - DATABASE_NAME=portfolio
       - Logging__Console__FormatterName=Simple
+    depends_on:
+      - db
 
   project_service:
+    hostname: "project_service"
     build:
       context: ./
       dockerfile: ./Reality.Services.Portfolio.ProjectService/Dockerfile
@@ -48,8 +76,11 @@ services:
     environment:
       - DATABASE_NAME=portfolio
       - Logging__Console__FormatterName=Simple
+    depends_on:
+      - db
 
   upx_service:
+    hostname: "upx_service"
     build:
       context: ./
       dockerfile: ./Reality.Services.IoT.UPx/Dockerfile
@@ -58,9 +89,12 @@ services:
     environment:
       - DATABASE_NAME=upx
       - Logging__Console__FormatterName=Simple
+    depends_on:
+      - db
 
-  # Database
+  # Databases
   db:
+    hostname: "db"
     image: mongo
     restart: always
     env_file:

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using HotChocolate.AspNetCore;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Reality.Common.Configurations;
 using Reality.Common.Data;
@@ -74,7 +75,11 @@ namespace Reality.Services.Identity
 
             app.UseEndpoints(endpoints =>
             {
-                endpoints.MapGraphQL("/");
+                endpoints.MapGraphQL("/gql")
+                    .WithOptions(new GraphQLServerOptions()
+                    {
+                        Tool = { Enable = false }
+                    });
             });
         }
     }

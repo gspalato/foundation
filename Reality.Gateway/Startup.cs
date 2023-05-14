@@ -2,6 +2,7 @@
 using Hangfire.Mongo;
 using Hangfire.Mongo.Migration.Strategies;
 using Hangfire.Mongo.Migration.Strategies.Backup;
+using HotChocolate.AspNetCore;
 using Reality.Common.Configurations;
 using Reality.Common.Data;
 using Reality.Gateway.Configurations;
@@ -35,6 +36,7 @@ namespace Reality.Gateway
             services.AddSingleton(_ => databaseContext);
 
             // Hangfire
+            /*
             services
                 .AddHangfire(configuration =>
                 {
@@ -60,6 +62,7 @@ namespace Reality.Gateway
                 {
                     serverOptions.ServerName = "reality.hangfire.gateway";
                 });
+            */
 
             GlobalConfiguration.Configuration.UseColouredConsoleLogProvider();
 
@@ -69,7 +72,7 @@ namespace Reality.Gateway
                 var id = url.Replace("http://", "");
                 services.AddHttpClient(id, (sp, client) =>
                 {
-                    client.BaseAddress = new Uri(url);
+                    client.BaseAddress = new Uri(new Uri(url), "/gql");
                 });
                 registeredHttpClients.Add(id);
             }
@@ -94,10 +97,16 @@ namespace Reality.Gateway
 
             app.UseEndpoints(endpoints =>
             {
-                endpoints.MapGraphQL("/");
+                endpoints
+                    .MapGraphQL("/gql")
+                    .WithOptions(new GraphQLServerOptions
+                    {
+                        Tool = { Enable = false }
+                    });
+                
+                endpoints
+                    .MapBananaCakePop("/ui");
             });
-
-            app.UseHangfireDashboard();
         }
     }
 }

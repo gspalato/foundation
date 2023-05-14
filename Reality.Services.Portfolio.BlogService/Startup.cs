@@ -1,4 +1,5 @@
-﻿using Reality.Common.Configurations;
+﻿using HotChocolate.AspNetCore;
+using Reality.Common.Configurations;
 using Reality.Common.Data;
 using Reality.Services.Portfolio.BlogService.Queries;
 using Reality.Services.Portfolio.BlogService.Repositories;
@@ -58,7 +59,11 @@ namespace Reality.Services.Portfolio.BlogService
 
             app.UseEndpoints(endpoints =>
             {
-                endpoints.MapGraphQL("/");
+                endpoints.MapGraphQL("/gql")
+                    .WithOptions(new GraphQLServerOptions()
+                    {
+                        Tool = { Enable = false }
+                    });
             });
         }
     }
