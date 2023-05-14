@@ -32,9 +32,6 @@ namespace Reality.Services.IoT.UPx.Mutations
                 allowed = false;
             }
 
-            Console.WriteLine($"---------- RESULT: {result.IsValid}");
-            Console.WriteLine($"---------- ROLE: {roles.First()}");
-
             // Check if role is Project or above.
             if (!allowed)
                 return false;
