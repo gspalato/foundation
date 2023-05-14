@@ -100,18 +100,25 @@ Reality is a microservice GraphQL back-end and platform for my projects, allowin
 To get a local copy up and running:
 
 1. Clone the repo
-   ```sh
-   git clone https://github.com/gspalato/reality.git
-   ```
+    ```sh
+    git clone https://github.com/gspalato/reality.git
+    ```
 2. Build docker image
-   ```sh
-   docker-compose build
-   ```
-3. Configure environment variables at `docker-compose.yml`.
+    ```sh
+    docker compose build
+    ```
+3. Configure environment variables in a `.env` file:
+    ```env
+    REALITY_JWT_SECURITY_KEY=insert_your_256_byte_key_here
+
+    DATABASE_URL=mongodb://root:example@db
+    MONGO_INITDB_ROOT_USERNAME=root
+    MONGO_INITDB_ROOT_PASSWORD=example
+    ```
 
 4. Start it
     ```sh
-    docker-compose up -d
+    docker compose up -d
     ```
 
 <p align="right">(<a href="#top">back to top</a>)</p>
