@@ -9,7 +9,6 @@ services:
     env_file:
       - .env
     environment:
-      - DATABASE_URL=mongodb://root:example@db
       - DATABASE_NAME=portfolio
       - SERVICE_URLS=http://identity_service,http://blog_service,http://project_service,http://upx_service
       - Logging__Console__FormatterName=Simple
@@ -27,7 +26,6 @@ services:
     env_file:
       - .env
     environment:
-      - DATABASE_URL=mongodb://root:example@db
       - DATABASE_NAME=auth
       - Logging__Console__FormatterName=Simple
 
@@ -38,7 +36,6 @@ services:
     env_file:
       - .env
     environment:
-      - DATABASE_URL=mongodb://root:example@db
       - DATABASE_NAME=portfolio
       - Logging__Console__FormatterName=Simple
 
@@ -49,7 +46,6 @@ services:
     env_file:
       - .env
     environment:
-      - DATABASE_URL=mongodb://root:example@db
       - DATABASE_NAME=portfolio
       - Logging__Console__FormatterName=Simple
 
@@ -60,7 +56,6 @@ services:
     env_file:
       - .env
     environment:
-      - DATABASE_URL=mongodb://root:example@db
       - DATABASE_NAME=upx
       - Logging__Console__FormatterName=Simple
 
@@ -68,9 +63,8 @@ services:
   db:
     image: mongo
     restart: always
-    environment:
-      MONGO_INITDB_ROOT_USERNAME: root
-      MONGO_INITDB_ROOT_PASSWORD: example
+    env_file:
+      - .env
     volumes:
       - mongodbdata:/data/db
 
