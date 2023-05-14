@@ -47,9 +47,6 @@ namespace Reality.Common.Services
                 int enumValue = Int32.Parse((string)x.Value);
                 Role role = (Role)enumValue;
 
-                Console.WriteLine($"=========== PARSED: {enumValue} ===========");
-                Console.WriteLine($"=========== ROLE: {role.GetName()} ===========");
-
                 return role;
             }).ToList();
         }
