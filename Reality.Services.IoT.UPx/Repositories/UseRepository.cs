@@ -1,6 +1,6 @@
 ﻿using Reality.Common.Data;
 using Reality.Common.Repositories;
-using Reality.Services.IoT.UPx.Entities;
+using Reality.Common.Entities;
 
 namespace Reality.Services.IoT.UPx.Repositories
 {

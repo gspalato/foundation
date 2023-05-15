@@ -1,6 +1,4 @@
-﻿using Reality.Common.Entities;
-
-namespace Reality.Services.IoT.UPx.Entities
+namespace Reality.Common.Entities
 {
     public class Use : BaseEntity
     {

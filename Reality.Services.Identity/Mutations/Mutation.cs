@@ -27,7 +27,10 @@ namespace Reality.Services.Identity.Mutations
         public async Task<AuthenticationPayload> AuthenticateAsync(string username, string password,
             [Service] IAuthenticationService authService)
         {
-            return await authService.AuthenticateAsync(username, password);
+            var result = await authService.AuthenticateAsync(username, password);
+            Console.WriteLine(result.Error);
+
+            return result;
         }
     }
 }

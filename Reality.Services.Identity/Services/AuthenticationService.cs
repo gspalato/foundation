@@ -32,7 +32,7 @@ namespace Reality.Services.Identity.Services
 
             JwtSecurityKey = new SymmetricSecurityKey(
                 Encoding.UTF8.GetBytes(
-                    Environment.GetEnvironmentVariable("REALITY_JWT_SECURITY_KEY") ?? "insecure_placeholder"
+                    Environment.GetEnvironmentVariable("REALITY_JWT_SECURITY_KEY")!
                 )
             );
 
@@ -49,7 +49,7 @@ namespace Reality.Services.Identity.Services
 
             var verify = Hasher.VerifyHashedPassword(username, found.PasswordHash, password);
             Console.WriteLine(verify.ToString());
-            if (verify is (PasswordVerificationResult.Success | PasswordVerificationResult.SuccessRehashNeeded))
+            if (verify != PasswordVerificationResult.Success)
                 return new AuthenticationPayload()
                 {
                     Error = "Wrong password."

@@ -84,6 +84,17 @@ namespace Reality.Gateway
                 graphQlServer.AddRemoteSchema(id);
                 Console.WriteLine($"Added remote schema \"{id}\"");
             }
+
+            services.AddCors(options =>
+            {
+                options.AddPolicy("CorsPolicy", builder =>
+                {
+                    builder
+                        .AllowAnyOrigin()
+                        .AllowAnyMethod()
+                        .AllowAnyHeader();
+                });
+            });
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -94,6 +105,13 @@ namespace Reality.Gateway
             }
 
             app.UseRouting();
+
+            app.UseCors(options => {
+                options
+                    .AllowAnyOrigin()
+                    .AllowAnyMethod()
+                    .AllowAnyHeader();
+            });
 
             app.UseEndpoints(endpoints =>
             {

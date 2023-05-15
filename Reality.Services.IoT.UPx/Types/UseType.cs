@@ -1,5 +1,5 @@
 ﻿using HotChocolate.Types;
-using Reality.Services.IoT.UPx.Entities;
+using Reality.Common.Entities;
 
 namespace Reality.Services.IoT.UPx.Types
 {

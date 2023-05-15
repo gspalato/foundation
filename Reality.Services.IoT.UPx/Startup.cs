@@ -78,6 +78,7 @@ namespace Reality.Services.IoT.UPx
 				.AddQueryType<Query>()
 				.AddMutationType<Mutation>()
 				.AddType<UseType>()
+				.AddType<ResumeType>()
 				.ModifyRequestOptions(opt => opt.IncludeExceptionDetails = true)
 				.AddMongoDbFiltering()
 				.AddMongoDbPagingProviders()
