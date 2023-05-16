@@ -8,7 +8,7 @@ namespace Reality.Services.IoT.UPx.Types
         protected override void Configure(IObjectTypeDescriptor<Resume> descriptor)
         {
             descriptor.Field(_ => _.Id);
-            descriptor.Field(_ => _.Timestamp);
+            descriptor.Field(_ => _.Date);
             descriptor.Field(_ => _.TotalDuration);
             descriptor.Field(_ => _.EconomizedWater);
             descriptor.Field(_ => _.EconomizedPlastic);

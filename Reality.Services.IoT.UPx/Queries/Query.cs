@@ -14,15 +14,18 @@ namespace Reality.Services.IoT.UPx.Queries
         {
             var uses = await useRepository.GetAllAsync();
 
-            var perDateGroup = uses.GroupBy(_ => {
-                var date = DateTimeOffset.FromUnixTimeSeconds(_.StartTimestamp);
-                return (date.Day, date.Month, date.Year);
-            });
+            string GetDateString(int timestamp)
+            {
+                return new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc).AddSeconds(timestamp).Date.ToShortDateString();
+            }
+
+            // Group by
+            var perDateGroup = uses.GroupBy(_ => GetDateString(_.StartTimestamp));
             
             var list = perDateGroup.Select(_ => {
                 return new Resume()
                 {
-                    Timestamp = new DateTime(_.Key.Year, _.Key.Month, _.Key.Day, 0, 0, 0, 0).Second,
+                    Date = _.Key,
                     TotalDuration = _.Sum(_ => _.Duration),
                     EconomizedPlastic = _.Sum(_ => _.EconomizedPlastic),
                     EconomizedWater = _.Sum(_ => _.EconomizedWater)
