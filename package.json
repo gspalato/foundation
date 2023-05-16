@@ -1,8 +1,0 @@
-{
-  "dependencies": {
-    "recharts": "^2.6.2"
-  },
-  "devDependencies": {
-    "@types/recharts": "^1.8.24"
-  }
-}
