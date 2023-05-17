@@ -12,6 +12,7 @@ namespace Reality.Services.IoT.UPx.Types
             descriptor.Field(_ => _.TotalDuration);
             descriptor.Field(_ => _.EconomizedWater);
             descriptor.Field(_ => _.EconomizedPlastic);
+            descriptor.Field(_ => _.UsedWater);
         }
     }
 }

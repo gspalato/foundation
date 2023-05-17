@@ -6,5 +6,6 @@ namespace Reality.Common.Entities
         public int TotalDuration { get; set; } = default!;
         public double EconomizedPlastic { get; set; } = default!;
         public double EconomizedWater { get; set; } = default!;
+        public double UsedWater { get; set; } = default!;
     }
 }
