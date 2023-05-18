@@ -5,7 +5,7 @@ namespace Reality.Common.Entities
         public string Date { get; set; } = default!;
         public int TotalDuration { get; set; } = default!;
         public double EconomizedPlastic { get; set; } = default!;
-        public double EconomizedWater { get; set; } = default!;
-        public double UsedWater { get; set; } = default!;
+        public double DistributedWater { get; set; } = default!;
+        public double BottleQuantityEquivalent { get; set; } = default!;
     }
 }

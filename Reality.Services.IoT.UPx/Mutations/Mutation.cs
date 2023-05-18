@@ -9,8 +9,8 @@ namespace Reality.Services.IoT.UPx.Mutations
     public class Mutation
     {
         public async Task<bool> RegisterFountainUseAsync(int startTimestamp, int endTimestamp, int duration,
-            double economizedWater, double economizedPlastic, double usedWater, string token,
-            [Service] IUseRepository useRepository, [Service] IAuthorizationService authorizationService)
+            double distributedWater, double economizedPlastic, double usedWater, double bottleQuantityEquivalent,
+            string token, [Service] IUseRepository useRepository, [Service] IAuthorizationService authorizationService)
         {
             if (token.Length is 0)
                 return false;
@@ -40,9 +40,9 @@ namespace Reality.Services.IoT.UPx.Mutations
                 StartTimestamp = startTimestamp,
                 EndTimestamp = endTimestamp,
                 Duration = duration,
-                EconomizedWater = economizedWater,
+                DistributedWater = distributedWater,
                 EconomizedPlastic = economizedPlastic,
-                UsedWater = usedWater
+                BottleQuantityEquivalent = bottleQuantityEquivalent
             });
 
             return true;

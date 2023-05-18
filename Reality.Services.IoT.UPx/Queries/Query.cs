@@ -28,7 +28,8 @@ namespace Reality.Services.IoT.UPx.Queries
                     Date = _.Key,
                     TotalDuration = _.Sum(_ => _.Duration),
                     EconomizedPlastic = _.Sum(_ => _.EconomizedPlastic),
-                    EconomizedWater = _.Sum(_ => _.EconomizedWater)
+                    DistributedWater = _.Sum(_ => _.DistributedWater),
+                    BottleQuantityEquivalent = _.Sum(_ => _.BottleQuantityEquivalent)
                 };
             });
 
