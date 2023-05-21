@@ -3,9 +3,9 @@ using Hangfire.Mongo;
 using Hangfire.Mongo.Migration.Strategies;
 using Hangfire.Mongo.Migration.Strategies.Backup;
 using HotChocolate.AspNetCore;
-using Reality.Common;
 using Reality.Common.Configurations;
 using Reality.Common.Data;
+using Reality.Common.Entities;
 using Reality.Common.Services;
 using Reality.Services.IoT.UPx.Mutations;
 using Reality.Services.IoT.UPx.Queries;
@@ -77,8 +77,8 @@ namespace Reality.Services.IoT.UPx
 				.AddGraphQLServer()
 				.AddQueryType<Query>()
 				.AddMutationType<Mutation>()
-				.AddType<UseType>()
-				.AddType<ResumeType>()
+				.AddType<Use>()
+				.AddType<Resume>()
 				.ModifyRequestOptions(opt => opt.IncludeExceptionDetails = true)
 				.AddMongoDbFiltering()
 				.AddMongoDbPagingProviders()

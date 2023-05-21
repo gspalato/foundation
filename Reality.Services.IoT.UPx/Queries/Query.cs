@@ -10,7 +10,7 @@ namespace Reality.Services.IoT.UPx.Queries
         public Task<IEnumerable<Use>> GetUsesAsync([Service] IUseRepository useRepository) =>
             useRepository.GetAllAsync();
 
-        public async Task<IEnumerable<Resume>> GetResumeAsync([Service] IUseRepository useRepository)
+        public async Task<IEnumerable<Resume>> GetResumesAsync([Service] IUseRepository useRepository)
         {
             var uses = await useRepository.GetAllAsync();
 
@@ -34,6 +34,20 @@ namespace Reality.Services.IoT.UPx.Queries
             });
 
             return list;
+        }
+
+        public async Task<Resume> GetTotalResumeAsync([Service] IUseRepository useRepository)
+        {
+            var uses = await useRepository.GetAllAsync();
+
+            return new Resume()
+            {
+                Date = "Total",
+                TotalDuration = uses.Sum(_ => _.Duration),
+                EconomizedPlastic = uses.Sum(_ => _.EconomizedPlastic),
+                DistributedWater = uses.Sum(_ => _.DistributedWater),
+                BottleQuantityEquivalent = uses.Sum(_ => _.BottleQuantityEquivalent)
+            };
         }
     }
 }
