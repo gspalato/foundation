@@ -3,6 +3,7 @@ using Hangfire.Mongo;
 using Hangfire.Mongo.Migration.Strategies;
 using Hangfire.Mongo.Migration.Strategies.Backup;
 using HotChocolate.AspNetCore;
+using HotChocolate.Stitching;
 using Reality.Common.Configurations;
 using Reality.Common.Data;
 using Reality.Gateway.Configurations;
@@ -74,6 +75,10 @@ namespace Reality.Gateway
                 {
                     client.BaseAddress = new Uri(new Uri(url), "/gql");
                 });
+                services.AddWebSocketClient(id, (sp, client) =>
+                {
+                    client.Uri = new Uri(new Uri(url), "/gql");
+                });
                 registeredHttpClients.Add(id);
             }
 
@@ -81,7 +86,11 @@ namespace Reality.Gateway
 
             foreach (var id in registeredHttpClients)
             {
-                graphQlServer.AddRemoteSchema(id);
+                graphQlServer.AddRemoteSchema(id, capabilities: new EndpointCapabilities
+                {
+                    Batching = BatchingSupport.RequestBatching,
+                    Subscriptions = SubscriptionSupport.WebSocket
+                });
                 Console.WriteLine($"Added remote schema \"{id}\"");
             }
 
