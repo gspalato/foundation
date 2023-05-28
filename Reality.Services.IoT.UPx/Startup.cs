@@ -3,12 +3,11 @@ using Hangfire.Mongo;
 using Hangfire.Mongo.Migration.Strategies;
 using Hangfire.Mongo.Migration.Strategies.Backup;
 using HotChocolate.AspNetCore;
+using HotChocolate.Subscriptions;
 using Reality.Common.Configurations;
 using Reality.Common.Data;
 using Reality.Common.Entities;
 using Reality.Common.Services;
-using Reality.Services.IoT.UPx.Mutations;
-using Reality.Services.IoT.UPx.Queries;
 using Reality.Services.IoT.UPx.Repositories;
 using Reality.Services.IoT.UPx.Types;
 using System.IdentityModel.Tokens.Jwt;
@@ -75,8 +74,10 @@ namespace Reality.Services.IoT.UPx
 			// GraphQL
 			services
 				.AddGraphQLServer()
+				.AddInMemorySubscriptions()
 				.AddQueryType<Query>()
 				.AddMutationType<Mutation>()
+				.AddSubscriptionType<Subscription>()
 				.AddType<Use>()
 				.AddType<Resume>()
 				.ModifyRequestOptions(opt => opt.IncludeExceptionDetails = true)
@@ -100,6 +101,8 @@ namespace Reality.Services.IoT.UPx
 			}
 
 			app.UseRouting();
+
+			app.UseWebSockets();
 
 			app.UseEndpoints(endpoints =>
 			{

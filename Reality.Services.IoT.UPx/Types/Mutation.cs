@@ -1,16 +1,18 @@
 ﻿using HotChocolate;
+using HotChocolate.Subscriptions;
 using Reality.Common.Entities;
 using Reality.Common.Services;
 using Reality.Services.IoT.UPx.Repositories;
 using System.Linq;
 
-namespace Reality.Services.IoT.UPx.Mutations
+namespace Reality.Services.IoT.UPx.Types
 {
     public class Mutation
     {
-        public async Task<bool> RegisterFountainUseAsync(int startTimestamp, int endTimestamp, int duration,
-            double distributedWater, double economizedPlastic, double bottleQuantityEquivalent,
-            string token, [Service] IUseRepository useRepository, [Service] IAuthorizationService authorizationService)
+        public async Task<bool> RegisterStationUseAsync(int startTimestamp, int endTimestamp, int duration,
+            double distributedWater, double economizedPlastic, double bottleQuantityEquivalent, string token,
+            [Service] IUseRepository useRepository, [Service] IAuthorizationService authorizationService,
+            [Service] ITopicEventSender sender)
         {
             if (token.Length is 0)
                 return false;
@@ -36,14 +38,18 @@ namespace Reality.Services.IoT.UPx.Mutations
             if (!allowed)
                 return false;
 
-            await useRepository.InsertAsync(new() {
+            Use use = new() {
                 StartTimestamp = startTimestamp,
                 EndTimestamp = endTimestamp,
                 Duration = duration,
                 DistributedWater = distributedWater,
                 EconomizedPlastic = economizedPlastic,
                 BottleQuantityEquivalent = bottleQuantityEquivalent
-            });
+            };
+
+            await useRepository.InsertAsync(use);
+
+            await sender.CompleteAsync(nameof(Reality.Services.IoT.UPx.Types.Subscription.OnStationUpdate));
 
             return true;
         }

@@ -3,7 +3,7 @@ using HotChocolate;
 using Reality.Common.Entities;
 using Reality.Services.IoT.UPx.Repositories;
 
-namespace Reality.Services.IoT.UPx.Queries
+namespace Reality.Services.IoT.UPx.Types
 {
     public class Query
     {
