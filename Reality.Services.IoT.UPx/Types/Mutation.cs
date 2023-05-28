@@ -1,9 +1,7 @@
-﻿using HotChocolate;
-using HotChocolate.Subscriptions;
+﻿using HotChocolate.Subscriptions;
 using Reality.Common.Entities;
 using Reality.Common.Services;
 using Reality.Services.IoT.UPx.Repositories;
-using System.Linq;
 
 namespace Reality.Services.IoT.UPx.Types
 {
@@ -26,7 +24,7 @@ namespace Reality.Services.IoT.UPx.Types
 
             try
             {
-                allowed = roles.Any(r => r >= 2);
+                allowed = roles.Any(r => r <= 2);
             }
             catch(Exception e)
             {
