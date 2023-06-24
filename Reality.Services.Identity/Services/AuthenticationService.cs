@@ -3,6 +3,7 @@ using Microsoft.IdentityModel.Tokens;
 using MongoDB.Driver;
 using Reality.Common;
 using Reality.Common.Data;
+using Reality.Common.Entities;
 using Reality.Common.Payloads;
 using Reality.Common.Roles;
 using System.IdentityModel.Tokens.Jwt;
@@ -59,6 +60,7 @@ namespace Reality.Services.Identity.Services
             {
                 Successful = true,
                 Token = GenerateAccessToken(username, Guid.NewGuid().ToString(), roles.ToArray()),
+                User = (User)found,
                 Error = ""
             };
         }

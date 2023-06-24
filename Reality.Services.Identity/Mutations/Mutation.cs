@@ -12,7 +12,7 @@ namespace Reality.Services.Identity.Mutations
 {
     public class Mutation
     {
-        public async Task<Reality.Common.Entities.User?> CreateUserAsync(string username, string password, string token,
+        public async Task<Reality.Common.Entities.FullUser?> CreateUserAsync(string username, string password, string token,
             [Service] IAuthorizationService authorizationService, [Service] IUserService userService)
         {
             var result = await authorizationService.CheckAuthorizationAsync(token);
