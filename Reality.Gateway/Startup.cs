@@ -7,6 +7,7 @@ using HotChocolate.Stitching;
 using Reality.Common.Configurations;
 using Reality.Common.Data;
 using Reality.Gateway.Configurations;
+using Reality.Gateway.Middleware;
 using System.Reflection;
 
 namespace Reality.Gateway
@@ -82,7 +83,9 @@ namespace Reality.Gateway
                 registeredHttpClients.Add(id);
             }
 
-            var graphQlServer = services.AddGraphQLServer();
+            var graphQlServer = services
+                .AddGraphQLServer()
+                .AddDiagnosticEventListener<ErrorLoggingDiagnosticsEventListener>();
 
             foreach (var id in registeredHttpClients)
             {
