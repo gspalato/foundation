@@ -1,17 +1,17 @@
 ﻿using HotChocolate;
+using HotChocolate.AspNetCore.Authorization;
 using Reality.Common;
 using Reality.Common.Entities;
 using Reality.Common.Payloads;
 using Reality.Common.Roles;
 using Reality.Common.Services;
 using Reality.Services.Identity.Services;
-using System.Net;
-using System.Security.Claims;
 
 namespace Reality.Services.Identity.Mutations
 {
     public class Mutation
     {
+        [Authorize(Roles = new[] { "0" })]
         public async Task<Reality.Common.Entities.FullUser?> CreateUserAsync(string username, string password, string token,
             [Service] IAuthorizationService authorizationService, [Service] IUserService userService)
         {

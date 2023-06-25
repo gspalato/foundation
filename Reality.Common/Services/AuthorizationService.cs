@@ -23,17 +23,7 @@ namespace Reality.Common.Services
 
         public async Task<TokenValidationResult> CheckAuthorizationAsync(string jwt)
         {
-            var result = await TokenHandler.ValidateTokenAsync(jwt, new TokenValidationParameters()
-            {
-                ValidIssuer = "realityapibyunreaalism",
-                ValidAudience = "unreaalism",
-                ValidateIssuerSigningKey = true,
-                IssuerSigningKey = new SymmetricSecurityKey(
-                    Encoding.UTF8.GetBytes(
-                        Environment.GetEnvironmentVariable("REALITY_JWT_SECURITY_KEY") ?? "insecure_placeholder"
-                    )
-                )
-            });
+            var result = await TokenHandler.ValidateTokenAsync(jwt, Reality.Common.Configurations.TokenConfiguration.ValidationParameters);
 
             if (result.Exception != null)
                 Console.WriteLine(result.Exception.Message);

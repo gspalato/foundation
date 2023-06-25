@@ -9,6 +9,7 @@ using Reality.Common.Roles;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using System.Text.Json;
 
 namespace Reality.Services.Identity.Services
 {
@@ -42,13 +43,13 @@ namespace Reality.Services.Identity.Services
 
         public async Task<AuthenticationPayload> AuthenticateAsync(string username, string password)
         {
-            var found = await UserService.GetUserAsync(username);
-            if (found is null)
+            var user = await UserService.GetUserAsync(username);
+            if (user is null)
                 return new AuthenticationPayload();
 
-            var roles = found.Roles;
+            var roles = user.Roles;
 
-            var verify = Hasher.VerifyHashedPassword(username, found.PasswordHash, password);
+            var verify = Hasher.VerifyHashedPassword(username, user.PasswordHash, password);
             Console.WriteLine(verify.ToString());
             if (verify != PasswordVerificationResult.Success)
                 return new AuthenticationPayload()
@@ -59,21 +60,21 @@ namespace Reality.Services.Identity.Services
             return new AuthenticationPayload
             {
                 Successful = true,
-                Token = GenerateAccessToken(username, Guid.NewGuid().ToString(), roles.ToArray()),
-                User = (User)found,
+                Token = GenerateAccessToken((User)user),
+                User = (User)user,
                 Error = ""
             };
         }
 
-        private string GenerateAccessToken(string username, string userId, Role[] roles)
+        private string GenerateAccessToken(User user)
         {
             var claims = new List<Claim>
             {
-                new Claim(ClaimTypes.NameIdentifier, userId),
-                new Claim(ClaimTypes.Name, username)
+                new Claim(ClaimTypes.Name, user.Username),
+                new Claim(ClaimTypes.UserData, JsonSerializer.Serialize(user))
             };
 
-            claims = claims.Concat(roles.Select(role => new Claim(ClaimTypes.Role, role.ToString("d")))).ToList();
+            claims = claims.Concat(user.Roles.Select(role => new Claim(ClaimTypes.Role, role.ToString("d")))).ToList();
 
             var signingCredentials = new SigningCredentials(JwtSecurityKey, SecurityAlgorithms.HmacSha256);
 

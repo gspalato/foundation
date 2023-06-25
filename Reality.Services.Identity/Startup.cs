@@ -1,4 +1,5 @@
 ﻿using HotChocolate.AspNetCore;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Reality.Common.Configurations;
@@ -48,11 +49,15 @@ namespace Reality.Services.Identity
                 .AddSingleton<IPasswordHasher<string>, PasswordHasher<string>>();
 
             services
-                .AddSingleton<JwtSecurityTokenHandler>();
+                .AddSingleton<JwtSecurityTokenHandler>()
+                .AddAuthorization()
+                .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                .AddJwtBearer(options => options.TokenValidationParameters = Reality.Common.Configurations.TokenConfiguration.ValidationParameters);
 
             // GraphQL
             services
                 .AddGraphQLServer()
+                .AddAuthorization()
                 .AddQueryType<Query>()
                 .AddMutationType<Mutation>()
                 .AddMutationConventions()
@@ -61,7 +66,15 @@ namespace Reality.Services.Identity
                 .AddMongoDbProjections()
                 .AddMongoDbSorting()
                 .AddDefaultTransactionScopeHandler()
-                .ModifyRequestOptions(opt => opt.IncludeExceptionDetails = true);
+                .ModifyRequestOptions(opt => opt.IncludeExceptionDetails = true)
+                .AddResolver("Query", "user", (context) =>
+                {
+                    return context.GetUser();
+                })
+                .AddResolver("Mutation", "user", (context) =>
+                {
+                    return context.GetUser();
+                });
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -72,6 +85,9 @@ namespace Reality.Services.Identity
             }
 
             app.UseRouting();
+
+            app.UseAuthentication();
+            app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
             {
