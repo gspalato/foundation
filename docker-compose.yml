@@ -35,8 +35,8 @@ services:
       - Logging__Console__FormatterName=Simple
     depends_on:
       - identity_service
-      - blog_service
-      - project_service
+      #- blog_service
+      #- project_service
       - upx_service
 
   # Reality API Microservices
