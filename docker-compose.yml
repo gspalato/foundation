@@ -1,12 +1,12 @@
 services:
   # Reverse Proxy
-  proxy:
-    hostname: "proxy"
-    build:
-      context: ./
-      dockerfile: ./Reality.Proxy/Dockerfile
-    depends_on:
-      - gateway
+  #proxy:
+  #  hostname: "proxy"
+  #  build:
+  #    context: ./
+  #    dockerfile: ./Reality.Proxy/Dockerfile
+  #  depends_on:
+  #    - gateway
 
   # Portfolio Front-end
   portfolio:
@@ -31,7 +31,7 @@ services:
       - .env
     environment:
       - DATABASE_NAME=portfolio
-      - SERVICE_URLS=http://identity_service,http://blog_service,http://project_service,http://upx_service
+      - SERVICE_URLS=http://identity_service,http://upx_service
       - Logging__Console__FormatterName=Simple
     depends_on:
       - identity_service
@@ -53,31 +53,31 @@ services:
     depends_on:
       - db
 
-  blog_service:
-    hostname: "blog_service"
-    build:
-      context: ./
-      dockerfile: ./Reality.Services.Portfolio.BlogService/Dockerfile
-    env_file:
-      - .env
-    environment:
-      - DATABASE_NAME=portfolio
-      - Logging__Console__FormatterName=Simple
-    depends_on:
-      - db
+  #blog_service:
+  #  hostname: "blog_service"
+  #  build:
+  #    context: ./
+  #    dockerfile: ./Reality.Services.Portfolio.BlogService/Dockerfile
+  #  env_file:
+  #    - .env
+  #  environment:
+  #    - DATABASE_NAME=portfolio
+  #    - Logging__Console__FormatterName=Simple
+  #  depends_on:
+  #    - db
 
-  project_service:
-    hostname: "project_service"
-    build:
-      context: ./
-      dockerfile: ./Reality.Services.Portfolio.ProjectService/Dockerfile
-    env_file:
-      - .env
-    environment:
-      - DATABASE_NAME=portfolio
-      - Logging__Console__FormatterName=Simple
-    depends_on:
-      - db
+  #project_service:
+  #  hostname: "project_service"
+  #  build:
+  #    context: ./
+  #    dockerfile: ./Reality.Services.Portfolio.ProjectService/Dockerfile
+  #  env_file:
+  #    - .env
+  #  environment:
+  #    - DATABASE_NAME=portfolio
+  #    - Logging__Console__FormatterName=Simple
+  #  depends_on:
+  #    - db
 
   upx_service:
     hostname: "upx_service"
