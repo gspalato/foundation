@@ -1,10 +1,11 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Amazon.DynamoDBv2.DataModel;
+using Microsoft.AspNetCore.Identity;
 using MongoDB.Driver;
 using Reality.Common;
 using Reality.Common.Data;
 using Reality.Common.Entities;
 using Reality.Common.Roles;
-
+using Reality.Services.Identity.Repositories;
 using RCommonEntities = Reality.Common.Entities;
 
 namespace Reality.Services.Identity.Services
@@ -18,17 +19,14 @@ namespace Reality.Services.Identity.Services
 
     public class UserService : IUserService
     {
-        private readonly IDatabaseContext DatabaseContext;
+        private readonly UserRepository UserRepository;
         private readonly IPasswordHasher<string> Hasher;
 
-        private readonly IMongoCollection<RCommonEntities::FullUser> Users;
 
-        public UserService(IDatabaseContext databaseContext, IPasswordHasher<string> hasher)
+        public UserService(UserRepository userRepository, IPasswordHasher<string> hasher)
         {
-            DatabaseContext = databaseContext;
+            UserRepository = userRepository;
             Hasher = hasher;
-
-            Users = databaseContext.GetCollection<Reality.Common.Entities.FullUser>("users");
         }
 
         public async Task<Reality.Common.Entities.FullUser?> CreateUserAsync(string username, string password)
@@ -40,26 +38,25 @@ namespace Reality.Services.Identity.Services
 
             var user = new Reality.Common.Entities.FullUser()
             {
+                Id = Guid.NewGuid().ToString(),
                 Username = username,
                 PasswordHash = hashedPassword,
                 Roles = Array.Empty<Role>()
             };
 
-            await Users.InsertOneAsync(user);
+            await UserRepository.CreateUserAsync(user);
 
             return user;
         }
 
         public async Task DeleteUserAsync(string username)
         {
-            var filter = Builders<Reality.Common.Entities.FullUser>.Filter.Where(x => x.Username == username);
-            await Users.FindOneAndDeleteAsync(filter);
+            await UserRepository.DeleteUserAsync(username);
         }
 
         public async Task<Reality.Common.Entities.FullUser?> GetUserAsync(string username)
         {
-            var filter = Builders<Reality.Common.Entities.FullUser>.Filter.Where(x => x.Username == username);
-            return await Users.Find(filter).FirstOrDefaultAsync();
+            return await UserRepository.GetUserAsync(username);
         }
     }
 }

@@ -1,8 +1,12 @@
-﻿using HotChocolate.AspNetCore;
+﻿using Amazon.DynamoDBv2;
+using Amazon.DynamoDBv2.DataModel;
+using Amazon.Runtime;
+using HotChocolate.AspNetCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Reality.Common.Configurations;
 using Reality.Common.Data;
+using Reality.Services.Identity.Repositories;
 using Reality.Services.Identity.Services;
 using Reality.Services.Identity.Types;
 using System.IdentityModel.Tokens.Jwt;
@@ -29,14 +33,21 @@ namespace Reality.Services.Identity
         public void ConfigureServices(IServiceCollection services)
         {
             // Configurations
-            var config = new BaseConfiguration();
+            var config = new Reality.Services.Identity.Configuration();
             Configuration.Bind(config);
 
             services.AddSingleton(config);
 
-            // Database Repositories
-            var databaseContext = new DatabaseContext(config);
-            services.AddSingleton<IDatabaseContext, DatabaseContext>(_ => databaseContext);
+            var credentials = new BasicAWSCredentials(config.AwsAccessKeyId, config.AwsSecretAccessKey);
+            var client = new AmazonDynamoDBClient(credentials, Amazon.RegionEndpoint.USEast1);
+
+            services
+                .AddSingleton<AWSCredentials, BasicAWSCredentials>(_ => credentials)
+                .AddSingleton<IAmazonDynamoDB>(_ => client)
+                .AddSingleton<IDynamoDBContext, DynamoDBContext>();
+
+            services
+                .AddSingleton<UserRepository>();
 
             // Services
             services

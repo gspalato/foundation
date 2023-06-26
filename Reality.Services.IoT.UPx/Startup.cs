@@ -1,4 +1,7 @@
-﻿using Hangfire;
+﻿using Amazon.DynamoDBv2;
+using Amazon.DynamoDBv2.DataModel;
+using Amazon.Runtime;
+using Hangfire;
 using Hangfire.Mongo;
 using Hangfire.Mongo.Migration.Strategies;
 using Hangfire.Mongo.Migration.Strategies.Backup;
@@ -37,9 +40,13 @@ namespace Reality.Services.IoT.UPx
 
 			services.AddSingleton(config);
 
-			// Database Repositories
-			var databaseContext = new DatabaseContext(config);
-			services.AddSingleton<IDatabaseContext, DatabaseContext>(_ => databaseContext);
+			var credentials = new BasicAWSCredentials(config.AwsAccessKeyId, config.AwsSecretAccessKey);
+            var client = new AmazonDynamoDBClient(credentials, Amazon.RegionEndpoint.USEast1);
+
+            services
+                .AddSingleton<AWSCredentials, BasicAWSCredentials>(_ => credentials)
+                .AddSingleton<IAmazonDynamoDB>(_ => client)
+                .AddSingleton<IDynamoDBContext, DynamoDBContext>();
 
 			services
 				.AddScoped<IUseRepository, UseRepository>();

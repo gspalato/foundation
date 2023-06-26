@@ -1,12 +1,10 @@
-﻿using MongoDB.Bson;
-using MongoDB.Bson.Serialization.Attributes;
+﻿using System.Text.Json.Serialization;
 
 namespace Reality.Common.Entities
 {
     public class BaseEntity
     {
-        [BsonId]
-        [BsonRepresentation(BsonType.ObjectId)]
+        [JsonPropertyName("id")]
         public string Id { get; set; } = default!;
     }
 }

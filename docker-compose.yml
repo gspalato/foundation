@@ -41,8 +41,6 @@ services:
       - Logging__Console__FormatterName=Simple
     depends_on:
       - identity_service
-      #- blog_service
-      #- project_service
       - upx_service
 
   # Reality API Microservices
@@ -53,37 +51,8 @@ services:
       dockerfile: ./Reality.Services.Identity/Dockerfile
     env_file:
       - .env
-    environment:
-      - DATABASE_NAME=auth
-      - Logging__Console__FormatterName=Simple
     depends_on:
       - db
-
-  #blog_service:
-  #  hostname: "blog_service"
-  #  build:
-  #    context: ./
-  #    dockerfile: ./Reality.Services.Portfolio.BlogService/Dockerfile
-  #  env_file:
-  #    - .env
-  #  environment:
-  #    - DATABASE_NAME=portfolio
-  #    - Logging__Console__FormatterName=Simple
-  #  depends_on:
-  #    - db
-
-  #project_service:
-  #  hostname: "project_service"
-  #  build:
-  #    context: ./
-  #    dockerfile: ./Reality.Services.Portfolio.ProjectService/Dockerfile
-  #  env_file:
-  #    - .env
-  #  environment:
-  #    - DATABASE_NAME=portfolio
-  #    - Logging__Console__FormatterName=Simple
-  #  depends_on:
-  #    - db
 
   upx_service:
     hostname: "upx_service"
@@ -92,9 +61,6 @@ services:
       dockerfile: ./Reality.Services.IoT.UPx/Dockerfile
     env_file:
       - .env
-    environment:
-      - DATABASE_NAME=upx
-      - Logging__Console__FormatterName=Simple
     depends_on:
       - db
 
@@ -105,9 +71,6 @@ services:
       dockerfile: ./Reality.Services.Static/Dockerfile
     env_file:
       - .env
-    environment:
-      - DATABASE_NAME=static
-      - Logging__Console__FormatterName=Simple
     volumes:
       - static:/etc/reality/static/files
     depends_on:

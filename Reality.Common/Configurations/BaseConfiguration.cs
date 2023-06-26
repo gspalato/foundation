@@ -1,8 +1,15 @@
 ﻿namespace Reality.Common.Configurations
 {
-    public class BaseConfiguration
+    public interface IBaseConfiguration
     {
-        public string Database_Url { get; set; } = default!;
-        public string Database_Name { get; set; } = default!;
+        string AwsAccessKeyId { get; set; }
+        string AwsSecretAccessKey { get; set; }
+    }
+
+    public class BaseConfiguration : IBaseConfiguration
+    {
+        public string AwsAccessKeyId { get; set; } = default!;
+
+        public string AwsSecretAccessKey { get; set; } = default!;
     }
 }

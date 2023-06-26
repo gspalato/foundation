@@ -7,12 +7,12 @@ namespace Reality.Services.IoT.UPx.Types
 {
     public class Query
     {
-        public Task<IEnumerable<Use>> GetUsesAsync([Service] IUseRepository useRepository) =>
-            useRepository.GetAllAsync();
+        public async Task<IEnumerable<Use>> GetUsesAsync([Service] IUseRepository useRepository) =>
+            await useRepository.GetUsesAsync();
 
         public async Task<IEnumerable<Resume>> GetResumesAsync([Service] IUseRepository useRepository)
         {
-            var uses = await useRepository.GetAllAsync();
+            var uses = await useRepository.GetUsesAsync();
 
             string GetDateString(int timestamp)
             {
@@ -38,7 +38,7 @@ namespace Reality.Services.IoT.UPx.Types
 
         public async Task<Resume> GetTotalResumeAsync([Service] IUseRepository useRepository)
         {
-            var uses = await useRepository.GetAllAsync();
+            var uses = await useRepository.GetUsesAsync();
 
             return new Resume()
             {

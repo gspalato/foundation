@@ -37,6 +37,7 @@ namespace Reality.Services.IoT.UPx.Types
                 return false;
 
             Use use = new() {
+                Id = Guid.NewGuid().ToString(),
                 StartTimestamp = startTimestamp,
                 EndTimestamp = endTimestamp,
                 Duration = duration,
@@ -45,7 +46,7 @@ namespace Reality.Services.IoT.UPx.Types
                 BottleQuantityEquivalent = bottleQuantityEquivalent
             };
 
-            await useRepository.InsertAsync(use);
+            await useRepository.CreateUseAsync(use);
 
             await sender.CompleteAsync(nameof(Reality.Services.IoT.UPx.Types.Subscription.OnStationUpdate));
 
