@@ -7,7 +7,7 @@ using Reality.Common.Roles;
 using Reality.Common.Services;
 using Reality.Services.Identity.Services;
 
-namespace Reality.Services.Identity.Mutations
+namespace Reality.Services.Identity.Types
 {
     public class Mutation
     {

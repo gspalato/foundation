@@ -37,35 +37,6 @@ namespace Reality.Gateway
             var databaseContext = new DatabaseContext(config);
             services.AddSingleton(_ => databaseContext);
 
-            // Hangfire
-            /*
-            services
-                .AddHangfire(configuration =>
-                {
-                    var client = databaseContext.GetClient();
-
-                    configuration
-                    .SetDataCompatibilityLevel(CompatibilityLevel.Version_170)
-                    .UseSimpleAssemblyNameTypeSerializer()
-                    .UseRecommendedSerializerSettings()
-                    .UseMongoStorage(client, "hangfire", new MongoStorageOptions
-                    {
-                        MigrationOptions = new MongoMigrationOptions
-                        {
-                            MigrationStrategy = new MigrateMongoMigrationStrategy(),
-                            BackupStrategy = new CollectionMongoBackupStrategy()
-                        },
-                        Prefix = "hangfire.mongo.gateway",
-                        CheckConnection = true,
-                        CheckQueuedJobsStrategy = CheckQueuedJobsStrategy.TailNotificationsCollection
-                    });
-                })
-                .AddHangfireServer(serverOptions =>
-                {
-                    serverOptions.ServerName = "reality.hangfire.gateway";
-                });
-            */
-
             GlobalConfiguration.Configuration.UseColouredConsoleLogProvider();
 
             List<string> registeredHttpClients = new();

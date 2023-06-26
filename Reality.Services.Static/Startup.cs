@@ -1,19 +1,15 @@
-﻿using Hangfire;
-using Hangfire.Mongo;
-using Hangfire.Mongo.Migration.Strategies;
-using Hangfire.Mongo.Migration.Strategies.Backup;
 using HotChocolate.AspNetCore;
 using HotChocolate.Subscriptions;
 using Reality.Common.Configurations;
 using Reality.Common.Data;
 using Reality.Common.Entities;
 using Reality.Common.Services;
-using Reality.Services.IoT.UPx.Repositories;
-using Reality.Services.IoT.UPx.Types;
+using Reality.Services.Static.Types;
 using System.IdentityModel.Tokens.Jwt;
 using System.Reflection;
+using System.Text;
 
-namespace Reality.Services.IoT.UPx
+namespace Reality.Services.Static
 {
 	public class Startup
 	{
@@ -38,11 +34,10 @@ namespace Reality.Services.IoT.UPx
 			services.AddSingleton(config);
 
 			// Database Repositories
+            /*
 			var databaseContext = new DatabaseContext(config);
 			services.AddSingleton<IDatabaseContext, DatabaseContext>(_ => databaseContext);
-
-			services
-				.AddScoped<IUseRepository, UseRepository>();
+            */
 
 			// GraphQL
 			services
@@ -50,9 +45,6 @@ namespace Reality.Services.IoT.UPx
 				.AddInMemorySubscriptions()
 				.AddQueryType<Query>()
 				.AddMutationType<Mutation>()
-				.AddSubscriptionType<Subscription>()
-				.AddType<Use>()
-				.AddType<Resume>()
 				.ModifyRequestOptions(opt => opt.IncludeExceptionDetails = true)
 				.AddMongoDbFiltering()
 				.AddMongoDbPagingProviders()
@@ -75,8 +67,6 @@ namespace Reality.Services.IoT.UPx
 
 			app.UseRouting();
 
-			app.UseWebSockets();
-
 			app.UseEndpoints(endpoints =>
 			{
 				endpoints.MapGraphQL("/gql")
@@ -85,6 +75,26 @@ namespace Reality.Services.IoT.UPx
                         Tool = { Enable = false }
                     });
 			});
+
+			static string ScanFolder(DirectoryInfo directory, string indentation = "\t", int maxLevel = -1, int deep = 0)
+			{
+				StringBuilder builder = new StringBuilder();
+
+				builder.AppendLine(string.Concat(Enumerable.Repeat(indentation, deep)) + directory.Name);
+
+				if (maxLevel == -1 || deep < maxLevel )
+				{
+					foreach (var subdirectory in directory.GetDirectories())
+						builder.Append(ScanFolder(subdirectory, indentation, maxLevel, deep + 1));
+				}
+
+				foreach (var file in directory.GetFiles())
+					builder.AppendLine(string.Concat(Enumerable.Repeat(indentation, deep + 1)) + file.Name);
+
+				return builder.ToString();
+			}
+
+			Console.WriteLine(ScanFolder(new DirectoryInfo(env.ContentRootPath)));
 		}
 	}
 }

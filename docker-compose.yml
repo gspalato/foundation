@@ -1,18 +1,22 @@
 services:
   # Reverse Proxy
-  #proxy:
-  #  hostname: "proxy"
-  #  build:
-  #    context: ./
-  #    dockerfile: ./Reality.Proxy/Dockerfile
-  #  depends_on:
-  #    - gateway
+  proxy:
+    hostname: "proxy"
+    ports:
+      - "80:80"
+    build:
+      context: ./
+      dockerfile: ./Reality.Proxy/Dockerfile
+    depends_on:
+      - gateway
 
   # Portfolio Front-end
   portfolio:
     hostname: "portfolio"
     ports:
-      - "80:8080"
+      - "8080:8080"
+    expose:
+      - "8080"
     build:
       context: ./
       dockerfile: ./Portfolio/Dockerfile
@@ -24,6 +28,8 @@ services:
     hostname: "gateway"
     ports:
       - "4000:80"
+    expose:
+      - "80"
     build:
       context: ./
       dockerfile: ./Reality.Gateway/Dockerfile
@@ -92,6 +98,21 @@ services:
     depends_on:
       - db
 
+  static_service:
+    hostname: "static"
+    build:
+      context: ./
+      dockerfile: ./Reality.Services.Static/Dockerfile
+    env_file:
+      - .env
+    environment:
+      - DATABASE_NAME=static
+      - Logging__Console__FormatterName=Simple
+    volumes:
+      - static:/etc/reality/static/files
+    depends_on:
+      - db
+
   # Databases
   db:
     hostname: "db"
@@ -103,4 +124,5 @@ services:
       - mongodbdata:/data/db
 
 volumes:
+  static:
   mongodbdata:
