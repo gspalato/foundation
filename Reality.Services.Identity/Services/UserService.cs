@@ -21,17 +21,17 @@ namespace Reality.Services.Identity.Services
         private readonly IDatabaseContext DatabaseContext;
         private readonly IPasswordHasher<string> Hasher;
 
-        private readonly IMongoCollection<RCommonEntities::FullUser> Users;
+        private readonly IMongoCollection<FullUser> Users;
 
         public UserService(IDatabaseContext databaseContext, IPasswordHasher<string> hasher)
         {
             DatabaseContext = databaseContext;
             Hasher = hasher;
 
-            Users = databaseContext.GetCollection<Reality.Common.Entities.FullUser>("users");
+            Users = databaseContext.GetCollection<FullUser>(nameof(Users));
         }
 
-        public async Task<Reality.Common.Entities.FullUser?> CreateUserAsync(string username, string password)
+        public async Task<FullUser?> CreateUserAsync(string username, string password)
         {
             if (await GetUserAsync(username) is not null)
                 return null;
