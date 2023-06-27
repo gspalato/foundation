@@ -4,6 +4,7 @@ using Amazon.Runtime;
 using HotChocolate.AspNetCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
+using Reality.Common.Configurations;
 using Reality.Services.Identity.Repositories;
 using Reality.Services.Identity.Services;
 using Reality.Services.Identity.Types;
@@ -31,7 +32,7 @@ namespace Reality.Services.Identity
         public void ConfigureServices(IServiceCollection services)
         {
             // Configurations
-            var config = new Reality.Services.Identity.Configuration();
+            var config = new BaseConfiguration();
             Configuration.Bind(config);
 
             services.AddSingleton(config);

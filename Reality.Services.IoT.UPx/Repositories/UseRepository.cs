@@ -1,5 +1,4 @@
-﻿using Reality.Common.Repositories;
-using Reality.Common.Entities;
+﻿using Reality.Common.Entities;
 using Amazon.DynamoDBv2;
 using System.Net;
 using System.Text.Json;
@@ -8,19 +7,21 @@ using Amazon.DynamoDBv2.Model;
 
 namespace Reality.Services.IoT.UPx.Repositories
 {
-    public interface IUseRepository : IDynamoRepository
+    public interface IUseRepository 
     {
         Task<bool> CreateUseAsync(Use use);
         Task<List<Use>> GetUsesAsync();
     }
 
-    public class UseRepository : BaseDynamoRepository<Use>, IUseRepository
+    public class UseRepository : IUseRepository
     {
+        private IAmazonDynamoDB Database { get; }
+
         public string TableName { get; } = "reality-upx-refillstation";
 
-        public UseRepository(IAmazonDynamoDB database) : base(database)
+        public UseRepository(IAmazonDynamoDB database)
         {
-
+            Database = database;
         }
 
         public async Task<bool> CreateUseAsync(Use use)

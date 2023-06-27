@@ -5,18 +5,17 @@ using Amazon.DynamoDBv2.DocumentModel;
 using Amazon.DynamoDBv2.Model;
 using Reality.Common.Configurations;
 using Reality.Common.Entities;
-using Reality.Common.Repositories;
 
 namespace Reality.Services.Identity.Repositories
 {
-    public class UserRepository : BaseDynamoRepository<FullUser>, IDynamoRepository
+    public class UserRepository
     {
         public string TableName { get; } = "reality-users";
 
-        private readonly Reality.Services.Identity.Configuration Configuration;
+        private readonly BaseConfiguration Configuration;
         private readonly IAmazonDynamoDB Database;
 
-        public UserRepository(IAmazonDynamoDB database, Reality.Services.Identity.Configuration configuration) : base(database)
+        public UserRepository(IAmazonDynamoDB database, BaseConfiguration configuration)
         {
             Configuration = configuration;
             Database = database;
@@ -39,7 +38,7 @@ namespace Reality.Services.Identity.Repositories
             return response.HttpStatusCode == HttpStatusCode.OK;
         }
 
-        public async Task<FullUser> GetUserAsync(string username)
+        public async Task<FullUser?> GetUserAsync(string username)
         {
             try {
                 var request = Database.QueryAsync(new() {
