@@ -30,7 +30,8 @@ namespace Reality.Services.Identity.Repositories
             var request = Database.PutItemAsync(new PutItemRequest()
             {
                 TableName = TableName,
-                Item = item
+                Item = item,
+                ConditionExpression = "attribute_not_exists(Username)"
             });
 
             var response = await request;
@@ -59,12 +60,11 @@ namespace Reality.Services.Identity.Repositories
                     throw new Exception($"User {username} does not exist.");
 
                 var document = Document.FromAttributeMap(response.Items[0]);
-                var user = JsonSerializer.Deserialize<FullUser>(document.ToJson());
+                if (JsonSerializer.Deserialize<FullUser>(document.ToJson()) is FullUser user)
+                    return user;
 
-                Console.WriteLine($"Got user {user.Username} from database.");
-                Console.WriteLine(document.ToJsonPretty());
+                throw new("Failed to deserialize user.");
 
-                return user;
             } catch (Exception e) {
                 Console.WriteLine(e.Message);
                 Console.WriteLine(e.StackTrace);
@@ -74,18 +74,11 @@ namespace Reality.Services.Identity.Repositories
 
         public async Task<bool> DeleteUserAsync(string username)
         {
-            var request = Database.DeleteItemAsync(new DeleteItemRequest()
-            {
-                TableName = TableName,
-                Key = new Dictionary<string, AttributeValue>()
-                {
-                    { "Username", new AttributeValue(username) }
-                }
-            });
+            var user = await GetUserAsync(username);
+            if (user is null)
+                return false;
 
-            var response = await request;
-
-            return response.HttpStatusCode == HttpStatusCode.OK;
+            return await DeleteUserByIdAsync(user.Id);
         }
 
         public async Task<bool> DeleteUserByIdAsync(string id)
@@ -93,9 +86,9 @@ namespace Reality.Services.Identity.Repositories
             var request = Database.DeleteItemAsync(new DeleteItemRequest()
             {
                 TableName = TableName,
-                Key = new Dictionary<string, AttributeValue>()
+                Key = new ()
                 {
-                    { "Id", new AttributeValue(id) }
+                    { "id", new (id) }
                 }
             });
 

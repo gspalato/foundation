@@ -10,7 +10,7 @@ namespace Reality.Services.IoT.UPx.Repositories
     public interface IUseRepository 
     {
         Task<bool> CreateUseAsync(Use use);
-        Task<List<Use>> GetUsesAsync();
+        Task<List<Use>> GetAllUsesAsync();
     }
 
     public class UseRepository : IUseRepository
@@ -41,7 +41,7 @@ namespace Reality.Services.IoT.UPx.Repositories
             return response.HttpStatusCode == HttpStatusCode.OK;
         }
 
-        public async Task<List<Use>> GetUsesAsync()
+        public async Task<List<Use>> GetAllUsesAsync()
         {
             var request = Database.ScanAsync(new() {
                 TableName = TableName,
@@ -53,7 +53,37 @@ namespace Reality.Services.IoT.UPx.Repositories
             if (response.HttpStatusCode != HttpStatusCode.OK)
                     throw new Exception($"Failed to fetch uses from database.");
 
-            return response.Items.Select(x => JsonSerializer.Deserialize<Use>(Document.FromAttributeMap(x).ToJson())!).ToList();
+
+            List<Use> uses = response.Items.Select(x => JsonSerializer.Deserialize<Use>(Document.FromAttributeMap(x).ToJson())!).ToList();
+            if (response.LastEvaluatedKey.Count > 0)
+            {
+                async Task RecursiveScan()
+                {
+                    var recursiveRequest = Database.ScanAsync(new() {
+                        TableName = TableName,
+                        ScanFilter = new() { },
+                        ExclusiveStartKey = response.LastEvaluatedKey
+                    });
+
+                    var recursiveResponse = await request;
+
+                    if (recursiveResponse.HttpStatusCode != HttpStatusCode.OK)
+                            throw new Exception($"Failed to fetch uses from database.");
+
+                    uses.AddRange(recursiveResponse.Items.Select(x => JsonSerializer.Deserialize<Use>(Document.FromAttributeMap(x).ToJson())!));
+
+                    if (recursiveResponse.LastEvaluatedKey.Count > 0)
+                        await RecursiveScan();
+                    else
+                        return;
+                }
+
+                await RecursiveScan();
+
+                return uses;
+            }
+            
+            return uses;
         }
     }
 }

@@ -83,6 +83,8 @@ Reality is a microservice GraphQL back-end and platform for my projects, allowin
 * [.NET 6](https://dotnet.microsoft.com/)
 * [GraphQL](https://graphql.org)
 * [Docker](https://www.docker.com)
+* [AWS Lightsail](https://aws.amazon.com/lightsail/)
+* [AWS DynamoDB](https://aws.amazon.com/dynamodb/)
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
@@ -111,9 +113,8 @@ To get a local copy up and running:
     ```env
     REALITY_JWT_SECURITY_KEY=insert_your_256_byte_key_here
 
-    DATABASE_URL=mongodb://root:example@db
-    MONGO_INITDB_ROOT_USERNAME=root
-    MONGO_INITDB_ROOT_PASSWORD=example
+    AwsAccessKeyId=your_aws_access_key_id
+    AwsSecretAccessKey=your_aws_secret_access_key
     ```
 
 4. Start it
@@ -124,6 +125,9 @@ To get a local copy up and running:
 <p align="right">(<a href="#top">back to top</a>)</p>
 
 ## Microservices
+### Proxy
+The Proxy is a NGINX instance acting as a reverse proxy to each microservice, as well as a static file server.
+
 ### Gateway
 The Gateway service is responsible for stitching all the other services' GraphQL schemas.
 It's configuration requires all the other services' Docker URLs as an environment variable `SERVICE_URLS`, which should be modified on `docker-compose.yml`.
@@ -131,18 +135,15 @@ It's configuration requires all the other services' Docker URLs as an environmen
 ### Identity
 The Identity service handles authentication and JWT tokens. Other services rely on Identity to allow access to certain data.
 
-### Blog Service
-Handles blog posting and retrieving blog posts for my portfolio website, interacting directly with the database.
-
-### Project Service
-Caches and provides my GitHub project repositories to my portfolio website.
+### Static
+The Static service will handle static file uploads in the future.
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
 <!-- ROADMAP -->
 ## Roadmap
 
-- [ ] Add my portfolio's front-end as a service.
+- [x] Add my portfolio's front-end as a service.
 - [ ] Simplify configuration.
 
 See the [open issues](https://github.com/gspalato/reality/issues) for a full list of proposed features (and known issues).
