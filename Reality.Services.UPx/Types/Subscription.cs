@@ -1,7 +1,7 @@
 using Reality.Common.Entities;
-using Reality.Services.IoT.UPx.Repositories;
+using Reality.Services.UPx.Repositories;
 
-namespace Reality.Services.IoT.UPx.Types
+namespace Reality.Services.UPx.Types
 {
     public class Subscription
     {

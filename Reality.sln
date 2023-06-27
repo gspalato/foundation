@@ -9,7 +9,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Reality.Common", "Reality.C
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Reality.Services.Identity", "Reality.Services.Identity\Reality.Services.Identity.csproj", "{E1056567-7F43-475B-8373-46CE6EE5C8E4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Reality.Services.IoT.UPx", "Reality.Services.IoT.UPx\Reality.Services.IoT.UPx.csproj", "{5D267EB2-521A-408F-8A3C-B2C47DB00A4A}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Reality.Services.UPx", "Reality.Services.UPx\Reality.Services.UPx.csproj", "{5D267EB2-521A-408F-8A3C-B2C47DB00A4A}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Reality.Services.Static", "Reality.Services.Static\Reality.Services.Static.csproj", "{54147037-8807-4171-AC78-4E09D4A5C4BC}"
 EndProject

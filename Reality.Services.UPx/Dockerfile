@@ -7,17 +7,17 @@ EXPOSE 443
 
 FROM mcr.microsoft.com/dotnet/sdk:7.0 AS build
 WORKDIR /src
-COPY ["Reality.Services.IoT.UPx/Reality.Services.IoT.UPx.csproj", "Reality.Services.IoT.UPx/"]
+COPY ["Reality.Services.UPx/Reality.Services.UPx.csproj", "Reality.Services.UPx/"]
 COPY ["Reality.Common/Reality.Common.csproj", "Reality.Common/"]
-RUN dotnet restore "Reality.Services.IoT.UPx/Reality.Services.IoT.UPx.csproj"
+RUN dotnet restore "Reality.Services.UPx/Reality.Services.UPx.csproj"
 COPY . .
-WORKDIR "/src/Reality.Services.IoT.UPx"
-RUN dotnet build "Reality.Services.IoT.UPx.csproj" -c Release -o /app/build
+WORKDIR "/src/Reality.Services.UPx"
+RUN dotnet build "Reality.Services.UPx.csproj" -c Release -o /app/build
 
 FROM build AS publish
-RUN dotnet publish "Reality.Services.IoT.UPx.csproj" -c Release -o /app/publish
+RUN dotnet publish "Reality.Services.UPx.csproj" -c Release -o /app/publish
 
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
-ENTRYPOINT ["dotnet", "Reality.Services.IoT.UPx.dll"]
+ENTRYPOINT ["dotnet", "Reality.Services.UPx.dll"]

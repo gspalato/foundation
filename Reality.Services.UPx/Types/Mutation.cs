@@ -1,9 +1,9 @@
 ﻿using HotChocolate.Subscriptions;
 using Reality.Common.Entities;
 using Reality.Common.Services;
-using Reality.Services.IoT.UPx.Repositories;
+using Reality.Services.UPx.Repositories;
 
-namespace Reality.Services.IoT.UPx.Types
+namespace Reality.Services.UPx.Types
 {
     public class Mutation
     {
@@ -47,7 +47,7 @@ namespace Reality.Services.IoT.UPx.Types
 
             await useRepository.InsertAsync(use);
 
-            await sender.CompleteAsync(nameof(Reality.Services.IoT.UPx.Types.Subscription.OnStationUpdate));
+            await sender.CompleteAsync(nameof(Reality.Services.UPx.Types.Subscription.OnStationUpdate));
 
             return true;
         }
