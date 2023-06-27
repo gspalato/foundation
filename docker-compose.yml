@@ -50,7 +50,7 @@ services:
     env_file:
       - .env
     environment:
-      - DatabaseName=auth
+      - DatabaseName=Identity
     depends_on:
       - db
 
@@ -58,11 +58,11 @@ services:
     hostname: "upx_service"
     build:
       context: ./
-      dockerfile: ./Reality.Services.IoT.UPx/Dockerfile
+      dockerfile: ./Reality.Services.UPx/Dockerfile
     env_file:
       - .env
     environment:
-      - DatabaseName=upx
+      - DatabaseName=UPx
     depends_on:
       - db
 
