@@ -1,11 +1,6 @@
 ﻿using Hangfire;
-using Hangfire.Mongo;
-using Hangfire.Mongo.Migration.Strategies;
-using Hangfire.Mongo.Migration.Strategies.Backup;
 using HotChocolate.AspNetCore;
 using HotChocolate.Stitching;
-using Reality.Common.Configurations;
-using Reality.Common.Data;
 using Reality.Gateway.Configurations;
 using Reality.Gateway.Middleware;
 using System.Reflection;
@@ -32,10 +27,6 @@ namespace Reality.Gateway
             Configuration.Bind(config);
 
             services.AddSingleton(config);
-
-            // Database Repositories
-            var databaseContext = new DatabaseContext(config);
-            services.AddSingleton(_ => databaseContext);
 
             GlobalConfiguration.Configuration.UseColouredConsoleLogProvider();
 

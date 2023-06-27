@@ -4,8 +4,6 @@ using Amazon.Runtime;
 using HotChocolate.AspNetCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
-using Reality.Common.Configurations;
-using Reality.Common.Data;
 using Reality.Services.Identity.Repositories;
 using Reality.Services.Identity.Services;
 using Reality.Services.Identity.Types;

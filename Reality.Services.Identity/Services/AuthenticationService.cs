@@ -1,11 +1,8 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
 using MongoDB.Driver;
-using Reality.Common;
-using Reality.Common.Data;
 using Reality.Common.Entities;
 using Reality.Common.Payloads;
-using Reality.Common.Roles;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;

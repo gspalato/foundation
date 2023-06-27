@@ -1,14 +1,8 @@
 ﻿using Amazon.DynamoDBv2;
 using Amazon.DynamoDBv2.DataModel;
 using Amazon.Runtime;
-using Hangfire;
-using Hangfire.Mongo;
-using Hangfire.Mongo.Migration.Strategies;
-using Hangfire.Mongo.Migration.Strategies.Backup;
 using HotChocolate.AspNetCore;
-using HotChocolate.Subscriptions;
 using Reality.Common.Configurations;
-using Reality.Common.Data;
 using Reality.Common.Entities;
 using Reality.Common.Services;
 using Reality.Services.IoT.UPx.Repositories;

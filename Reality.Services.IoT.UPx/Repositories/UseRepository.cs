@@ -1,8 +1,6 @@
-﻿using Reality.Common.Data;
-using Reality.Common.Repositories;
+﻿using Reality.Common.Repositories;
 using Reality.Common.Entities;
 using Amazon.DynamoDBv2;
-using Amazon.DynamoDBv2.DataModel;
 using System.Net;
 using System.Text.Json;
 using Amazon.DynamoDBv2.DocumentModel;

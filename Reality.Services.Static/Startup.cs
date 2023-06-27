@@ -1,7 +1,6 @@
 using HotChocolate.AspNetCore;
 using HotChocolate.Subscriptions;
 using Reality.Common.Configurations;
-using Reality.Common.Data;
 using Reality.Common.Entities;
 using Reality.Common.Services;
 using Reality.Services.Static.Types;
@@ -32,12 +31,6 @@ namespace Reality.Services.Static
 			Configuration.Bind(config);
 
 			services.AddSingleton(config);
-
-			// Database Repositories
-            /*
-			var databaseContext = new DatabaseContext(config);
-			services.AddSingleton<IDatabaseContext, DatabaseContext>(_ => databaseContext);
-            */
 
 			// GraphQL
 			services

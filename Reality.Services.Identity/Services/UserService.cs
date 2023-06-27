@@ -1,8 +1,4 @@
-﻿using Amazon.DynamoDBv2.DataModel;
-using Microsoft.AspNetCore.Identity;
-using MongoDB.Driver;
-using Reality.Common;
-using Reality.Common.Data;
+﻿using Microsoft.AspNetCore.Identity;
 using Reality.Common.Entities;
 using Reality.Common.Roles;
 using Reality.Services.Identity.Repositories;
