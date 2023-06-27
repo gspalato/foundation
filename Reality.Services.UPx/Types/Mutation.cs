@@ -1,4 +1,5 @@
-﻿using HotChocolate.Subscriptions;
+﻿using HotChocolate;
+using HotChocolate.Subscriptions;
 using Reality.Common.Entities;
 using Reality.Common.Services;
 using Reality.Services.UPx.Repositories;

@@ -1,3 +1,5 @@
+using HotChocolate;
+using HotChocolate.Types;
 using Reality.Common.Entities;
 using Reality.Services.UPx.Repositories;
 
