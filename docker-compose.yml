@@ -87,6 +87,8 @@ services:
     restart: always
     expose:
       - "27017"
+    ports:
+      - "27017:27017"
     env_file:
       - .env
     volumes:
