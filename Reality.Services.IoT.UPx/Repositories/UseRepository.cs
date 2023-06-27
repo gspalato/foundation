@@ -11,7 +11,7 @@ namespace Reality.Services.IoT.UPx.Repositories
 
     public class UseRepository : BaseRepository<Use>, IUseRepository
     {
-        public UseRepository(IDatabaseContext dataContext) : base(dataContext)
+        public UseRepository(IDatabaseContext context) : base(context)
         {
 
         }

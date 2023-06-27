@@ -10,8 +10,6 @@
 
   <ItemGroup>
     <PackageReference Include="dotenv.net" Version="3.1.1" />
-    <PackageReference Include="Hangfire" Version="1.8.0-beta4" />
-    <PackageReference Include="Hangfire.Mongo" Version="0.7.28" />
     <PackageReference Include="HotChocolate" Version="13.0.0-preview.8" />
     <PackageReference Include="HotChocolate.AspNetCore" Version="13.0.0-preview.8" />
     <PackageReference Include="HotChocolate.AspNetCore.Subscriptions" Version="10.5.5" />

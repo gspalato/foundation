@@ -9,8 +9,6 @@
 	<ItemGroup>
 		<PackageReference Include="GraphQL.Client" Version="4.0.2" />
 		<PackageReference Include="GraphQL.Client.Serializer.Newtonsoft" Version="6.0.0" />
-		<PackageReference Include="Hangfire" Version="1.8.0-beta4" />
-		<PackageReference Include="Hangfire.Mongo" Version="0.7.28" />
 		<PackageReference Include="HotChocolate" Version="13.0.0-preview.8" />
 		<PackageReference Include="HotChocolate.AspNetCore" Version="13.0.0-preview.8" />
 		<PackageReference Include="HotChocolate.Data.MongoDb" Version="13.0.0-preview.8" />

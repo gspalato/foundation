@@ -16,8 +16,17 @@ namespace Reality.Common.Data
 
         public DatabaseContext(BaseConfiguration config)
         {
-            Client = new MongoClient(new MongoUrl(config.Database_Url));
-            Database = Client.GetDatabase(config.Database_Name);
+            Client = new MongoClient(new MongoClientSettings()
+            {
+                Credential = MongoCredential.CreateCredential(
+                    config.DatabaseName,
+                    config.DatabaseUser,
+                    config.DatabasePassword
+                ),
+                Server = new MongoServerAddress(config.DatabaseHost),
+
+            });
+            Database = Client.GetDatabase(config.DatabaseName);
         }
 
         public MongoClient GetClient()

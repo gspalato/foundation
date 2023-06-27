@@ -2,7 +2,9 @@
 {
     public class BaseConfiguration
     {
-        public string Database_Url { get; set; } = default!;
-        public string Database_Name { get; set; } = default!;
+        public string DatabaseHost { get; set; } = default!;
+        public string DatabaseName { get; set; } = default!;
+        public string DatabaseUser { get; set; } = default!;
+        public string DatabasePassword { get; set; } = default!;
     }
 }

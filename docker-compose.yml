@@ -36,13 +36,9 @@ services:
     env_file:
       - .env
     environment:
-      - DATABASE_NAME=portfolio
       - SERVICE_URLS=http://identity_service,http://upx_service
-      - Logging__Console__FormatterName=Simple
     depends_on:
       - identity_service
-      #- blog_service
-      #- project_service
       - upx_service
 
   # Reality API Microservices
@@ -54,36 +50,9 @@ services:
     env_file:
       - .env
     environment:
-      - DATABASE_NAME=auth
-      - Logging__Console__FormatterName=Simple
+      - DatabaseName=auth
     depends_on:
       - db
-
-  #blog_service:
-  #  hostname: "blog_service"
-  #  build:
-  #    context: ./
-  #    dockerfile: ./Reality.Services.Portfolio.BlogService/Dockerfile
-  #  env_file:
-  #    - .env
-  #  environment:
-  #    - DATABASE_NAME=portfolio
-  #    - Logging__Console__FormatterName=Simple
-  #  depends_on:
-  #    - db
-
-  #project_service:
-  #  hostname: "project_service"
-  #  build:
-  #    context: ./
-  #    dockerfile: ./Reality.Services.Portfolio.ProjectService/Dockerfile
-  #  env_file:
-  #    - .env
-  #  environment:
-  #    - DATABASE_NAME=portfolio
-  #    - Logging__Console__FormatterName=Simple
-  #  depends_on:
-  #    - db
 
   upx_service:
     hostname: "upx_service"
@@ -93,8 +62,7 @@ services:
     env_file:
       - .env
     environment:
-      - DATABASE_NAME=upx
-      - Logging__Console__FormatterName=Simple
+      - DatabaseName=upx
     depends_on:
       - db
 
@@ -106,8 +74,7 @@ services:
     env_file:
       - .env
     environment:
-      - DATABASE_NAME=static
-      - Logging__Console__FormatterName=Simple
+      - DatabaseName=static
     volumes:
       - static:/etc/reality/static/files
     depends_on:
@@ -118,6 +85,8 @@ services:
     hostname: "db"
     image: mongo
     restart: always
+    expose:
+      - "27017"
     env_file:
       - .env
     volumes:

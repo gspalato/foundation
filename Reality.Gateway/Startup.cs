@@ -33,12 +33,9 @@ namespace Reality.Gateway
 
             services.AddSingleton(config);
 
-            // Database Repositories
-            var databaseContext = new DatabaseContext(config);
-            services.AddSingleton(_ => databaseContext);
-
             GlobalConfiguration.Configuration.UseColouredConsoleLogProvider();
 
+            // GraphQL HTTP Schema Stitching
             List<string> registeredHttpClients = new();
             foreach (var url in config.Service_Urls.Split(","))
             {
