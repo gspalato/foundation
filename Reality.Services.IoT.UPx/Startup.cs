@@ -1,8 +1,4 @@
-﻿using Hangfire;
-using Hangfire.Mongo;
-using Hangfire.Mongo.Migration.Strategies;
-using Hangfire.Mongo.Migration.Strategies.Backup;
-using HotChocolate.AspNetCore;
+﻿using HotChocolate.AspNetCore;
 using HotChocolate.Subscriptions;
 using Reality.Common.Configurations;
 using Reality.Common.Data;
