@@ -24,7 +24,7 @@ namespace Reality.Services.UPx.Types
                 return new Resume()
                 {
                     Date = _.Key,
-                    TotalCount = _.Count(),
+                    TotalUses = _.Count(),
                     TotalDuration = _.Sum(_ => _.Duration),
                     EconomizedPlastic = _.Sum(_ => _.EconomizedPlastic),
                     DistributedWater = _.Sum(_ => _.DistributedWater),
@@ -42,7 +42,7 @@ namespace Reality.Services.UPx.Types
             return new Resume()
             {
                 Date = "Total",
-                TotalCount = uses.Count(),
+                TotalUses = uses.Count(),
                 TotalDuration = uses.Sum(_ => _.Duration),
                 EconomizedPlastic = uses.Sum(_ => _.EconomizedPlastic),
                 DistributedWater = uses.Sum(_ => _.DistributedWater),
