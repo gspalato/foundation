@@ -69,8 +69,6 @@ namespace Reality.Services.Identity.Services
                 new Claim("user", JsonSerializer.Serialize(user))
             };
 
-            claims = claims.Concat(user.Roles.Select(role => new Claim("role", role.ToString("d")))).ToList();
-
             var signingCredentials = new SigningCredentials(JwtSecurityKey, SecurityAlgorithms.HmacSha256);
 
             var token = new JwtSecurityToken(

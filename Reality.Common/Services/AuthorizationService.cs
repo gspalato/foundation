@@ -1,8 +1,8 @@
 ﻿using Microsoft.IdentityModel.Tokens;
+using Reality.Common.Entities;
 using Reality.Common.Roles;
 using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using System.Text;
+using System.Text.Json;
 
 namespace Reality.Common.Services
 {
@@ -41,14 +41,27 @@ namespace Reality.Common.Services
             return result;
         }
 
+        public User? ExtractUser(TokenValidationResult validationResult)
+        {
+            var json = validationResult.Claims.First(x => x.Key == "user").Value;
+            
+            User? user;
+            try
+            {
+                user = JsonSerializer.Deserialize<User>((string)json);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+                return null;
+            }
+            
+            return user;
+        }
+
         public List<Role> ExtractRoles(TokenValidationResult validationResult)
         {
-            return validationResult.Claims.Where(x => x.Key == "role").Select(x => {
-                int enumValue = Int32.Parse((string)x.Value);
-                Role role = (Role)enumValue;
-
-                return role;
-            }).ToList();
+            return (ExtractUser(validationResult) ?? new()).Roles.ToList();
         }
     }
 }
