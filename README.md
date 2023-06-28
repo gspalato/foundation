@@ -136,7 +136,7 @@ Handles authentication and JWT tokens. Other services rely on Identity to allow 
 A NGINX instance acting as reverse proxy for the microservices and as a static file server.
 
 ### Static
-_Will_, in the future, handles static file uploads and manipulation.
+Will handle static file uploads and manipulation, as well as operations such as profile picture fetching.
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
