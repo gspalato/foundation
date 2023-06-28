@@ -13,7 +13,7 @@
   <br />
 
   <a href="https://github.com/gspalato/reality">
-    <img src="https://i.ibb.co/Cbp4Cpp/Reality-Logo-Round-Reduced.png" alt="Logo" width="150" height="150">
+    <img src="https://i.ibb.co/4pjjF5x/Reality-Logo-Round-Reduced-1.png" alt="Logo" width="150" height="150">
   </a>
 
 <h3 align="center"><b>Reality</b></h3>
@@ -56,8 +56,8 @@
       <ul>
         <li><a href="#gateway">Gateway</a></li>
         <li><a href="#identity">Identity</a></li>
-        <li><a href="#identity">Blog Service</a></li>
-        <li><a href="#identity">Project Service</a></li>
+        <li><a href="#proxy">Proxy</a></li>
+        <li><a href="#static">Static</a></li>
       </ul>
     </li>
     <li><a href="#roadmap">Roadmap</a></li>
@@ -111,9 +111,10 @@ To get a local copy up and running:
     ```env
     REALITY_JWT_SECURITY_KEY=insert_your_256_byte_key_here
 
-    DATABASE_URL=mongodb://root:example@db
-    MONGO_INITDB_ROOT_USERNAME=root
-    MONGO_INITDB_ROOT_PASSWORD=example
+    DatabaseHost=127.0.0.1
+    DatabaseUser=example
+    DatabasePassword=example
+    DatabaseName=example
     ```
 
 4. Start it
@@ -125,17 +126,17 @@ To get a local copy up and running:
 
 ## Microservices
 ### Gateway
-The Gateway service is responsible for stitching all the other services' GraphQL schemas.
+Is responsible for stitching all the other services' GraphQL schemas.
 It's configuration requires all the other services' Docker URLs as an environment variable `SERVICE_URLS`, which should be modified on `docker-compose.yml`.
 
 ### Identity
-The Identity service handles authentication and JWT tokens. Other services rely on Identity to allow access to certain data.
+Handles authentication and JWT tokens. Other services rely on Identity to allow access to certain data.
 
-### Blog Service
-Handles blog posting and retrieving blog posts for my portfolio website, interacting directly with the database.
+### Proxy
+A NGINX instance acting as reverse proxy for the microservices and as a static file server.
 
-### Project Service
-Caches and provides my GitHub project repositories to my portfolio website.
+### Static
+_Will_, in the future, handles static file uploads and manipulation.
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
