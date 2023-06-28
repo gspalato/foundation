@@ -11,7 +11,6 @@ namespace Reality.Services.Identity.Types
 {
     public class Mutation
     {
-        [Authorize(Roles = new[] { "0" })]
         public async Task<Reality.Common.Entities.FullUser?> CreateUserAsync(string username, string password, string token,
             [Service] IAuthorizationService authorizationService, [Service] IUserService userService)
         {
