@@ -28,6 +28,7 @@ namespace Reality.Services.UPx.Types
 
             try
             {
+                Console.WriteLine("Roles: " + String.Join(", ", roles));
                 allowed = roles.Any(r => r <= 2);
             }
             catch(Exception e)
