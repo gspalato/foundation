@@ -12,18 +12,20 @@ namespace Reality.Services.UPx.Types
         {
             var uses = await useRepository.GetAllAsync();
 
-            string GetDateString(int timestamp)
+            long GetDayTimestamp(int timestamp)
             {
-                return new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc).AddSeconds(timestamp).Date.ToShortDateString();
+                var date = new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified).AddSeconds(timestamp).Date;
+                var offset = new DateTimeOffset(date);
+                return offset.ToUnixTimeSeconds();
             }
 
             // Group by
-            var perDateGroup = uses.GroupBy(_ => GetDateString(_.StartTimestamp));
+            var perDateGroup = uses.GroupBy(_ => GetDayTimestamp(_.StartTimestamp));
             
             var list = perDateGroup.Select(_ => {
                 return new Resume()
                 {
-                    Date = _.Key,
+                    Timestamp = _.Key,
                     TotalUses = _.Count(),
                     TotalDuration = _.Sum(_ => _.Duration),
                     EconomizedPlastic = _.Sum(_ => _.EconomizedPlastic),
@@ -41,7 +43,6 @@ namespace Reality.Services.UPx.Types
 
             return new Resume()
             {
-                Date = "Total",
                 TotalUses = uses.Count(),
                 TotalDuration = uses.Sum(_ => _.Duration),
                 EconomizedPlastic = uses.Sum(_ => _.EconomizedPlastic),
