@@ -21,6 +21,11 @@ namespace Reality.Common.Services
             TokenHandler = tokenHandler;
         }
 
+        /// <summary>
+        /// Checks if a token is valid.
+        /// </summary>
+        /// <param name="jwt">The JSON Web Token string.</param>
+        /// <returns>A TokenValidationResult object.</returns>
         public async Task<TokenValidationResult> CheckAuthorizationAsync(string jwt)
         {
             TokenValidationResult result;
@@ -41,6 +46,11 @@ namespace Reality.Common.Services
             return result;
         }
 
+        /// <summary>
+        /// Extracts an User object from a TokenValidationResult.
+        /// </summary>
+        /// <param name="validationResult">The TokenValidationResult</param>
+        /// <returns>An User object.</returns>
         public User? ExtractUser(TokenValidationResult validationResult)
         {
             var json = validationResult.Claims.First(x => x.Key == "user").Value;
@@ -59,6 +69,11 @@ namespace Reality.Common.Services
             return user;
         }
 
+        /// <summary>
+        /// Extracts a list of Roles from a <c>TokenValidationResult</c>.
+        /// </summary>
+        /// <param name="validationResult">The TokenValidationResult</param>
+        /// <returns>A Role list.</returns>
         public List<Role> ExtractRoles(TokenValidationResult validationResult)
         {
             return (ExtractUser(validationResult) ?? new()).Roles.ToList();
