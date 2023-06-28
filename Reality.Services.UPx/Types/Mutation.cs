@@ -20,6 +20,8 @@ namespace Reality.Services.UPx.Types
             var roles = authorizationService.ExtractRoles(result).Select(r => (int)r);
             bool allowed;
 
+            Console.WriteLine("Claims: " + String.Join(", ", result.Claims.Select(c => c.Key + ": " + c.Value)));
+
             if (!result.IsValid)
             {
                 Console.WriteLine("Invalid token.");

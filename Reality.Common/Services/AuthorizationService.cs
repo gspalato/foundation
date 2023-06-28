@@ -43,7 +43,7 @@ namespace Reality.Common.Services
 
         public List<Role> ExtractRoles(TokenValidationResult validationResult)
         {
-            return validationResult.Claims.Where(x => x.Key is "role").Select(x => {
+            return validationResult.Claims.Where(x => x.Key == "role").Select(x => {
                 int enumValue = Int32.Parse((string)x.Value);
                 Role role = (Role)enumValue;
 
