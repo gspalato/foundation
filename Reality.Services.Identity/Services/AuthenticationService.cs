@@ -2,12 +2,14 @@
 using Microsoft.IdentityModel.Tokens;
 using MongoDB.Driver;
 using Reality.Common;
+using Reality.Common.Configurations;
 using Reality.Common.Data;
 using Reality.Common.Entities;
 using Reality.Common.Payloads;
 using Reality.Common.Roles;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
+using System.Security.Cryptography;
 using System.Text;
 using System.Text.Json;
 
@@ -31,13 +33,7 @@ namespace Reality.Services.Identity.Services
         {
             Hasher = hasher;
             UserService = userService;
-
-            JwtSecurityKey = new SymmetricSecurityKey(
-                Encoding.UTF8.GetBytes(
-                    Environment.GetEnvironmentVariable("REALITY_JWT_SECURITY_KEY")!
-                )
-            );
-
+            JwtSecurityKey = TokenConfiguration.SecurityKey;
             JwtTokenHandler = jwtTokenHandler;
         }
 
