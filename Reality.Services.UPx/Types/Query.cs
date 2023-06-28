@@ -1,6 +1,4 @@
-﻿using System.Globalization;
-using HotChocolate;
-using Reality.Common.Entities;
+﻿using Reality.Common.Entities;
 using Reality.Services.UPx.Repositories;
 
 namespace Reality.Services.UPx.Types
@@ -26,6 +24,7 @@ namespace Reality.Services.UPx.Types
                 return new Resume()
                 {
                     Date = _.Key,
+                    TotalCount = _.Count(),
                     TotalDuration = _.Sum(_ => _.Duration),
                     EconomizedPlastic = _.Sum(_ => _.EconomizedPlastic),
                     DistributedWater = _.Sum(_ => _.DistributedWater),
@@ -43,6 +42,7 @@ namespace Reality.Services.UPx.Types
             return new Resume()
             {
                 Date = "Total",
+                TotalCount = uses.Count(),
                 TotalDuration = uses.Sum(_ => _.Duration),
                 EconomizedPlastic = uses.Sum(_ => _.EconomizedPlastic),
                 DistributedWater = uses.Sum(_ => _.DistributedWater),
