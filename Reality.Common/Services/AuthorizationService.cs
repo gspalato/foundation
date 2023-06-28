@@ -23,10 +23,20 @@ namespace Reality.Common.Services
 
         public async Task<TokenValidationResult> CheckAuthorizationAsync(string jwt)
         {
-            var result = await TokenHandler.ValidateTokenAsync(jwt, Reality.Common.Configurations.TokenConfiguration.ValidationParameters);
-
-            if (result.Exception != null)
-                Console.WriteLine(result.Exception.Message);
+            TokenValidationResult result;
+            try
+            {
+                result = await TokenHandler.ValidateTokenAsync(jwt, Reality.Common.Configurations.TokenConfiguration.ValidationParameters);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+                return new TokenValidationResult()
+                {
+                    Exception = e,
+                    IsValid = false
+                };
+            }
 
             return result;
         }
