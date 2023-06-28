@@ -70,11 +70,10 @@ namespace Reality.Services.Identity.Services
         {
             var claims = new List<Claim>
             {
-                new Claim("Username", user.Username),
-                new Claim("User", JsonSerializer.Serialize(user))
+                new Claim("user", JsonSerializer.Serialize(user))
             };
 
-            claims = claims.Concat(user.Roles.Select(role => new Claim("Role", role.ToString("d")))).ToList();
+            claims = claims.Concat(user.Roles.Select(role => new Claim("role", role.ToString("d")))).ToList();
 
             var signingCredentials = new SigningCredentials(JwtSecurityKey, SecurityAlgorithms.HmacSha256);
 
