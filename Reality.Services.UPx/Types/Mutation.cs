@@ -21,7 +21,10 @@ namespace Reality.Services.UPx.Types
             bool allowed;
 
             if (!result.IsValid)
+            {
+                Console.WriteLine("Invalid token.");
                 return false;
+            }
 
             try
             {
@@ -35,7 +38,10 @@ namespace Reality.Services.UPx.Types
 
             // Check if role is Project or above.
             if (!allowed)
+            {
+                Console.WriteLine("Unauthorized.");
                 return false;
+            }
 
             Use use = new() {
                 StartTimestamp = startTimestamp,
