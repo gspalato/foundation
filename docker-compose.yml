@@ -20,6 +20,8 @@ services:
     build:
       context: ./
       dockerfile: ./Portfolio/Dockerfile
+    env_file:
+      - .portfolio.env
     depends_on:
       - gateway
 
