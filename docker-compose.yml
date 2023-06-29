@@ -20,6 +20,8 @@ services:
     build:
       context: ./
       dockerfile: ./Portfolio/Dockerfile
+    environment:
+      - VITE_GatewayUrl=http://gateway/gql
     depends_on:
       - gateway
 
