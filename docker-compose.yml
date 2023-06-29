@@ -20,8 +20,6 @@ services:
     build:
       context: ./
       dockerfile: ./Portfolio/Dockerfile
-    env_file:
-      - .portfolio.env
     depends_on:
       - gateway
 
@@ -36,7 +34,7 @@ services:
       context: ./
       dockerfile: ./Reality.Gateway/Dockerfile
     env_file:
-      - .reality.env
+      - .env
     environment:
       - SERVICE_URLS=http://identity_service,http://upx_service
     depends_on:
@@ -50,7 +48,7 @@ services:
       context: ./
       dockerfile: ./Reality.Services.Identity/Dockerfile
     env_file:
-      - .reality.env
+      - .env
     environment:
       - DatabaseName=Identity
     depends_on:
@@ -62,7 +60,7 @@ services:
       context: ./
       dockerfile: ./Reality.Services.UPx/Dockerfile
     env_file:
-      - .reality.env
+      - .env
     environment:
       - DatabaseName=UPx
     depends_on:
@@ -74,7 +72,7 @@ services:
       context: ./
       dockerfile: ./Reality.Services.Static/Dockerfile
     env_file:
-      - .reality.env
+      - .env
     environment:
       - DatabaseName=Static
     volumes:
