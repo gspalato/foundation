@@ -1,6 +1,7 @@
 ﻿using HotChocolate.AspNetCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
+using NLog.Extensions.Logging;
 using Reality.Common.Configurations;
 using Reality.Common.Data;
 using Reality.Common.Services;
@@ -27,6 +28,14 @@ namespace Reality.Services.Identity
 
         public void ConfigureServices(IServiceCollection services)
         {
+            // Logging
+            services.AddLogging(loggingBuilder =>
+            {
+                loggingBuilder.ClearProviders();
+                loggingBuilder.SetMinimumLevel(Microsoft.Extensions.Logging.LogLevel.Trace);
+                loggingBuilder.AddNLog(new Reality.Common.Configurations.LoggingConfiguration());
+            });
+
             // Configurations
             var config = new BaseConfiguration();
             Configuration.Bind(config);

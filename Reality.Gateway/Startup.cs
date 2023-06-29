@@ -1,5 +1,6 @@
 ﻿using HotChocolate.AspNetCore;
 using HotChocolate.Stitching;
+using NLog.Extensions.Logging;
 using Reality.Gateway.Configurations;
 using Reality.Gateway.Middleware;
 using System.Reflection;
@@ -22,6 +23,15 @@ namespace Reality.Gateway
 
         public void ConfigureServices(IServiceCollection services)
         {
+            // Logging
+            services.AddLogging(loggingBuilder =>
+            {
+                loggingBuilder.ClearProviders();
+                loggingBuilder.SetMinimumLevel(Microsoft.Extensions.Logging.LogLevel.Trace);
+                loggingBuilder.AddNLog(new Reality.Common.Configurations.LoggingConfiguration());
+            });
+
+            // Configurations
             var config = new GatewayConfiguration();
             Configuration.Bind(config);
 
@@ -78,7 +88,8 @@ namespace Reality.Gateway
 
             app.UseRouting();
 
-            app.UseCors(options => {
+            app.UseCors(options =>
+            {
                 options
                     .AllowAnyOrigin()
                     .AllowAnyMethod()
@@ -93,7 +104,7 @@ namespace Reality.Gateway
                     {
                         Tool = { Enable = false }
                     });
-                
+
                 endpoints
                     .MapBananaCakePop("/ui");
             });
