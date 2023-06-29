@@ -6,7 +6,6 @@
   <img src="https://img.shields.io/github/contributors/gspalato/reality?style=for-the-badge">
 </div>
 
-
 <!-- PROJECT LOGO -->
 <br />
 <div align="center">
@@ -31,8 +30,6 @@
     <a href="https://github.com/gspalato/reality/issues">Request Feature</a>
   </p>
 </div>
-
-
 
 <!-- TABLE OF CONTENTS -->
 <details>
@@ -67,80 +64,90 @@
   </ol>
 </details>
 
-
-
 <!-- ABOUT THE PROJECT -->
+
 ## About The Project
 
 Reality is a microservice GraphQL back-end and platform for my projects, allowing easy deployments with an authentication server and database.
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
-
-
 ### Built With
 
-* [.NET 6](https://dotnet.microsoft.com/)
-* [GraphQL](https://graphql.org)
-* [Docker](https://www.docker.com)
+- [.NET 6](https://dotnet.microsoft.com/)
+- [GraphQL](https://graphql.org)
+- [Docker](https://www.docker.com)
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
-
-
 <!-- GETTING STARTED -->
+
 ## Getting Started
+
 ### Prerequisites
 
-* Docker
-* .NET 6
+- Docker
+- .NET 6
 
 ### Installation
 
 To get a local copy up and running:
 
 1. Clone the repo
-    ```sh
-    git clone https://github.com/gspalato/reality.git
-    ```
+   ```sh
+   git clone https://github.com/gspalato/reality.git
+   ```
 2. Build docker image
-    ```sh
-    docker compose build
-    ```
-3. Configure environment variables in a `.env` file:
-    ```env
-    REALITY_JWT_SECURITY_KEY=insert_your_256_byte_key_here
+   ```sh
+   docker compose build
+   ```
+3. Configure environment variables in a `.reality.env` file:
 
-    DatabaseHost=127.0.0.1
-    DatabaseUser=example
-    DatabasePassword=example
-    DatabaseName=example
-    ```
+   ```env
+   REALITY_JWT_SECURITY_KEY=insert_your_256_byte_key_here
 
-4. Start it
-    ```sh
-    docker compose up -d
-    ```
+   DatabaseHost=127.0.0.1
+   DatabaseUser=example
+   DatabasePassword=example
+   DatabaseName=example
+   ```
+
+4. Configure environment variables in a `.portfolio.env` file:
+
+   ```env
+   GatewayUrl=1.2.3.4
+   ```
+
+5. Start it
+   ```sh
+   docker compose up -d
+   ```
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
 ## Microservices
+
 ### Gateway
+
 Is responsible for stitching all the other services' GraphQL schemas.
 It's configuration requires all the other services' Docker URLs as an environment variable `SERVICE_URLS`, which should be modified on `docker-compose.yml`.
 
 ### Identity
+
 Handles authentication and JWT tokens. Other services rely on Identity to allow access to certain data.
 
 ### Proxy
+
 A NGINX instance acting as reverse proxy for the microservices and as a static file server.
 
 ### Static
+
 Will handle static file uploads and manipulation, as well as operations such as profile picture fetching.
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
 <!-- ROADMAP -->
+
 ## Roadmap
 
 - [ ] Add my portfolio's front-end as a service.
@@ -150,9 +157,8 @@ See the [open issues](https://github.com/gspalato/reality/issues) for a full lis
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
-
-
 <!-- CONTRIBUTING -->
+
 ## Contributing
 
 Contributions are what make the open source community such an amazing place to learn, inspire, and create. Any contributions you make are **greatly appreciated**.
@@ -168,18 +174,16 @@ Don't forget to give the project a star! Thanks again!
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
-
-
 <!-- LICENSE -->
+
 ## License
 
 Distributed under the MIT License. See `LICENSE.txt` for more information.
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
-
-
 <!-- CONTACT -->
+
 ## Contact
 
 Gabriel Spalato Marques - [@gspalato](https://twitter.com/gspalato) - unreaalism@gmail.com
@@ -188,10 +192,9 @@ Project Link: [https://github.com/gspalato/reality](https://github.com/gspalato/
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
-
-
 <!-- MARKDOWN LINKS & IMAGES -->
 <!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
+
 [contributors-shield]: https://img.shields.io/github/contributors/gspalato/reality.svg?style=for-the-badge
 [contributors-url]: https://github.com/gspalato/reality/graphs/contributors
 [forks-shield]: https://img.shields.io/github/forks/gspalato/reality.svg?style=for-the-badge
