@@ -12,7 +12,11 @@ namespace Reality.Services.Identity.Services
     public interface IUserService
     {
         Task<FullUser?> GetUserAsync(string username);
+
+        Task<FullUser?> GetUserByIdAsync(string id);
+        
         Task<FullUser?> CreateUserAsync(string username, string password);
+        
         Task DeleteUserAsync(string username);
     }
 
@@ -59,6 +63,12 @@ namespace Reality.Services.Identity.Services
         public async Task<Reality.Common.Entities.FullUser?> GetUserAsync(string username)
         {
             var filter = Builders<Reality.Common.Entities.FullUser>.Filter.Where(x => x.Username == username);
+            return await Users.Find(filter).FirstOrDefaultAsync();
+        }
+
+        public async Task<Reality.Common.Entities.FullUser?> GetUserByIdAsync(string id)
+        {
+            var filter = Builders<Reality.Common.Entities.FullUser>.Filter.Where(x => x.Id == id);
             return await Users.Find(filter).FirstOrDefaultAsync();
         }
     }
