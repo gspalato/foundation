@@ -66,6 +66,7 @@ namespace Reality.Services.Identity.Services
         {
             var claims = new List<Claim>
             {
+                new Claim("id", user.Id.ToString()),
                 new Claim("user", JsonSerializer.Serialize(user))
             };
 
@@ -75,8 +76,9 @@ namespace Reality.Services.Identity.Services
                 "realityapibyunreaalism",
                 "unreaalism",
                 claims,
-                expires: DateTime.Now.AddDays(90),
-                signingCredentials: signingCredentials);
+                expires: DateTime.Now.AddHours(1),
+                signingCredentials: signingCredentials
+            );
 
             return JwtTokenHandler.WriteToken(token);
         }
