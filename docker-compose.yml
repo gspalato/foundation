@@ -36,10 +36,11 @@ services:
     env_file:
       - .env
     environment:
-      - SERVICE_URLS=http://identity_service,http://upx_service
+      - SERVICE_URLS=http://identity_service,http://upx_service,http://portfolio_service
     depends_on:
       - identity_service
       - upx_service
+      - portfolio_service
 
   # Reality API Microservices
   identity_service:
@@ -81,7 +82,7 @@ services:
       - db
 
   portfolio_service:
-    hostname: "portfolio_service"
+    hostname: "portfolio"
     build:
       context: ./
       dockerfile: ./Reality.Services.Portfolio/Dockerfile
