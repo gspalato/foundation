@@ -7,13 +7,10 @@ EXPOSE 443
 
 FROM mcr.microsoft.com/dotnet/sdk:7.0 AS build
 WORKDIR /src
-COPY ["Reality.Services.Identity/Reality.Services.Identity.csproj", "Reality.Services.Identity/"]
-COPY ["Reality.Common/Reality.Common.csproj", "Reality.Common/"]
-RUN dotnet restore "Reality.Services.Identity/Reality.Services.Identity.csproj"
-COPY . .
+ADD Reality.Common/ Reality.Common/
+ADD Reality.Services.Identity/ Reality.Services.Identity/
 
-FROM build AS publish
-WORKDIR "/src/Reality.Services.Identity"
+WORKDIR /src/Reality.Services.Identity
 RUN dotnet publish "Reality.Services.Identity.csproj" -c Release -o /app/publish
 
 FROM base AS final

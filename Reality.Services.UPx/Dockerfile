@@ -7,13 +7,10 @@ EXPOSE 443
 
 FROM mcr.microsoft.com/dotnet/sdk:7.0 AS build
 WORKDIR /src
-COPY ["Reality.Services.UPx/Reality.Services.UPx.csproj", "Reality.Services.UPx/"]
-COPY ["Reality.Common/Reality.Common.csproj", "Reality.Common/"]
-RUN dotnet restore "Reality.Services.UPx/Reality.Services.UPx.csproj"
-COPY . .
+ADD Reality.Common/ Reality.Common/
+ADD Reality.Services.UPx/ Reality.Services.UPx/
 
-FROM build AS publish
-WORKDIR "/src/Reality.Services.UPx"
+WORKDIR /src/Reality.Services.UPx
 RUN dotnet publish "Reality.Services.UPx.csproj" -c Release -o /app/publish
 
 FROM base AS final
