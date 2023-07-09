@@ -7,16 +7,13 @@ EXPOSE 443
 
 FROM mcr.microsoft.com/dotnet/sdk:7.0 AS build
 WORKDIR /src
-COPY ["Reality.Services.Portfolio/Reality.Services.Portfolio.csproj", "Reality.Services.Portfolio/"]
-COPY ["Reality.Common/Reality.Common.csproj", "Reality.Common/"]
-RUN dotnet restore "Reality.Services.Portfolio/Reality.Services.Portfolio.csproj"
-COPY . .
+ADD Reality.Common/ Reality.Common/
+ADD Reality.Services.Portfolio/ Reality.Services.Portfolio/
 
-FROM build AS publish
-WORKDIR "/src/Reality.Services.Portfolio"
+WORKDIR /src/Reality.Services.Portfolio
 RUN dotnet publish "Reality.Services.Portfolio.csproj" -c Release -o /app/publish
 
 FROM base AS final
 WORKDIR /app
-COPY --from=publish /app/publish .
+COPY --from=build /app/publish .
 ENTRYPOINT ["dotnet", "Reality.Services.Portfolio.dll"]
