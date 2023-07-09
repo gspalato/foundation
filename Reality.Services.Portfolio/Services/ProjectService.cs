@@ -69,6 +69,9 @@ public class ProjectService : IHostedService, IDisposable
         var allRepos = await GitHubClient.Repository.GetAllForCurrent();
         var repoCollection = new RepositoryCollection();
 
+        Logger.LogDebug("Found {Count} repositories: {Repos} belonging to {User}",
+            allRepos.Count, string.Join(", ", allRepos.Select(x => x.FullName).ToList()), (await GitHubClient.User.Current()).Login);
+
         foreach (var repo in allRepos)
             repoCollection.Add(repo.FullName);
 
