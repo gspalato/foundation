@@ -7,6 +7,7 @@ using Reality.Services.Portfolio.Configurations;
 using Reality.Services.Portfolio.Repositories;
 using Reality.Services.Portfolio.Types;
 using Project = Reality.Common.Entities.Project;
+using Reality.Services.Portfolio.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -33,6 +34,8 @@ var store = new InMemoryCredentialStore(credentials);
 
 builder.Services.AddSingleton<GitHubClient>(_ => new GitHubClient(productInfo, store));
 builder.Services.AddSingleton<Connection>(_ => new Connection(productInfo, credentialStore: store));
+
+builder.Services.AddHostedService<ProjectService>();
 
 builder.Services
     .AddGraphQLServer()
