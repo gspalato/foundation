@@ -79,10 +79,13 @@ public class ProjectService : IHostedService, IDisposable
         {
             Path = "/.project",
             FileName = "metadata.yml",
-            Repos = repoCollection
+            Repos = repoCollection,
+
         });
 
         var projectFiles = possibleFiles.Items.Where(x => x.Name == "metadata.yml");
+
+        Logger.LogDebug("Found {Count} project metadata files", projectFiles.Count());
 
         foreach (var metadataFile in projectFiles)
         {
