@@ -80,7 +80,6 @@ public class ProjectService : IHostedService, IDisposable
             Path = "/.project",
             FileName = "metadata.yml",
             Repos = repoCollection,
-
         });
 
         var projectFiles = possibleFiles.Items.Where(x => x.Name == "metadata.yml");
@@ -110,6 +109,7 @@ public class ProjectService : IHostedService, IDisposable
                 .Build();
 
             var project = deserializer.Deserialize<Project>(content);
+            Logger.LogDebug("Deserialized project {Project} with URL {URL}", project.Name, project.RepositoryUrl);
 
             var repoContent = await GitHubClient.Repository.Content.GetAllContents(owner, repo, "/.project");
             var repository = repoContent.Where(c => c.Type == ContentType.File && c.Name == "icon.jpg").FirstOrDefault();
