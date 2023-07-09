@@ -85,7 +85,7 @@ public class ProjectService : IHostedService, IDisposable
 
                 repoCollection.Add(repo.FullName);
 
-                var projectContents = await GitHubClient.Repository.Content.GetAllContents(repo.Owner.Login, repo.Name, "/.project");
+                var projectContents = await GitHubClient.Repository.Content.GetAllContents(repo.Owner.Login, repo.Name, ".project");
                 if (projectContents is null || projectContents.Count == 0)
                 {
                     Logger.LogDebug("No project metadata found for {Repo}", repo.FullName);
@@ -121,10 +121,9 @@ public class ProjectService : IHostedService, IDisposable
 
                 var project = deserializer.Deserialize<Project>(content);
 
-                var repoContent = await GitHubClient.Repository.Content.GetAllContents(owner, repo.Name, "/.project");
-                var repository = repoContent.Where(c => c.Type == ContentType.File && c.Name == "icon.jpg").FirstOrDefault();
-                project.IconUrl ??= repository?.DownloadUrl;
-                project.RepositoryUrl ??= repository?.HtmlUrl;
+                var icon = projectContents.Where(c => c.Type == ContentType.File && c.Name == "icon.jpg").FirstOrDefault();
+                project.IconUrl ??= icon?.DownloadUrl;
+                project.RepositoryUrl ??= repo?.HtmlUrl;
 
                 Logger.LogDebug("Deserialized project {Project} with URL {URL}", project.Name, project.RepositoryUrl);
 
