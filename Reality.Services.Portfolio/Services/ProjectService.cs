@@ -66,21 +66,76 @@ public class ProjectService : IHostedService, IDisposable
 
         Logger.LogInformation("Updating projects. Count: {Count}", count);
 
-        var allRepos = await GitHubClient.Repository.GetAllForCurrent();
         var repoCollection = new RepositoryCollection();
+        var allRepos = await GitHubClient.Repository.GetAllForCurrent();
 
         Logger.LogDebug("Found {Count} repositories: {Repos} belonging to {User}",
             allRepos.Count, string.Join(", ", allRepos.Select(x => x.FullName).ToList()), (await GitHubClient.User.Current()).Login);
 
         foreach (var repo in allRepos)
+        {
             repoCollection.Add(repo.FullName);
 
+            var projectContents = await GitHubClient.Repository.Content.GetAllContents(repo.Owner.Login, repo.Name, "/.project");
+            if (projectContents is null || projectContents.Count == 0)
+            {
+                Logger.LogDebug("No project metadata found for {Repo}", repo.FullName);
+                continue;
+            }
+
+            var metadataFile = projectContents.FirstOrDefault(x => x.Type == ContentType.File && x.Name == "metadata.yml");
+            if (projectContents is null || projectContents.Count == 0)
+            {
+                Logger.LogDebug("No project metadata found for {Repo}", repo.FullName);
+                continue;
+            }
+
+            var owner = repo.Owner.Login;
+            var path = metadataFile!.Path;
+
+            var raw = await GitHubClient.Repository.Content.GetRawContent(owner, repo.Name, path);
+            if (raw is null || raw.Length is 0)
+            {
+                Logger.LogError("No content found for {Repo}", repo.Name);
+                continue;
+            }
+
+            Logger.LogDebug("Found repo {Repo} with project metadata", repo.Name);
+
+            var content = System.Text.Encoding.UTF8.GetString(raw);
+            Logger.LogDebug("Content: {Content}", content);
+
+            var deserializer = new DeserializerBuilder()
+                .WithNamingConvention(UnderscoredNamingConvention.Instance)
+                .IgnoreUnmatchedProperties()
+                .Build();
+
+            var project = deserializer.Deserialize<Project>(content);
+
+            var repoContent = await GitHubClient.Repository.Content.GetAllContents(owner, repo.Name, "/.project");
+            var repository = repoContent.Where(c => c.Type == ContentType.File && c.Name == "icon.jpg").FirstOrDefault();
+            project.IconUrl ??= repository?.DownloadUrl;
+            project.RepositoryUrl ??= repository?.HtmlUrl;
+
+            Logger.LogDebug("Deserialized project {Project} with URL {URL}", project.Name, project.RepositoryUrl);
+
+            var filter = Builders<Project>.Filter.Where(x => x.Name == project.Name
+                && x.RepositoryUrl == project.RepositoryUrl);
+
+            await Projects.ReplaceOneAsync(filter, project, new ReplaceOptions { IsUpsert = true });
+
+            Logger.LogInformation("Updated project {Project} in database", project.Name);
+            await Task.Delay(1000);
+        }
+
+        /*
         var possibleFiles = await GitHubClient.Search.SearchCode(new SearchCodeRequest
         {
             Path = "/.project",
             FileName = "metadata.yml",
             Repos = repoCollection,
         });
+        
 
         var projectFiles = possibleFiles.Items.Where(x => x.Name == "metadata.yml");
 
@@ -124,5 +179,6 @@ public class ProjectService : IHostedService, IDisposable
 
             Logger.LogInformation("Updated project {Project} in database", project.Name);
         }
+        */
     }
 }
