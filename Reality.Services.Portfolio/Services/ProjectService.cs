@@ -75,19 +75,15 @@ public class ProjectService : IHostedService, IDisposable
         {
             try
             {
-                Logger.LogDebug("Viewing repo {Repo}", repo.FullName);
-
                 IReadOnlyList<RepositoryContent>? projectContents = null;
                 try
                 {
-                    projectContents = await GitHubClient.Repository.Content.GetAllContents(repo.Owner.Login, repo.Name);
+                    projectContents = await GitHubClient.Repository.Content.GetAllContents(repo.Owner.Login, repo.Name, ".project");
                 }
                 catch (Exception ex)
                 {
-                    if (ex is Octokit.NotFoundException)
-                        Logger.LogDebug("No project metadata folder found for {Repo}.", repo.FullName);
-                    else
-                        Logger.LogError(ex, "Error getting project contents for {Repo}.", repo.FullName);
+                    if (ex is not Octokit.NotFoundException)
+                        Logger.LogError(ex, "Error getting project metadata folder contents for {Repo}.", repo.FullName);
 
                     continue;
                 }
