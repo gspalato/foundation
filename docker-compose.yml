@@ -80,6 +80,18 @@ services:
     depends_on:
       - db
 
+  portfolio_service:
+    hostname: "portfolio_service"
+    build:
+      context: ./
+      dockerfile: ./Reality.Services.Portfolio/Dockerfile
+    env_file:
+      - .env
+    environment:
+      - DatabaseName=Portfolio
+    depends_on:
+      - db
+
   # Databases
   db:
     hostname: "db"
