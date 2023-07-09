@@ -127,6 +127,10 @@ $tf/
 # Guidance Automation Toolkit
 *.gpState
 
+# Rider is a .NET IDE
+.idea
+.idea/*
+
 # ReSharper is a .NET coding add-in
 _ReSharper*/
 *.[Rr]e[Ss]harper
