@@ -7,11 +7,13 @@ EXPOSE 443
 
 FROM mcr.microsoft.com/dotnet/sdk:7.0 AS build
 WORKDIR /src
-ADD Reality.Common Reality.Common/
-ADD Reality.Services.Gateway Reality.Services.Gateway/
 
-WORKDIR /src/Reality.Services.Gateway
-RUN dotnet publish "Reality.Gateway.csproj" -c Release -o /app/publish
+COPY ["Reality.Gateway/Reality.Gateway.csproj", "Reality.Gateway/"]
+COPY ["Reality.Common/Reality.Common.csproj", "Reality.Common/"]
+RUN dotnet restore "Reality.Gateway/Reality.Gateway.csproj"
+COPY . .
+
+RUN dotnet publish "/src/Reality.Gateway/Reality.Gateway.csproj" -c Release -o /app/publish
 
 FROM base AS final
 WORKDIR /app
