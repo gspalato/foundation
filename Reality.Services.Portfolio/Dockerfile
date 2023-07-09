@@ -6,7 +6,7 @@ EXPOSE 443
 FROM mcr.microsoft.com/dotnet/sdk:7.0 AS build
 WORKDIR /src
 
-COPY ["Reality.Services.Portfolio/Reality.Gateway.csproj", "Reality.Services.Portfolio/"]
+COPY ["Reality.Services.Portfolio/Reality.Services.Portfolio.csproj", "Reality.Services.Portfolio/"]
 COPY ["Reality.Common/Reality.Common.csproj", "Reality.Common/"]
 RUN dotnet restore "Reality.Services.Portfolio/Reality.Services.Portfolio.csproj"
 COPY . .
