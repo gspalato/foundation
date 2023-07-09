@@ -68,7 +68,7 @@ services:
       - db
 
   static_service:
-    hostname: "static"
+    hostname: "static_service"
     build:
       context: ./
       dockerfile: ./Reality.Services.Static/Dockerfile
@@ -82,7 +82,7 @@ services:
       - db
 
   portfolio_service:
-    hostname: "portfolio"
+    hostname: "portfolio_service"
     build:
       context: ./
       dockerfile: ./Reality.Services.Portfolio/Dockerfile

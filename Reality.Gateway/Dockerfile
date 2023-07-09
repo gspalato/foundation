@@ -11,10 +11,9 @@ COPY ["Reality.Gateway/Reality.Gateway.csproj", "Reality.Gateway/"]
 COPY ["Reality.Common/Reality.Common.csproj", "Reality.Common/"]
 RUN dotnet restore "Reality.Gateway/Reality.Gateway.csproj"
 COPY . .
-WORKDIR "/src/Reality.Gateway"
-RUN dotnet build "Reality.Gateway.csproj" -c Release -o /app/build
 
 FROM build AS publish
+WORKDIR "/src/Reality.Gateway"
 RUN dotnet publish "Reality.Gateway.csproj" -c Release -o /app/publish
 
 FROM base AS final

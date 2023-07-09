@@ -11,10 +11,9 @@ COPY ["Reality.Services.UPx/Reality.Services.UPx.csproj", "Reality.Services.UPx/
 COPY ["Reality.Common/Reality.Common.csproj", "Reality.Common/"]
 RUN dotnet restore "Reality.Services.UPx/Reality.Services.UPx.csproj"
 COPY . .
-WORKDIR "/src/Reality.Services.UPx"
-RUN dotnet build "Reality.Services.UPx.csproj" -c Release -o /app/build
 
 FROM build AS publish
+WORKDIR "/src/Reality.Services.UPx"
 RUN dotnet publish "Reality.Services.UPx.csproj" -c Release -o /app/publish
 
 FROM base AS final

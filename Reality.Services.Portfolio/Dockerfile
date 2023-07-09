@@ -11,10 +11,9 @@ COPY ["Reality.Services.Portfolio/Reality.Services.Portfolio.csproj", "Reality.S
 COPY ["Reality.Common/Reality.Common.csproj", "Reality.Common/"]
 RUN dotnet restore "Reality.Services.Portfolio/Reality.Services.Portfolio.csproj"
 COPY . .
-WORKDIR "/src/Reality.Services.Portfolio"
-RUN dotnet build "Reality.Services.Portfolio.csproj" -c Release -o /app/build
 
 FROM build AS publish
+WORKDIR "/src/Reality.Services.Portfolio"
 RUN dotnet publish "Reality.Services.Portfolio.csproj" -c Release -o /app/publish
 
 FROM base AS final

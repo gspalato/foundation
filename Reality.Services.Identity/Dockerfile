@@ -11,10 +11,9 @@ COPY ["Reality.Services.Identity/Reality.Services.Identity.csproj", "Reality.Ser
 COPY ["Reality.Common/Reality.Common.csproj", "Reality.Common/"]
 RUN dotnet restore "Reality.Services.Identity/Reality.Services.Identity.csproj"
 COPY . .
-WORKDIR "/src/Reality.Services.Identity"
-RUN dotnet build "Reality.Services.Identity.csproj" -c Release -o /app/build
 
 FROM build AS publish
+WORKDIR "/src/Reality.Services.Identity"
 RUN dotnet publish "Reality.Services.Identity.csproj" -c Release -o /app/publish
 
 FROM base AS final
