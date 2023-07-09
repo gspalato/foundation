@@ -66,7 +66,6 @@ public class ProjectService : IHostedService, IDisposable
 
         Logger.LogInformation("Updating projects. Count: {Count}", count);
 
-        var repoCollection = new RepositoryCollection();
         var allRepos = await GitHubClient.Repository.GetAllForCurrent();
 
         Logger.LogDebug("Found {Count} repositories: {Repos} belonging to {User}",
@@ -76,26 +75,27 @@ public class ProjectService : IHostedService, IDisposable
         {
             try
             {
-                Logger.LogDebug("Iterating...");
-                if (repo is null)
+                Logger.LogDebug("Viewing repo {Repo}", repo.FullName);
+
+                IReadOnlyList<RepositoryContent>? projectContents = null;
+                try
                 {
-                    Logger.LogError("Repo is null");
-                    continue;
+                    projectContents = await GitHubClient.Repository.Content.GetAllContents(repo.Owner.Login, repo.Name);
                 }
-
-                repoCollection.Add(repo.FullName);
-
-                var projectContents = await GitHubClient.Repository.Content.GetAllContents(repo.Owner.Login, repo.Name, ".project");
-                if (projectContents is null || projectContents.Count == 0)
+                catch (Exception ex)
                 {
-                    Logger.LogDebug("No project metadata found for {Repo}", repo.FullName);
+                    if (ex is Octokit.NotFoundException)
+                        Logger.LogDebug("No project metadata folder found for {Repo}.", repo.FullName);
+                    else
+                        Logger.LogError(ex, "Error getting project contents for {Repo}.", repo.FullName);
+
                     continue;
                 }
 
                 var metadataFile = projectContents.FirstOrDefault(x => x.Type == ContentType.File && x.Name == "metadata.yml");
                 if (metadataFile is null)
                 {
-                    Logger.LogDebug("No project metadata found for {Repo}", repo.FullName);
+                    Logger.LogDebug("No project metadata found for {Repo}.", repo.FullName);
                     continue;
                 }
 
@@ -105,14 +105,13 @@ public class ProjectService : IHostedService, IDisposable
                 var raw = await GitHubClient.Repository.Content.GetRawContent(owner, repo.Name, path);
                 if (raw is null || raw.Length is 0)
                 {
-                    Logger.LogError("No content found for {Repo}", repo.Name);
+                    Logger.LogError("No content found for {Repo}.", repo.Name);
                     continue;
                 }
 
-                Logger.LogDebug("Found repo {Repo} with project metadata", repo.Name);
+                Logger.LogDebug("Found repo {Repo} with project metadata.", repo.Name);
 
                 var content = System.Text.Encoding.UTF8.GetString(raw);
-                Logger.LogDebug("Content: {Content}", content);
 
                 var deserializer = new DeserializerBuilder()
                     .WithNamingConvention(UnderscoredNamingConvention.Instance)
@@ -120,6 +119,11 @@ public class ProjectService : IHostedService, IDisposable
                     .Build();
 
                 var project = deserializer.Deserialize<Project>(content);
+                if (project.Name is null)
+                {
+                    Logger.LogError("Project metadata for {Repo} is invalid.", repo.Name);
+                    continue;
+                }
 
                 var icon = projectContents.Where(c => c.Type == ContentType.File && c.Name == "icon.jpg").FirstOrDefault();
                 project.IconUrl ??= icon?.DownloadUrl;
