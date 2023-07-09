@@ -6,6 +6,8 @@ namespace Reality.Common.Repositories
 {
     public interface IBaseRepository<T> where T : BaseEntity
     {
+        IMongoCollection<T> Collection { get; }
+
         Task<IEnumerable<T>> GetAllAsync();
         Task<T> GetByIdAsync(string id);
         Task<T> InsertAsync(T entity);
@@ -14,14 +16,12 @@ namespace Reality.Common.Repositories
 
     public class BaseRepository<T> : IBaseRepository<T> where T : BaseEntity
     {
-        private readonly IMongoCollection<T> Collection;
+        public IMongoCollection<T> Collection { get; private set; }
 
         public BaseRepository(IDatabaseContext dataContext)
         {
             if (dataContext == null)
-            {
                 throw new ArgumentNullException(nameof(dataContext));
-            }
 
             Collection = dataContext.GetCollection<T>(typeof(T).Name);
         }
