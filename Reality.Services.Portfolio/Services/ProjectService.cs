@@ -139,14 +139,12 @@ public class ProjectService : IHostedService, IDisposable
                 var found = await Projects.FindAsync(filter);
                 if (!found.Any())
                 {
-                    Logger.LogInformation("Inserting project {Project} into database...", project.Name);
                     await Projects.InsertOneAsync(project);
+                    Logger.LogInformation("Inserted project {Project} into database.", project.Name);
                     continue;
                 }
                 else
                 {
-                    Logger.LogInformation("Found existing project {Project} in database, updating...", project.Name);
-
                     var update = Builders<Project>.Update
                         .Set(x => x.Name, project.Name)
                         .Set(x => x.Description, project.Description)
@@ -154,9 +152,9 @@ public class ProjectService : IHostedService, IDisposable
                         .Set(x => x.RepositoryUrl, project.RepositoryUrl);
 
                     await Projects.UpdateOneAsync(filter, update);
-                }
 
-                Logger.LogInformation("Updated project {Project} in database", project.Name);
+                    Logger.LogInformation("Updated existing project {Project} in database.", project.Name);
+                }
                 await Task.Delay(1000);
             }
             catch (Exception ex)
