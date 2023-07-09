@@ -60,6 +60,12 @@ public class ProjectService : IHostedService, IDisposable
     }
 
 
+    /// <summary>
+    /// Updates the projects in the database.
+    /// Fetches all repositories from the GitHub API and checks for a .project folder.
+    /// If found, it will parse the .project/metadata.yml file and create a Project entity.
+    /// The Project entity is then inserted into the database.
+    /// </summary>
     private async Task UpdateProjects(object? state)
     {
         var count = Interlocked.Increment(ref ExecutionCount);
