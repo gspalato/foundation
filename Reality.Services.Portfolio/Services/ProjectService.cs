@@ -131,7 +131,18 @@ public class ProjectService : IHostedService, IDisposable
                 var filter = Builders<Project>.Filter.Where(x => x.Name == project.Name
                     && x.RepositoryUrl == project.RepositoryUrl);
 
-                await Projects.ReplaceOneAsync(filter, project, new ReplaceOptions { IsUpsert = true });
+                var existing = await Projects.FindAsync(filter);
+                if (!existing.Any())
+                {
+                    Logger.LogInformation("Inserting project {Project} into database...", project.Name);
+                    await Projects.InsertOneAsync(project);
+                    continue;
+                }
+                else
+                {
+                    Logger.LogInformation("Found existing project {Project} in database, updating...", project.Name);
+                    await Projects.ReplaceOneAsync(filter, project);
+                }
 
                 Logger.LogInformation("Updated project {Project} in database", project.Name);
                 await Task.Delay(1000);
