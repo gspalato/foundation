@@ -74,6 +74,13 @@ public class ProjectService : IHostedService, IDisposable
 
         foreach (var repo in allRepos)
         {
+            Logger.LogDebug("Iterating...");
+            if (repo is null)
+            {
+                Logger.LogError("Repo is null");
+                continue;
+            }
+
             repoCollection.Add(repo.FullName);
 
             var projectContents = await GitHubClient.Repository.Content.GetAllContents(repo.Owner.Login, repo.Name, "/.project");
@@ -84,7 +91,7 @@ public class ProjectService : IHostedService, IDisposable
             }
 
             var metadataFile = projectContents.FirstOrDefault(x => x.Type == ContentType.File && x.Name == "metadata.yml");
-            if (projectContents is null || projectContents.Count == 0)
+            if (metadataFile is null)
             {
                 Logger.LogDebug("No project metadata found for {Repo}", repo.FullName);
                 continue;
