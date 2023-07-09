@@ -9,7 +9,7 @@ namespace Reality.Gateway
 {
     public class Startup
     {
-        public IConfiguration Configuration { get; }
+        private IConfiguration Configuration { get; }
 
         public Startup(IWebHostEnvironment env)
         {
@@ -27,7 +27,7 @@ namespace Reality.Gateway
             services.AddLogging(loggingBuilder =>
             {
                 loggingBuilder.ClearProviders();
-                loggingBuilder.SetMinimumLevel(Microsoft.Extensions.Logging.LogLevel.Trace);
+                loggingBuilder.SetMinimumLevel(LogLevel.Trace);
                 loggingBuilder.AddNLog(new Reality.Common.Configurations.LoggingConfiguration());
             });
 
@@ -42,11 +42,11 @@ namespace Reality.Gateway
             foreach (var url in config.Service_Urls.Split(","))
             {
                 var id = url.Replace("http://", "");
-                services.AddHttpClient(id, (sp, client) =>
+                services.AddHttpClient(id, (_, client) =>
                 {
                     client.BaseAddress = new Uri(new Uri(url), "/gql");
                 });
-                services.AddWebSocketClient(id, (sp, client) =>
+                services.AddWebSocketClient(id, (_, client) =>
                 {
                     client.Uri = new Uri(new Uri(url), "/gql");
                 });
