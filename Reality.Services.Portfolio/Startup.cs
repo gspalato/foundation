@@ -52,7 +52,6 @@ namespace Reality.Services.Portfolio
             var store = new InMemoryCredentialStore(credentials);
 
             services.AddSingleton<GitHubClient>(_ => new GitHubClient(productInfo, store));
-            services.AddSingleton<Connection>(_ => new Connection(productInfo, credentialStore: store));
 
             services.AddHostedService<ProjectService>();
 

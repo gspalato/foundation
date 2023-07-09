@@ -13,7 +13,6 @@ public class ProjectService : IHostedService, IDisposable
     private Configuration Configuration { get; }
 
     private GitHubClient GitHubClient { get; }
-    private Octokit.GraphQL.Connection GitHubConnection { get; }
     private ILogger<ProjectService> Logger { get; }
 
     private readonly IMongoCollection<Project> Projects;
@@ -21,13 +20,12 @@ public class ProjectService : IHostedService, IDisposable
     private int ExecutionCount;
     private Timer? Timer;
 
-    public ProjectService(Configuration configuration, GitHubClient github, Octokit.GraphQL.Connection connection,
+    public ProjectService(Configuration configuration, GitHubClient github,
         IDatabaseContext databaseContext, ILogger<ProjectService> logger)
     {
         Configuration = configuration;
 
         GitHubClient = github;
-        GitHubConnection = connection;
         Logger = logger;
         Projects = databaseContext.GetCollection<Project>("github_projects");
     }
