@@ -109,12 +109,13 @@ public class ProjectService : IHostedService, IDisposable
                 .Build();
 
             var project = deserializer.Deserialize<Project>(content);
-            Logger.LogDebug("Deserialized project {Project} with URL {URL}", project.Name, project.RepositoryUrl);
 
             var repoContent = await GitHubClient.Repository.Content.GetAllContents(owner, repo, "/.project");
             var repository = repoContent.Where(c => c.Type == ContentType.File && c.Name == "icon.jpg").FirstOrDefault();
             project.IconUrl ??= repository?.DownloadUrl;
             project.RepositoryUrl ??= repository?.HtmlUrl;
+
+            Logger.LogDebug("Deserialized project {Project} with URL {URL}", project.Name, project.RepositoryUrl);
 
             var filter = Builders<Project>.Filter.Where(x => x.Name == project.Name
                 && x.RepositoryUrl == project.RepositoryUrl);
