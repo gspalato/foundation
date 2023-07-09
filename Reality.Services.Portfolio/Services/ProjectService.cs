@@ -34,6 +34,8 @@ public class ProjectService : IHostedService, IDisposable
 
     public Task StartAsync(CancellationToken token)
     {
+        Logger.LogInformation("Project Service started.");
+
         Timer = new Timer(
             callback: (state) =>
             {
