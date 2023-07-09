@@ -7,8 +7,8 @@ EXPOSE 443
 
 FROM mcr.microsoft.com/dotnet/sdk:7.0 AS build
 WORKDIR /src
-ADD Reality.Common/ Reality.Common/
-ADD Reality.Services.Portfolio/ Reality.Services.Portfolio/
+ADD Reality.Common Reality.Common/
+ADD Reality.Services.Portfolio Reality.Services.Portfolio/
 
 WORKDIR /src/Reality.Services.Portfolio
 RUN dotnet publish "Reality.Services.Portfolio.csproj" -c Release -o /app/publish

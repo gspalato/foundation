@@ -7,8 +7,8 @@ EXPOSE 443
 
 FROM mcr.microsoft.com/dotnet/sdk:7.0 AS build
 WORKDIR /src
-ADD Reality.Common/ Reality.Common/
-ADD Reality.Services.Static/ Reality.Services.Static/
+ADD Reality.Common Reality.Common/
+ADD Reality.Services.Static Reality.Services.Static/
 
 WORKDIR /src/Reality.Services.Static
 RUN dotnet publish "Reality.Services.Static.csproj" -c Release -o /app/publish
