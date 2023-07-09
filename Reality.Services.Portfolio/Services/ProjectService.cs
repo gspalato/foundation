@@ -85,7 +85,7 @@ public class ProjectService : IHostedService, IDisposable
 
         var projectFiles = possibleFiles.Items.Where(x => x.Name == "metadata.yml");
 
-        Logger.LogDebug("Found {Count} project metadata files", projectFiles.Count());
+        Logger.LogDebug("Found {Count} project metadata files: {Files}", projectFiles.Count(), string.Join(", ", projectFiles.Select(x => x.Repository.FullName).ToList()));
 
         foreach (var metadataFile in projectFiles)
         {
