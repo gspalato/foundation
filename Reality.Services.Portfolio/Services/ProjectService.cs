@@ -1,7 +1,7 @@
 ﻿using MongoDB.Driver;
 using Octokit;
-using Reality.Common.Data;
 using Reality.Services.Portfolio.Configurations;
+using Reality.Services.Portfolio.Repositories;
 using YamlDotNet.Serialization;
 using YamlDotNet.Serialization.NamingConventions;
 using Project = Reality.Common.Entities.Project;
@@ -15,19 +15,19 @@ public class ProjectService : IHostedService, IDisposable
     private GitHubClient GitHubClient { get; }
     private ILogger<ProjectService> Logger { get; }
 
-    private readonly IMongoCollection<Project> Projects;
+    private readonly IProjectRepository ProjectRepository;
 
     private int ExecutionCount;
     private Timer? Timer;
 
     public ProjectService(Configuration configuration, GitHubClient github,
-        IDatabaseContext databaseContext, ILogger<ProjectService> logger)
+        IProjectRepository projectRepository, ILogger<ProjectService> logger)
     {
         Configuration = configuration;
 
         GitHubClient = github;
         Logger = logger;
-        Projects = databaseContext.GetCollection<Project>("github_projects");
+        ProjectRepository = projectRepository;
     }
 
     public Task StartAsync(CancellationToken token)
@@ -136,10 +136,10 @@ public class ProjectService : IHostedService, IDisposable
                 var filter = Builders<Project>.Filter.Where(x => x.Name == project.Name
                     && x.RepositoryUrl == project.RepositoryUrl);
 
-                var found = await Projects.FindAsync(filter);
+                var found = await ProjectRepository.Collection.FindAsync(filter);
                 if (!found.Any())
                 {
-                    await Projects.InsertOneAsync(project);
+                    await ProjectRepository.InsertAsync(project);
                     Logger.LogInformation("Inserted project {Project} into database.", project.Name);
                     continue;
                 }
@@ -151,7 +151,7 @@ public class ProjectService : IHostedService, IDisposable
                         .Set(x => x.IconUrl, project.IconUrl)
                         .Set(x => x.RepositoryUrl, project.RepositoryUrl);
 
-                    await Projects.UpdateOneAsync(filter, update);
+                    await ProjectRepository.Collection.UpdateOneAsync(filter, update);
 
                     Logger.LogInformation("Updated existing project {Project} in database.", project.Name);
                 }
@@ -162,58 +162,5 @@ public class ProjectService : IHostedService, IDisposable
                 Logger.LogError(ex, "Error updating project {Repo}", repo.FullName);
             }
         }
-
-        /*
-        var possibleFiles = await GitHubClient.Search.SearchCode(new SearchCodeRequest
-        {
-            Path = "/.project",
-            FileName = "metadata.yml",
-            Repos = repoCollection,
-        });
-        
-
-        var projectFiles = possibleFiles.Items.Where(x => x.Name == "metadata.yml");
-
-        Logger.LogDebug("Found {Count} project metadata files: {Files}", projectFiles.Count(), string.Join(", ", projectFiles.Select(x => x.Repository.FullName).ToList()));
-
-        foreach (var metadataFile in projectFiles)
-        {
-            var owner = metadataFile.Repository.Owner.Login;
-            var repo = metadataFile.Repository.Name;
-            var path = metadataFile.Path;
-
-            Logger.LogDebug("Found repo {Repo} with project metadata", repo);
-
-            var raw = await GitHubClient.Repository.Content.GetRawContent(owner, repo, path);
-            if (raw is null || raw.Length is 0)
-            {
-                Logger.LogError("No content found for {Repo}", repo);
-                continue;
-            }
-
-            var content = System.Text.Encoding.UTF8.GetString(raw);
-
-            var deserializer = new DeserializerBuilder()
-                .WithNamingConvention(UnderscoredNamingConvention.Instance)
-                .IgnoreUnmatchedProperties()
-                .Build();
-
-            var project = deserializer.Deserialize<Project>(content);
-
-            var repoContent = await GitHubClient.Repository.Content.GetAllContents(owner, repo, "/.project");
-            var repository = repoContent.Where(c => c.Type == ContentType.File && c.Name == "icon.jpg").FirstOrDefault();
-            project.IconUrl ??= repository?.DownloadUrl;
-            project.RepositoryUrl ??= repository?.HtmlUrl;
-
-            Logger.LogDebug("Deserialized project {Project} with URL {URL}", project.Name, project.RepositoryUrl);
-
-            var filter = Builders<Project>.Filter.Where(x => x.Name == project.Name
-                && x.RepositoryUrl == project.RepositoryUrl);
-
-            await Projects.ReplaceOneAsync(filter, project, new ReplaceOptions { IsUpsert = true });
-
-            Logger.LogInformation("Updated project {Project} in database", project.Name);
-        }
-        */
     }
 }
