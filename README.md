@@ -12,7 +12,7 @@
   <br />
 
   <a href="https://github.com/gspalato/reality">
-    <img src="https://i.ibb.co/4pjjF5x/Reality-Logo-Round-Reduced-1.png" alt="Logo" width="150" height="150">
+    <img src="https://raw.githubusercontent.com/gspalato/reality/master/.project/icon_circle.png" alt="Logo" width="150" height="150">
   </a>
 
 <h3 align="center"><b>Reality</b></h3>
