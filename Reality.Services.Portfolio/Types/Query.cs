@@ -1,13 +1,14 @@
-﻿using Octokit;
+﻿using HotChocolate;
 using Reality.Services.Portfolio.Repositories;
 using Project = Reality.Common.Entities.Project;
 
-namespace Reality.Services.Portfolio.Types;
-
-public class Query
+namespace Reality.Services.Portfolio.Types
 {
-    public async Task<IEnumerable<Project>> GetProjectsAsync([Service] IProjectRepository projectRepository)
+    public class Query
     {
-        return await projectRepository.GetAllAsync();
+        public async Task<IEnumerable<Project>> GetProjectsAsync([Service] IProjectRepository projectRepository)
+        {
+            return await projectRepository.GetAllAsync();
+        }
     }
 }
