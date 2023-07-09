@@ -41,7 +41,7 @@ public class ProjectService : IHostedService, IDisposable
             },
             state: null,
             TimeSpan.Zero,
-            period: TimeSpan.FromMinutes(5)
+            period: TimeSpan.FromMinutes(Configuration.ProjectUpdateInterval)
         );
 
         return Task.CompletedTask;
@@ -97,7 +97,6 @@ public class ProjectService : IHostedService, IDisposable
             }
 
             var content = System.Text.Encoding.UTF8.GetString(raw);
-            Logger.LogDebug("Metadata Content:\n{Content}", content);
 
             var deserializer = new DeserializerBuilder()
                 .WithNamingConvention(UnderscoredNamingConvention.Instance)
@@ -112,7 +111,7 @@ public class ProjectService : IHostedService, IDisposable
             project.RepositoryUrl ??= repository?.HtmlUrl;
 
             var filter = Builders<Project>.Filter.Where(x => x.Name == project.Name
-                                                             && x.RepositoryUrl == project.RepositoryUrl);
+                && x.RepositoryUrl == project.RepositoryUrl);
 
             await Projects.ReplaceOneAsync(filter, project, new ReplaceOptions { IsUpsert = true });
 
