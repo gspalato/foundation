@@ -13,6 +13,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Reality.Services.UPx", "Rea
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Reality.Services.Static", "Reality.Services.Static\Reality.Services.Static.csproj", "{54147037-8807-4171-AC78-4E09D4A5C4BC}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Reality.Services.Portfolio", "Reality.Services.Portfolio\Reality.Services.Portfolio.csproj", "{E9EE580F-5A89-4104-B7DB-88F9E3D70BDD}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -51,6 +53,10 @@ Global
 		{54147037-8807-4171-AC78-4E09D4A5C4BC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{54147037-8807-4171-AC78-4E09D4A5C4BC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{54147037-8807-4171-AC78-4E09D4A5C4BC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E9EE580F-5A89-4104-B7DB-88F9E3D70BDD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E9EE580F-5A89-4104-B7DB-88F9E3D70BDD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E9EE580F-5A89-4104-B7DB-88F9E3D70BDD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E9EE580F-5A89-4104-B7DB-88F9E3D70BDD}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
