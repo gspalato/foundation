@@ -47,7 +47,7 @@ namespace Reality.Services.Portfolio
             services.AddSingleton<IProjectRepository, ProjectRepository>();
 
             // Services
-            var productInfo = new ProductHeaderValue("Reality API", "1.0.0");
+            var productInfo = new ProductHeaderValue("RealityAPI", "1.0.0");
             var credentials = new Credentials(config.GithubToken, AuthenticationType.Bearer);
             var store = new InMemoryCredentialStore(credentials);
 
