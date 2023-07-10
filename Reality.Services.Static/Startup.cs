@@ -11,90 +11,84 @@ using System.Text;
 
 namespace Reality.Services.Static
 {
-	public class Startup
-	{
-		public IConfiguration Configuration { get; set; }
+    public class Startup
+    {
+        public IConfiguration Configuration { get; set; }
 
-		public Startup(IWebHostEnvironment env)
-		{
-			var builder = new ConfigurationBuilder()
-				.SetBasePath(env.ContentRootPath)
-				.AddUserSecrets(Assembly.GetExecutingAssembly())
-				.AddEnvironmentVariables();
+        public Startup(IWebHostEnvironment env)
+        {
+            var builder = new ConfigurationBuilder()
+                .SetBasePath(env.ContentRootPath)
+                .AddUserSecrets(Assembly.GetExecutingAssembly())
+                .AddEnvironmentVariables();
 
-			Configuration = builder.Build();
-		}
+            Configuration = builder.Build();
+        }
 
-		public void ConfigureServices(IServiceCollection services)
-		{
-			// Configurations
-			var config = new BaseConfiguration();
-			Configuration.Bind(config);
+        public void ConfigureServices(IServiceCollection services)
+        {
+            // Configurations
+            var config = new BaseConfiguration();
+            Configuration.Bind(config);
 
-			services.AddSingleton(config);
+            services.AddSingleton(config);
 
-			// Database Repositories
-            /*
-			var databaseContext = new DatabaseContext(config);
-			services.AddSingleton<IDatabaseContext, DatabaseContext>(_ => databaseContext);
-            */
+            // GraphQL
+            services
+                .AddGraphQLServer()
+                .AddInMemorySubscriptions()
+                .AddQueryType<Query>()
+                .AddMutationType<Mutation>()
+                .ModifyRequestOptions(opt => opt.IncludeExceptionDetails = true)
+                .AddMongoDbFiltering()
+                .AddMongoDbPagingProviders()
+                .AddMongoDbProjections()
+                .AddMongoDbSorting();
 
-			// GraphQL
-			services
-				.AddGraphQLServer()
-				.AddInMemorySubscriptions()
-				.AddQueryType<Query>()
-				.AddMutationType<Mutation>()
-				.ModifyRequestOptions(opt => opt.IncludeExceptionDetails = true)
-				.AddMongoDbFiltering()
-				.AddMongoDbPagingProviders()
-				.AddMongoDbProjections()
-				.AddMongoDbSorting();
+            services
+                .AddSingleton<IAuthorizationService, AuthorizationService>();
 
-			services
-				.AddSingleton<IAuthorizationService, AuthorizationService>();
+            services
+                .AddSingleton<JwtSecurityTokenHandler>();
+        }
 
-			services
-				.AddSingleton<JwtSecurityTokenHandler>();
-		}
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        {
+            if (env.IsDevelopment())
+            {
+                app.UseDeveloperExceptionPage();
+            }
 
-		public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
-		{
-			if (env.IsDevelopment())
-			{
-				app.UseDeveloperExceptionPage();
-			}
+            app.UseRouting();
 
-			app.UseRouting();
-
-			app.UseEndpoints(endpoints =>
-			{
-				endpoints.MapGraphQL("/gql")
+            app.UseEndpoints(endpoints =>
+            {
+                endpoints.MapGraphQL("/gql")
                     .WithOptions(new GraphQLServerOptions()
                     {
                         Tool = { Enable = false }
                     });
-			});
+            });
 
-			static string ScanFolder(DirectoryInfo directory, string indentation = "\t", int maxLevel = -1, int deep = 0)
-			{
-				StringBuilder builder = new StringBuilder();
+            static string ScanFolder(DirectoryInfo directory, string indentation = "\t", int maxLevel = -1, int deep = 0)
+            {
+                StringBuilder builder = new StringBuilder();
 
-				builder.AppendLine(string.Concat(Enumerable.Repeat(indentation, deep)) + directory.Name);
+                builder.AppendLine(string.Concat(Enumerable.Repeat(indentation, deep)) + directory.Name);
 
-				if (maxLevel == -1 || deep < maxLevel )
-				{
-					foreach (var subdirectory in directory.GetDirectories())
-						builder.Append(ScanFolder(subdirectory, indentation, maxLevel, deep + 1));
-				}
+                if (maxLevel == -1 || deep < maxLevel)
+                {
+                    foreach (var subdirectory in directory.GetDirectories())
+                        builder.Append(ScanFolder(subdirectory, indentation, maxLevel, deep + 1));
+                }
 
-				foreach (var file in directory.GetFiles())
-					builder.AppendLine(string.Concat(Enumerable.Repeat(indentation, deep + 1)) + file.Name);
+                foreach (var file in directory.GetFiles())
+                    builder.AppendLine(string.Concat(Enumerable.Repeat(indentation, deep + 1)) + file.Name);
 
-				return builder.ToString();
-			}
+                return builder.ToString();
+            }
 
-			Console.WriteLine(ScanFolder(new DirectoryInfo(env.ContentRootPath)));
-		}
-	}
+            Console.WriteLine(ScanFolder(new DirectoryInfo(env.ContentRootPath)));
+        }
+    }
 }

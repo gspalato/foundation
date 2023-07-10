@@ -37,7 +37,7 @@ public class ProjectService : IHostedService, IDisposable
         Timer = new Timer(
             callback: (state) =>
             {
-                _ = UpdateProjects(state);
+                _ = UpdateProjects();
             },
             state: null,
             TimeSpan.Zero,
@@ -66,7 +66,7 @@ public class ProjectService : IHostedService, IDisposable
     /// If found, it will parse the .project/metadata.yml file and create a Project entity.
     /// The Project entity is then inserted into the database.
     /// </summary>
-    private async Task UpdateProjects(object? state)
+    private async Task UpdateProjects()
     {
         var count = Interlocked.Increment(ref ExecutionCount);
 

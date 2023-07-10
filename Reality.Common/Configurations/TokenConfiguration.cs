@@ -6,7 +6,7 @@ namespace Reality.Common.Configurations
 {
     public static class TokenConfiguration
     {
-        public static SymmetricSecurityKey SecurityKey = new SymmetricSecurityKey(
+        public static SymmetricSecurityKey SecurityKey { get; } = new SymmetricSecurityKey(
             new HMACSHA512(
                 Encoding.UTF8.GetBytes(
                     Environment.GetEnvironmentVariable("REALITY_JWT_SECURITY_KEY")!
@@ -14,12 +14,12 @@ namespace Reality.Common.Configurations
             ).Key
         );
 
-        public static TokenValidationParameters ValidationParameters = new TokenValidationParameters()
-            {
-                ValidIssuer = "realityapibyunreaalism",
-                ValidAudience = "unreaalism",
-                ValidateIssuerSigningKey = true,
-                IssuerSigningKey = TokenConfiguration.SecurityKey
-            };
+        public static TokenValidationParameters ValidationParameters { get; } = new TokenValidationParameters()
+        {
+            ValidIssuer = "realityapibyunreaalism",
+            ValidAudience = "unreaalism",
+            ValidateIssuerSigningKey = true,
+            IssuerSigningKey = TokenConfiguration.SecurityKey
+        };
     }
 }

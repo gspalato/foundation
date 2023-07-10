@@ -10,8 +10,7 @@ namespace Reality.Services.UPx.Types
     {
         public async Task<bool> RegisterStationUseAsync(int startTimestamp, int endTimestamp, int duration,
             double distributedWater, double economizedPlastic, double bottleQuantityEquivalent, string token,
-            [Service] IUseRepository useRepository, [Service] IAuthorizationService authorizationService,
-            [Service] ITopicEventSender sender)
+            [Service] IUseRepository useRepository, [Service] IAuthorizationService authorizationService)
         {
             if (token.Length is 0)
                 return false;
@@ -33,7 +32,7 @@ namespace Reality.Services.UPx.Types
                 Console.WriteLine("Roles: " + String.Join(", ", roles));
                 allowed = roles.Any(r => r <= 2);
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 Console.WriteLine(e);
                 allowed = false;
@@ -46,7 +45,8 @@ namespace Reality.Services.UPx.Types
                 return false;
             }
 
-            Use use = new() {
+            Use use = new()
+            {
                 StartTimestamp = startTimestamp,
                 EndTimestamp = endTimestamp,
                 Duration = duration,
@@ -56,8 +56,6 @@ namespace Reality.Services.UPx.Types
             };
 
             await useRepository.InsertAsync(use);
-
-            await sender.CompleteAsync(nameof(Reality.Services.UPx.Types.Subscription.OnStationUpdate));
 
             return true;
         }

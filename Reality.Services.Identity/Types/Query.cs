@@ -13,7 +13,7 @@ namespace Reality.Services.Identity.Types
                 .SetCode("401")
                 .Build();
 
-            if (token.Length < 0 || token is null)
+            if (token.Length is 0 || token is null)
                 throw new GraphQLException(invalidTokenError);
 
             var result = await authService.CheckAuthorizationAsync(token);

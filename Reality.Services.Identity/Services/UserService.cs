@@ -22,14 +22,12 @@ namespace Reality.Services.Identity.Services
 
     public class UserService : IUserService
     {
-        private readonly IDatabaseContext DatabaseContext;
         private readonly IPasswordHasher<string> Hasher;
 
         private readonly IMongoCollection<FullUser> Users;
 
         public UserService(IDatabaseContext databaseContext, IPasswordHasher<string> hasher)
         {
-            DatabaseContext = databaseContext;
             Hasher = hasher;
 
             Users = databaseContext.GetCollection<FullUser>(nameof(Users));

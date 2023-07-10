@@ -1,7 +1,8 @@
 using Microsoft.AspNetCore;
 
-namespace Reality.Services.UPx {
-    public class Program
+namespace Reality.Services.UPx
+{
+    public static class Program
     {
         public static void Main(string[] args)
         {
