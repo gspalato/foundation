@@ -111,8 +111,6 @@ public class ProjectService : IHostedService, IDisposable
                     continue;
                 }
 
-                Logger.LogDebug("Found repo {Repo} with project metadata.", repo.Name);
-
                 var content = System.Text.Encoding.UTF8.GetString(raw);
 
                 var deserializer = new DeserializerBuilder()
@@ -127,9 +125,19 @@ public class ProjectService : IHostedService, IDisposable
                     continue;
                 }
 
-                var icon = projectContents.Where(c => c.Type == ContentType.File && c.Name == "icon.jpg").FirstOrDefault();
+                var icon = projectContents.Where(c => c.Type == ContentType.File && c.Name == "icon.webp").FirstOrDefault();
                 project.IconUrl ??= icon?.DownloadUrl;
+
+                var fallbackIcon = projectContents.Where(c => c.Type == ContentType.File && c.Name == "icon.jpg").FirstOrDefault();
+                project.FallbackIconUrl ??= fallbackIcon?.DownloadUrl;
+
+                project.IconUrl ??= project.FallbackIconUrl;
+
+                var banner = projectContents.Where(c => c.Type == ContentType.File && c.Name == "banner.webp").FirstOrDefault();
                 project.RepositoryUrl ??= repo?.HtmlUrl;
+
+                var fallbackBanner = projectContents.Where(c => c.Type == ContentType.File && c.Name == "banner.jpg").FirstOrDefault();
+                project.FallbackBannerUrl ??= fallbackBanner?.DownloadUrl;
 
                 Logger.LogDebug("Deserialized project {Project} with URL {URL}", project.Name, project.RepositoryUrl);
 
@@ -149,7 +157,9 @@ public class ProjectService : IHostedService, IDisposable
                         .Set(x => x.Name, project.Name)
                         .Set(x => x.Description, project.Description)
                         .Set(x => x.IconUrl, project.IconUrl)
-                        .Set(x => x.RepositoryUrl, project.RepositoryUrl);
+                        .Set(x => x.BannerUrl, project.BannerUrl)
+                        .Set(x => x.RepositoryUrl, project.RepositoryUrl)
+                        .Set(x => x.DeploymentUrl, project.DeploymentUrl);
 
                     await ProjectRepository.Collection.UpdateOneAsync(filter, update);
 
