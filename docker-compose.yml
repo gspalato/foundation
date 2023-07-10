@@ -103,8 +103,7 @@ services:
     ports:
       - "27017:27017"
     volumes:
-      - mongodbdata:/data/db
+      - /data/db:/data/db
 
 volumes:
   static:
-  mongodbdata:
