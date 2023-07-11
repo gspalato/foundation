@@ -15,7 +15,7 @@ service_folder_order = [
     'Reality.Proxy',
 ]
 
-parent_directory = os.path.abspath(os.path.join(os.getcwd(), os.pardir))
+parent_directory = os.path.dirname(os.getcwd())
 
 # App
 app = typer.Typer()
