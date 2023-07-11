@@ -27,8 +27,9 @@ def build_images():
     # Build images
     for folder in service_folder_order:
         print("Building " + folder + "...")
+        name = folder.lower()
         dockerfile = os.path.join('./', folder, 'Dockerfile')
-        tag = os.path.join(registry_host, folder)
+        tag = os.path.join(registry_host, name)
         subprocess.run(["docker", "build", "-t", tag, "-f", dockerfile, "."])
 
         print("Pushing " + folder + " to local registry...")
@@ -62,8 +63,4 @@ def stop_kubernetes():
 
     subprocess.run(["kubectl", "delete", "-all"])
     
-
-
-
-if __name__ == "tool":
-    app()
+app()
