@@ -77,6 +77,10 @@ public class ProjectService : IHostedService, IDisposable
         Logger.LogDebug("Found {Count} repositories: {Repos} belonging to {User}",
             allRepos.Count, string.Join(", ", allRepos.Select(x => x.FullName).ToList()), (await GitHubClient.User.Current()).Login);
 
+        var animatedExtension = ".mp4";
+        var defaultExtension = ".webp";
+        var fallbackExtension = ".jpg";
+
         foreach (var repo in allRepos)
         {
             try
@@ -125,19 +129,33 @@ public class ProjectService : IHostedService, IDisposable
                     continue;
                 }
 
-                var icon = projectContents.Where(c => c.Type == ContentType.File && c.Name == "icon.webp").FirstOrDefault();
+                var icon = projectContents.Where(c => c.Type == ContentType.File
+                    && c.Name == "icon" + defaultExtension).FirstOrDefault();
                 project.IconUrl ??= icon?.DownloadUrl;
 
-                var fallbackIcon = projectContents.Where(c => c.Type == ContentType.File && c.Name == "icon.jpg").FirstOrDefault();
+                var animatedIcon = projectContents.Where(c => c.Type == ContentType.File
+                    && c.Name == "icon" + animatedExtension).FirstOrDefault();
+                project.AnimatedIconUrl ??= animatedIcon?.DownloadUrl;
+
+                var fallbackIcon = projectContents.Where(c => c.Type == ContentType.File
+                    && c.Name == "icon" + fallbackExtension).FirstOrDefault();
                 project.FallbackIconUrl ??= fallbackIcon?.DownloadUrl;
 
                 project.IconUrl ??= project.FallbackIconUrl;
 
-                var banner = projectContents.Where(c => c.Type == ContentType.File && c.Name == "banner.webp").FirstOrDefault();
+                var banner = projectContents.Where(c => c.Type == ContentType.File
+                    && c.Name == "banner" + defaultExtension).FirstOrDefault();
                 project.RepositoryUrl ??= repo?.HtmlUrl;
 
-                var fallbackBanner = projectContents.Where(c => c.Type == ContentType.File && c.Name == "banner.jpg").FirstOrDefault();
+                var animatedBanner = projectContents.Where(c => c.Type == ContentType.File
+                    && c.Name == "banner" + animatedExtension).FirstOrDefault();
+                project.BannerUrl ??= animatedBanner?.DownloadUrl;
+
+                var fallbackBanner = projectContents.Where(c => c.Type == ContentType.File
+                    && c.Name == "banner" + fallbackExtension).FirstOrDefault();
                 project.FallbackBannerUrl ??= fallbackBanner?.DownloadUrl;
+
+                project.BannerUrl ??= project.FallbackBannerUrl;
 
                 Logger.LogDebug("Deserialized project {Project} with URL {URL}", project.Name, project.RepositoryUrl);
 
