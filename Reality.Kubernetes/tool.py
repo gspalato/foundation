@@ -37,7 +37,9 @@ def build_images():
     for folder in service_folder_order:
         print("Building " + folder + "...")
         name = folder.lower()
-        dockerfile = os.path.join(folder, 'Dockerfile')
+
+        service_folder = os.path.join(parent_directory, folder)
+        dockerfile = os.path.join(service_folder, "Dockerfile")
         tag = os.path.join(registry_host, name)
 
         has_dockerfile = os.path.isfile(dockerfile)
@@ -45,7 +47,7 @@ def build_images():
             print("No Dockerfile found in " + folder + ". Skipping...")
             continue
 
-        build_step = subprocess.Popen(["docker", "build", "-t", tag, "-f", dockerfile, "."], cwd=parent_directory ,stderr=subprocess.PIPE)
+        build_step = subprocess.Popen(["docker", "build", ".", "-t", tag], cwd=service_folder ,stderr=subprocess.PIPE)
         build_step.wait()
         error = build_step.communicate()[1]
         if (build_step.returncode != 0):
