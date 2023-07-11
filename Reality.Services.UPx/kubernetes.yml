@@ -1,0 +1,45 @@
+apiVersion: apps/v1
+kind: Service
+metadata:
+  name: upx_service
+  spec:
+    selector:
+      microservices.reality.io/name: upx
+    ports:
+      - name: http
+        protocol: TCP
+        port: 80
+        targetPort: 80
+      - name: https
+        protocol: TCP
+        port: 443
+        targetPort: 443
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: upx_deployment
+  labels:
+    io.reality.microservice: upx
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      io.reality.microservice: upx
+  # Pod Template
+  template: 
+    metadata:
+      labels:
+        io.reality.microservice: upx
+    spec:
+      containers:
+      - name: upx_service
+        image: UPX_SERVICE_IMAGE_NAME
+        ports:
+        - containerPort: 80
+        env:
+          - name: DatabaseName
+            value: UPx
+        envFrom:
+          - secretRef:
+            name: reality-secrets

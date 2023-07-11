@@ -1,0 +1,45 @@
+apiVersion: apps/v1
+kind: Service
+metadata:
+  name: proxy
+  spec:
+    type: NodePort
+    selector:
+      io.reality.microservice: proxy
+    ports:
+      - name: http
+        protocol: TCP
+        nodePort: 80
+        port: 80
+        targetPort: 80
+      - name: https
+        protocol: TCP
+        nodePort: 443
+        port: 443
+        targetPort: 443
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: proxy_deployment
+  labels:
+    io.reality.microservice: proxy
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      io.reality.microservice: proxy
+  # Pod Template
+  template: 
+    metadata:
+      labels:
+        io.reality.microservice: proxy
+    spec:
+      containers:
+      - name: proxy
+        image: PROXY_IMAGE_NAME
+        ports:
+        - containerPort: 80
+        envFrom:
+          - secretRef:
+            name: reality-secrets
