@@ -157,7 +157,9 @@ public class ProjectService : IHostedService, IDisposable
                         .Set(x => x.Name, project.Name)
                         .Set(x => x.Description, project.Description)
                         .Set(x => x.IconUrl, project.IconUrl)
+                        .Set(x => x.FallbackIconUrl, project.FallbackIconUrl)
                         .Set(x => x.BannerUrl, project.BannerUrl)
+                        .Set(x => x.FallbackBannerUrl, project.FallbackBannerUrl)
                         .Set(x => x.RepositoryUrl, project.RepositoryUrl)
                         .Set(x => x.DeploymentUrl, project.DeploymentUrl);
 
