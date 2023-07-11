@@ -30,12 +30,21 @@ def build_images():
         name = folder.lower()
         dockerfile = os.path.join('../', folder, 'Dockerfile')
         tag = os.path.join(registry_host, name)
-        build_step = subprocess.Popen(["docker", "build", "-t", tag, "-f", dockerfile, "."])
+
+        build_step = subprocess.Popen(["docker", "build", "-t", tag, "-f", dockerfile, "."], stderr=subprocess.PIPE)
         build_step.wait()
+        error = build_step.communicate()[1]
+        if (build_step.returncode != 0):
+            print(error)
+            exit(1)
 
         print("Pushing " + folder + " to local registry...")
-        push_step = subprocess.Popen(["docker", "push", tag])
+        push_step = subprocess.Popen(["docker", "push", tag], stderr=subprocess.PIPE)
         push_step.wait()
+        error = push_step.communicate()[1]
+        if (build_step.returncode != 0):
+            print(error)
+            exit(1)
 
 @app.command("up")
 def start_kubernetes():
@@ -43,13 +52,22 @@ def start_kubernetes():
     
     # Apply secrets
     secrets = os.path.join('../', secrets_filename)
-    subprocess.run(["kubectl", "apply", "-f", secrets])
+    secret_step = subprocess.Popen(["kubectl", "apply", "-f", secrets], stderr=subprocess.PIPE)
+    secret_step.wait()
+    error = secret_step.communicate()[1]
+    if (secret_step.returncode != 0):
+        print(error)
+        exit(1)
 
     # Apply service configurations
     for folder in service_folder_order:
         service = os.path.join('../', folder, "kubernetes.yml")
-        apply_step = subprocess.Popen(["kubectl", "apply", "-f", service])
+        apply_step = subprocess.Popen(["kubectl", "apply", "-f", service], stderr=subprocess.PIPE)
         apply_step.wait()
+        error = apply_step.communicate()[1]
+        if (apply_step.returncode != 0):
+            print(error)
+            exit(1)
 
 @app.command("update")
 def update_kubernetes():
@@ -58,14 +76,22 @@ def update_kubernetes():
     # Apply service configurations
     for folder in service_folder_order:
         service = os.path.join('../', folder, "kubernetes.yml")
-        apply_step = subprocess.Popen(["kubectl", "apply", "-f", service])
+        apply_step = subprocess.Popen(["kubectl", "apply", "-f", service], stderr=subprocess.PIPE)
         apply_step.wait()
+        error = apply_step.communicate()[1]
+        if (apply_step.returncode != 0):
+            print(error)
+            exit(1)
 
 @app.command("down")
 def stop_kubernetes():
     print("Stopping Reality...")
 
-    stop_step = subprocess.Popen(["kubectl", "delete", "-all"])
+    stop_step = subprocess.Popen(["kubectl", "delete", "-all"], stderr=subprocess.PIPE)
     stop_step.wait()
+    error = stop_step.communicate()[1]
+    if (stop_step.returncode != 0):
+        print(error)
+        exit(1)
     
 app()
