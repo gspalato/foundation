@@ -28,12 +28,14 @@ def build_images():
     for folder in service_folder_order:
         print("Building " + folder + "...")
         name = folder.lower()
-        dockerfile = os.path.join('./', folder, 'Dockerfile')
+        dockerfile = os.path.join('../', folder, 'Dockerfile')
         tag = os.path.join(registry_host, name)
-        subprocess.run(["docker", "build", "-t", tag, "-f", dockerfile, "."])
+        build_step = subprocess.Popen(["docker", "build", "-t", tag, "-f", dockerfile, "."])
+        build_step.wait()
 
         print("Pushing " + folder + " to local registry...")
-        subprocess.run(["docker", "push", tag])
+        push_step = subprocess.Popen(["docker", "push", tag])
+        push_step.wait()
 
 @app.command("up")
 def start_kubernetes():
@@ -45,8 +47,9 @@ def start_kubernetes():
 
     # Apply service configurations
     for folder in service_folder_order:
-        service = os.path.join('./', folder, "kubernetes.yml")
-        subprocess.run(["kubectl", "apply", "-f", service])
+        service = os.path.join('../', folder, "kubernetes.yml")
+        apply_step = subprocess.Popen(["kubectl", "apply", "-f", service])
+        apply_step.wait()
 
 @app.command("update")
 def update_kubernetes():
@@ -54,13 +57,15 @@ def update_kubernetes():
 
     # Apply service configurations
     for folder in service_folder_order:
-        service = os.path.join('./', folder, "kubernetes.yml")
-        subprocess.run(["kubectl", "apply", "-f", service])
+        service = os.path.join('../', folder, "kubernetes.yml")
+        apply_step = subprocess.Popen(["kubectl", "apply", "-f", service])
+        apply_step.wait()
 
 @app.command("down")
 def stop_kubernetes():
     print("Stopping Reality...")
 
-    subprocess.run(["kubectl", "delete", "-all"])
+    stop_step = subprocess.Popen(["kubectl", "delete", "-all"])
+    stop_step.wait()
     
 app()
