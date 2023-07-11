@@ -37,7 +37,7 @@ def build_images():
     for folder in service_folder_order:
         print("Building " + folder + "...")
         name = folder.lower()
-        dockerfile = os.path.join('../', folder, 'Dockerfile')
+        dockerfile = os.path.join(folder, 'Dockerfile')
         tag = os.path.join(registry_host, name)
 
         build_step = subprocess.Popen(["docker", "build", "-t", tag, "-f", dockerfile, "."], cwd=parent_directory ,stderr=subprocess.PIPE)
