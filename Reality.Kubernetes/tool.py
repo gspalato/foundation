@@ -22,7 +22,15 @@ app = typer.Typer()
 @app.command("build")
 def build_images():
     print("Building Docker images...")
-    subprocess.run(["docker", "login", registry_host])
+
+    login_step = subprocess.Popen(["docker", "login", registry_host], stderr=subprocess.PIPE)
+    login_step.wait()
+    error = login_step.communicate()[1]
+    if (login_step.returncode != 0):
+        print(error)
+        exit(1)
+
+    created_images = []
 
     # Build images
     for folder in service_folder_order:
@@ -31,7 +39,7 @@ def build_images():
         dockerfile = os.path.join('../', folder, 'Dockerfile')
         tag = os.path.join(registry_host, name)
 
-        build_step = subprocess.Popen(["docker", "build", "-t", tag, "-f", dockerfile, "."], stderr=subprocess.PIPE)
+        build_step = subprocess.Popen(["docker", "build", "-t", tag, "-f", dockerfile, ".."], stderr=subprocess.PIPE)
         build_step.wait()
         error = build_step.communicate()[1]
         if (build_step.returncode != 0):
@@ -45,6 +53,13 @@ def build_images():
         if (build_step.returncode != 0):
             print(error)
             exit(1)
+
+        created_images.append(tag)
+
+    print("Built images:")
+    for image in created_images:
+        print("- " + image)
+    print("Done.")
 
 @app.command("up")
 def start_kubernetes():
