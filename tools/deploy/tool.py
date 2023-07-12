@@ -17,7 +17,8 @@ service_order = [
     'Reality.Services.Proxy',
 ]
 
-main_directory = os.path.join(os.getcwd(), '..', '..')
+tool_directory = os.path.dirname(os.path.realpath(__file__))
+main_directory = os.path.join(tool_directory, '..', '..')
 src_directory = os.path.join(main_directory, 'src')
 
 # App
