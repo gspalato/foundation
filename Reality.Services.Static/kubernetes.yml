@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: static.micro.service
+  name: static-service
 spec:
   selector:
     io.reality.microservice: static
@@ -18,7 +18,7 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: static.micro.deployment
+  name: static-service-deployment
   labels:
     io.reality.microservice: static
 spec:
@@ -33,7 +33,7 @@ spec:
         io.reality.microservice: static
     spec:
       containers:
-      - name: static.micro.pod
+      - name: static-service-pod
         image: localhost:5000/reality.services.static:latest
         ports:
         - containerPort: 80

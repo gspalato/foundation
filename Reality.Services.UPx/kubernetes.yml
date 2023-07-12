@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: upx.micro.service
+  name: upx-service
 spec:
   selector:
     microservices.reality.io/name: upx
@@ -18,7 +18,7 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: upx.micro.deployment
+  name: upx-service-deployment
   labels:
     io.reality.microservice: upx
 spec:
@@ -33,7 +33,7 @@ spec:
         io.reality.microservice: upx
     spec:
       containers:
-      - name: upx.micro.service
+      - name: upx-service-pod
         image: localhost:5000/reality.services.upx:latest
         ports:
         - containerPort: 80
