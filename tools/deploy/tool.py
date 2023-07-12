@@ -16,6 +16,7 @@ service_folder_order = [
 ]
 
 parent_directory = os.path.dirname(os.getcwd())
+src_directory = os.path.join(parent_directory, 'src')
 
 # App
 app = typer.Typer()
@@ -38,7 +39,7 @@ def build_images():
         print("Building " + folder + "...")
         name = folder.lower()
 
-        service_folder = os.path.join(parent_directory, folder)
+        service_folder = os.path.join(src_directory, folder)
         dockerfile = os.path.join(service_folder, "Dockerfile")
         tag = os.path.join(registry_host, name)
 
@@ -48,14 +49,14 @@ def build_images():
             continue
 
         build_step = subprocess.Popen(["docker", "build", ".", "-f", os.path.join(folder, "Dockerfile"), "-t", tag],
-                                      cwd=parent_directory, stderr=subprocess.PIPE)
+                                      cwd=src_directory, stderr=subprocess.PIPE)
         build_step.wait()
         error = build_step.communicate()[1]
         if (build_step.returncode != 0):
             print(error)
             exit(1)
 
-        print("Pushing " + folder + " to local registry...")
+        print("Pushing " + folder + " to registry...")
         push_step = subprocess.Popen(["docker", "push", tag], stderr=subprocess.PIPE)
         push_step.wait()
         error = push_step.communicate()[1]
@@ -85,7 +86,7 @@ def start_kubernetes():
     # Apply service configurations
     for folder in service_folder_order:
         service_file = os.path.join(folder, "kubernetes.yml")
-        apply_step = subprocess.Popen(["kubectl", "apply", "-f", service_file], cwd=parent_directory, stderr=subprocess.PIPE)
+        apply_step = subprocess.Popen(["kubectl", "apply", "-f", service_file], cwd=src_directory, stderr=subprocess.PIPE)
         apply_step.wait()
         error = apply_step.communicate()[1]
         if (apply_step.returncode != 0):
@@ -99,7 +100,7 @@ def update_kubernetes():
     # Apply service configurations
     for folder in service_folder_order:
         service_file = os.path.join(folder, "kubernetes.yml")
-        apply_step = subprocess.Popen(["kubectl", "apply", "-f", service_file], cwd=parent_directory, stderr=subprocess.PIPE)
+        apply_step = subprocess.Popen(["kubectl", "apply", "-f", service_file], cwd=src_directory, stderr=subprocess.PIPE)
         apply_step.wait()
         error = apply_step.communicate()[1]
         if (apply_step.returncode != 0):
