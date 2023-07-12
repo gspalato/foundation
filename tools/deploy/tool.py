@@ -2,9 +2,10 @@ import os
 from typing_extensions import Annotated
 import typer
 import subprocess
+from rich.prompt import Prompt
 
 # Configurations
-registry_host = 'localhost:5000'
+registry_host = None # Set to None to push to docker.io.
 secrets_filename = 'secrets.yml'
 service_order = [
     'Reality.Database',
@@ -26,7 +27,11 @@ app = typer.Typer()
 def build_images():
     print("Building Docker images...")
 
-    login_step = subprocess.Popen(["docker", "login", registry_host or ""], stderr=subprocess.PIPE)
+    # Login to registry
+    username = Prompt.ask("Enter your registry username: ", default="")
+    password = Prompt.ask("Enter your registry password: ", default="", password=True)
+
+    login_step = subprocess.Popen(["docker", "login", registry_host or "", "-u", username, "-p", password], stderr=subprocess.PIPE)
     login_step.wait()
     error = login_step.communicate()[1]
     if (login_step.returncode != 0):
@@ -42,7 +47,7 @@ def build_images():
 
         service_folder = os.path.join(src_directory, folder)
         dockerfile = os.path.join(service_folder, "Dockerfile")
-        tag = os.path.join(registry_host, name)
+        tag = registry_host and os.path.join(registry_host, name) or os.path.join(username, name)
 
         has_dockerfile = os.path.isfile(dockerfile)
         if (not has_dockerfile):
