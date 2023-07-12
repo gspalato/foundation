@@ -52,8 +52,8 @@ services:
       - .env
     environment:
       - DatabaseName=Identity
-    depends_on:
-      - db
+    #depends_on:
+    #  - db
 
   upx_service:
     hostname: "upx-service"
@@ -64,8 +64,8 @@ services:
       - .env
     environment:
       - DatabaseName=UPx
-    depends_on:
-      - db
+    #depends_on:
+    #  - db
 
   static_service:
     hostname: "static-service"
@@ -78,8 +78,8 @@ services:
       - DatabaseName=Static
     volumes:
       - static:/etc/reality/static/files
-    depends_on:
-      - db
+    #depends_on:
+    #  - db
 
   portfolio_service:
     hostname: "portfolio-service"
@@ -90,20 +90,20 @@ services:
       - .env
     environment:
       - DatabaseName=Portfolio
-    depends_on:
-      - db
+    #depends_on:
+    #  - db
 
   # Databases
-  db:
-    hostname: "db"
-    image: mongo
-    restart: on-failure
-    expose:
-      - "27017"
-    ports:
-      - "27017:27017"
-    volumes:
-      - /data/db:/data/db
+  #db:
+  #  hostname: "db"
+  #  image: mongo
+  #  restart: on-failure
+  #  expose:
+  #    - "27017"
+  #  ports:
+  #    - "27017:27017"
+  #  volumes:
+  #    - /data/db:/data/db
 
 volumes:
   static:
