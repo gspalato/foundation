@@ -122,7 +122,7 @@ def update_kubernetes():
 def stop_kubernetes():
     print("Stopping Reality...")
 
-    stop_step = subprocess.Popen(["kubectl", "delete", "all", "--all"], cwd=main_directory, stderr=subprocess.PIPE)
+    stop_step = subprocess.Popen(["kubectl", "delete", "pods,deployments,services", "--all"], cwd=main_directory, stderr=subprocess.PIPE)
     stop_step.wait()
     error = stop_step.communicate()[1]
     if (stop_step.returncode != 0):
