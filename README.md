@@ -45,7 +45,13 @@
       <a href="#getting-started">Getting Started</a>
       <ul>
         <li><a href="#prerequisites">Prerequisites</a></li>
-        <li><a href="#installation">Installation</a></li>
+        <li>
+          <a href="#installation">Installation</a>
+          <ul>
+            <li><a href="#docker-compose">Docker Compose</a></li>
+            <li><a href="#kuberneter">Kubernetes</a></li>
+          </ul>
+        </li>
       </ul>
     </li>
     <li>
@@ -53,6 +59,7 @@
       <ul>
         <li><a href="#gateway">Gateway</a></li>
         <li><a href="#identity">Identity</a></li>
+        <li><a href="#portfolio">Portfolio</a></li>
         <li><a href="#proxy">Proxy</a></li>
         <li><a href="#static">Static</a></li>
       </ul>
@@ -96,28 +103,34 @@ To get a local copy up and running with:
 #### Docker Compose
 
 1. Clone the repo
-   ```sh
-   git clone https://github.com/gspalato/reality.git
-   ```
+
+```sh
+git clone https://github.com/gspalato/reality.git
+```
+
 2. Build docker image
-   ```sh
-   docker compose build
-   ```
-3. Configure environment variables in a `.reality.env` file:
 
-   ```env
-   REALITY_JWT_SECURITY_KEY=insert_your_256_byte_key_here
+```sh
+docker compose build
+```
 
-   DatabaseHost=127.0.0.1
-   DatabaseUser=example
-   DatabasePassword=example
-   DatabaseName=example
-   ```
+3. Configure environment variables in a `.env` file:
+
+```env
+REALITY_JWT_SECURITY_KEY=insert_your_256_byte_key_here
+
+GithubToken=your_github_token_here
+
+DatabaseHost=127.0.0.1
+DatabaseUser=example
+DatabasePassword=example
+```
 
 4. Start it
-   ```sh
-   docker compose up -d
-   ```
+
+```sh
+docker compose up -d
+```
 
 #### Kubernetes
 
@@ -125,20 +138,38 @@ To get a local copy up and running with:
 
 1. Clone the repo
 
-   ```sh
-   git clone https://github.com/gspalato/reality.git
-   ```
+```sh
+git clone https://github.com/gspalato/reality.git
+```
 
-2. Run `docker login` to login to your private registry.
+2. Create a secrets.yml file:
 
-3. Configure the Reality Deploy tool to use your private registry.
+```yml
+apiVersion: v1
+kind: Secret
+metadata:
+  name: reality-secrets
+type: Opaque
+stringData:
+  REALITY_JWT_SECURITY_KEY: insert_your_256_byte_key_here
+
+  GithubToken: your_github_token_here
+
+  DatabaseHost: 127.0.0.1
+  DatabaseUser: example
+  DatabasePassword: example
+```
+
+2. Run `docker login` to login to your registry.
+
+3. Configure the Reality Deploy tool to use your registry.
 
 4. Configure the `kubernetes.yml` files to use your registry for the images.
 
 5. Clone the docker registry's login to Kubernetes
 
 ```sh
-kubectl create secret generic reality-registry --from-file=.dockerconfigjson=<path/to/.docker/config.json> --type=kubernetes.io/dockerconfigjson
+kubectl create secret generic reality-registry --from-file=.dockerconfigjson=/path/to/.docker/config.json --type=kubernetes.io/dockerconfigjson
 ```
 
 5. Build the services.
@@ -165,6 +196,11 @@ It's configuration requires all the other services' Docker URLs as an environmen
 ### Identity
 
 Handles authentication and JWT tokens. Other services rely on Identity to allow access to certain data.
+
+### Portfolio
+
+The Portfolio microservice handles information displayed on my portfolio website.
+Currently it fetches my projects from GitHub that have a `.project/metadata.yml` and updates the database every 5 minutes.
 
 ### Proxy
 
