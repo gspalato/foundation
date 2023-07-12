@@ -38,7 +38,7 @@ spec:
       # Using local registry.
       containers:
       - name: proxy-service-pod
-        image: unreaalism/reality.proxy:latest
+        image: unreaalism/reality.services.proxy:latest
         ports:
         - containerPort: 80
         envFrom:
