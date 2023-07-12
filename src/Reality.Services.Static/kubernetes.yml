@@ -32,9 +32,11 @@ spec:
       labels:
         io.reality.microservice: static
     spec:
+      # Using local registry.
       containers:
       - name: static-service-pod
-        image: localhost:5000/reality.services.static:latest
+        image: unreaalismlity.services.static:latest
+        imagePullPolicy: IfNotPresent
         ports:
         - containerPort: 80
         env:

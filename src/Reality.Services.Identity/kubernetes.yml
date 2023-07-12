@@ -32,9 +32,11 @@ spec:
       labels:
         io.reality.microservice: identity
     spec:
+      # Using local registry.
       containers:
       - name: identity-service-pod
-        image: localhost:5000/reality.services.identity:latest
+        image: unreaalismlity.services.identity:latest
+        imagePullPolicy: IfNotPresent
         ports:
         - containerPort: 80
         env:

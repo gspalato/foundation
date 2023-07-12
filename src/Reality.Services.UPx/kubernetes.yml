@@ -32,9 +32,11 @@ spec:
       labels:
         io.reality.microservice: upx
     spec:
+      # Using local registry.
       containers:
       - name: upx-service-pod
-        image: localhost:5000/reality.services.upx:latest
+        image: unreaalism/reality.services.upx:latest
+        imagePullPolicy: IfNotPresent
         ports:
         - containerPort: 80
         env:

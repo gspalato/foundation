@@ -32,9 +32,11 @@ spec:
       labels:
         io.reality.microservice: gateway
     spec:
+      # Using local registry.
       containers:
       - name: gateway-service-pod
-        image: localhost:5000/reality.services.gateway:latest
+        image: unreaalism/reality.services.gateway:latest
+        imagePullPolicy: IfNotPresent
         ports:
         - containerPort: 80
         envFrom:

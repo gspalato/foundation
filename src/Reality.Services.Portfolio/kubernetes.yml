@@ -33,8 +33,10 @@ spec:
         io.reality.microservice: portfolio
     spec:
       containers:
+        # Using local registry.
       - name: portfolio-service-pod
-        image: localhost:5000/reality.services.portfolio:latest
+        image: unreaalismlity.services.portfolio:latest
+        imagePullPolicy: IfNotPresent
         ports:
         - containerPort: 80
         env:
