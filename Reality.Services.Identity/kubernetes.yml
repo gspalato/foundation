@@ -2,18 +2,18 @@ apiVersion: v1
 kind: Service
 metadata:
   name: identity-service
-  spec:
-    selector:
-      io.reality.microservice: identity
-    ports:
-      - name: http
-        protocol: TCP
-        port: 80
-        targetPort: 80
-      - name: https
-        protocol: TCP
-        port: 443
-        targetPort: 443
+spec:
+  selector:
+    io.reality.microservice: identity
+  ports:
+    - name: http
+      protocol: TCP
+      port: 80
+      targetPort: 80
+    - name: https
+      protocol: TCP
+      port: 443
+      targetPort: 443
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -42,4 +42,4 @@ spec:
             value: Identity
         envFrom:
           - secretRef:
-            name: reality-secrets
+              name: reality-secrets

@@ -39,4 +39,4 @@ spec:
         - containerPort: 80
         envFrom:
           - secretRef:
-            name: reality-secrets
+              name: reality-secrets
