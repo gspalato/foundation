@@ -91,7 +91,9 @@ Reality is a microservice GraphQL back-end and platform for my projects, allowin
 
 ### Installation
 
-To get a local copy up and running:
+To get a local copy up and running with:
+
+#### Docker Compose
 
 1. Clone the repo
    ```sh
@@ -112,16 +114,44 @@ To get a local copy up and running:
    DatabaseName=example
    ```
 
-4. Configure environment variables in a `.portfolio.env` file:
-
-   ```env
-   GatewayUrl=1.2.3.4
-   ```
-
-5. Start it
+4. Start it
    ```sh
    docker compose up -d
    ```
+
+#### Kubernetes
+
+##### Using a private registry
+
+1. Clone the repo
+
+   ```sh
+   git clone https://github.com/gspalato/reality.git
+   ```
+
+2. Run `docker login` to login to your private registry.
+
+3. Configure the Reality Deploy tool to use your private registry.
+
+4. Configure the `kubernetes.yml` files to use your registry for the images.
+
+5. Clone the docker registry's login to Kubernetes
+
+```sh
+kubectl create secret generic reality-registry --from-file=.dockerconfigjson=<path/to/.docker/config.json> --type=kubernetes.io/dockerconfigjson
+```
+
+5. Build the services.
+
+```sh
+python3 ./Reality.Kubernetes/tool.py build
+```
+
+6. Run the services.
+
+```sh
+python3 ./Reality.Kubernetes/tool.py up
+```
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
