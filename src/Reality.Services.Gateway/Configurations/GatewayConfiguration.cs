@@ -1,6 +1,6 @@
 ﻿using Reality.Common.Configurations;
 
-namespace Reality.Gateway.Configurations
+namespace Reality.Services.Gateway.Configurations
 {
     public class GatewayConfiguration : BaseConfiguration
     {

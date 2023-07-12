@@ -4,7 +4,7 @@ using HotChocolate.Execution.Instrumentation;
 using HotChocolate.Execution.Processing;
 using HotChocolate.Resolvers;
 
-namespace Reality.Gateway.Middleware
+namespace Reality.Services.Gateway.Middleware
 {
     public class ErrorLoggingDiagnosticsEventListener : ExecutionDiagnosticEventListener
     {

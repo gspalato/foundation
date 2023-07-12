@@ -1,6 +1,6 @@
 FROM nginx
 
-COPY ./Reality.Proxy/* /etc/nginx/
+COPY ./Reality.Services.Proxy/* /etc/nginx/
 
 EXPOSE 80
 

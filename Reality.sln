@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.0.31912.275
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Reality.Gateway", "Reality.Gateway\Reality.Gateway.csproj", "{7BDB2F34-4424-44A7-98E9-00A1E624CC43}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Reality.Services.Gateway", "Reality.Services.Gateway\Reality.Services.Gateway.csproj", "{7BDB2F34-4424-44A7-98E9-00A1E624CC43}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Reality.Common", "Reality.Common\Reality.Common.csproj", "{0272ADBE-8C1F-4031-A5CD-78311865CB81}"
 EndProject

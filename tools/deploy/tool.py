@@ -13,8 +13,8 @@ service_order = [
     'Reality.Services.UPx',
     'Reality.Services.Portfolio',
     'Portfolio',
-    'Reality.Gateway',
-    'Reality.Proxy',
+    'Reality.Services.Gateway',
+    'Reality.Services.Proxy',
 ]
 
 main_directory = os.path.join(os.getcwd(), '..', '..')

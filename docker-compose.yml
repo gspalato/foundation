@@ -6,7 +6,7 @@ services:
       - "80:80"
     build:
       context: ./src
-      dockerfile: ./Reality.Proxy/Dockerfile
+      dockerfile: ./Reality.Services.Proxy/Dockerfile
     depends_on:
       - gateway
 
@@ -32,7 +32,7 @@ services:
       - "80"
     build:
       context: ./src
-      dockerfile: ./Reality.Gateway/Dockerfile
+      dockerfile: ./Reality.Services.Gateway/Dockerfile
     env_file:
       - .env
     environment:

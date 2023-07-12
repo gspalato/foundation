@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore;
 
-namespace Reality.Gateway
+namespace Reality.Services.Gateway
 {
     public static class Program
     {

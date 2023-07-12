@@ -1,11 +1,11 @@
 ﻿using HotChocolate.AspNetCore;
 using HotChocolate.Stitching;
 using NLog.Extensions.Logging;
-using Reality.Gateway.Configurations;
-using Reality.Gateway.Middleware;
+using Reality.Services.Gateway.Configurations;
+using Reality.Services.Gateway.Middleware;
 using System.Reflection;
 
-namespace Reality.Gateway
+namespace Reality.Services.Gateway
 {
     public class Startup
     {
