@@ -34,7 +34,7 @@ spec:
     spec:
       containers:
       - name: gateway-service-pod
-        image: 127.0.0.1:5000/reality.services.gateway:latest
+        image: localhost:5000/reality.services.gateway:latest
         ports:
         - containerPort: 80
         envFrom:
