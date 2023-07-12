@@ -37,7 +37,7 @@ spec:
     spec:
       containers:
       - name: proxy-service-pod
-        image: localhost:5000/reality.proxy:latest
+        image: 127.0.0.1:5000/reality.proxy:latest
         ports:
         - containerPort: 80
         envFrom:

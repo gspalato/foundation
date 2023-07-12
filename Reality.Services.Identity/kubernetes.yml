@@ -34,7 +34,7 @@ spec:
     spec:
       containers:
       - name: identity-service-pod
-        image: localhost:5000/reality.services.identity:latest
+        image: 127.0.0.1:5000/reality.services.identity:latest
         ports:
         - containerPort: 80
         env:
