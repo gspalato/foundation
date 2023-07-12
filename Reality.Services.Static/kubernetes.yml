@@ -1,0 +1,45 @@
+apiVersion: apps/v1
+kind: Service
+metadata:
+  name: static-service
+  spec:
+    selector:
+      io.reality.microservice: static
+    ports:
+      - name: http
+        protocol: TCP
+        port: 80
+        targetPort: 80
+      - name: https
+        protocol: TCP
+        port: 443
+        targetPort: 443
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: static-deployment
+  labels:
+    io.reality.microservice: static
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      io.reality.microservice: static
+  # Pod Template
+  template: 
+    metadata:
+      labels:
+        io.reality.microservice: static
+    spec:
+      containers:
+      - name: static-service
+        image: localhost:5000/reality.services.static:latest
+        ports:
+        - containerPort: 80
+        env:
+          - name: DatabaseName
+            value: Static
+        envFrom:
+          - secretRef:
+            name: reality-secrets

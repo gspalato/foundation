@@ -21,7 +21,7 @@ metadata:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: proxy_deployment
+  name: proxy-deployment
   labels:
     io.reality.microservice: proxy
 spec:
@@ -37,7 +37,7 @@ spec:
     spec:
       containers:
       - name: proxy
-        image: PROXY_IMAGE_NAME
+        image: localhost:5000/reality.proxy:latest
         ports:
         - containerPort: 80
         envFrom:

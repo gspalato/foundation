@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Service
 metadata:
-  name: identity_service
+  name: identity-service
   spec:
     selector:
       io.reality.microservice: identity
@@ -18,7 +18,7 @@ metadata:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: identity_deployment
+  name: identity-deployment
   labels:
     io.reality.microservice: identity
 spec:
@@ -33,8 +33,8 @@ spec:
         io.reality.microservice: identity
     spec:
       containers:
-      - name: identity_service
-        image: IDENTITY_SERVICE_IMAGE_NAME
+      - name: identity-service
+        image: localhost:5000/reality.services.identity:latest
         ports:
         - containerPort: 80
         env:

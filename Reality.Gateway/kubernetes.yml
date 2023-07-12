@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Service
 metadata:
-  name: gateway_service
+  name: gateway-service
   spec:
     selector:
       io.reality.microservice: gateway
@@ -18,7 +18,7 @@ metadata:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: gateway_deployment
+  name: gateway-deployment
   labels:
     io.reality.microservice: gateway
 spec:
@@ -33,8 +33,8 @@ spec:
         io.reality.microservice: gateway
     spec:
       containers:
-      - name: gateway_service
-        image: GATEWAY_SERVICE_IMAGE_NAME
+      - name: gateway-service
+        image: localhost:5000/reality.services.gateway:latest
         ports:
         - containerPort: 80
         envFrom:

@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Service
 metadata:
-  name: portfolio_service
+  name: portfolio-service
   spec:
     selector:
       io.reality.microservice: portfolio
@@ -18,7 +18,7 @@ metadata:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: portfolio_deployment
+  name: portfolio-deployment
   labels:
     io.reality.microservice: portfolio
 spec:
@@ -33,8 +33,8 @@ spec:
         io.reality.microservice: portfolio
     spec:
       containers:
-      - name: portfolio_service
-        image: PORTFOLIO_SERVICE_IMAGE_NAME
+      - name: portfolio-service
+        image: localhost:5000/reality.services.portfolio:latest
         ports:
         - containerPort: 80
         env:

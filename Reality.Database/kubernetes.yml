@@ -45,7 +45,7 @@ spec:
 apiVersion: apps/v1
 kind: Service
 metadata:
-  name: database_service
+  name: database-service
   spec:
     selector:
       io.reality.microservice: database
@@ -58,7 +58,7 @@ metadata:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: database_deployment
+  name: database-deployment
   labels:
     io.reality.microservice: database
 spec:
