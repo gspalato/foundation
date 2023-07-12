@@ -5,7 +5,7 @@ services:
     ports:
       - "80:80"
     build:
-      context: ./
+      context: ./src
       dockerfile: ./src/Reality.Proxy/Dockerfile
     depends_on:
       - gateway
@@ -18,7 +18,7 @@ services:
     expose:
       - "8080"
     build:
-      context: ./
+      context: ./src
       dockerfile: ./src/Portfolio/Dockerfile
     depends_on:
       - gateway
@@ -31,7 +31,7 @@ services:
     expose:
       - "80"
     build:
-      context: ./
+      context: ./src
       dockerfile: ./src/Reality.Gateway/Dockerfile
     env_file:
       - .env
@@ -46,7 +46,7 @@ services:
   identity_service:
     hostname: "identity_service"
     build:
-      context: ./
+      context: ./src
       dockerfile: ./src/Reality.Services.Identity/Dockerfile
     env_file:
       - .env
@@ -58,7 +58,7 @@ services:
   upx_service:
     hostname: "upx_service"
     build:
-      context: ./
+      context: ./src
       dockerfile: ./src/Reality.Services.UPx/Dockerfile
     env_file:
       - .env
@@ -70,7 +70,7 @@ services:
   static_service:
     hostname: "static_service"
     build:
-      context: ./
+      context: ./src
       dockerfile: ./src/Reality.Services.Static/Dockerfile
     env_file:
       - .env
@@ -84,7 +84,7 @@ services:
   portfolio_service:
     hostname: "portfolio_service"
     build:
-      context: ./
+      context: ./src
       dockerfile: ./src/Reality.Services.Portfolio/Dockerfile
     env_file:
       - .env
