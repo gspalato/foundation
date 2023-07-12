@@ -1,11 +1,12 @@
 import os
+from typing_extensions import Annotated
 import typer
 import subprocess
 
-# Configuration files
+# Configurations
 registry_host = 'localhost:5000'
 secrets_filename = 'secrets.yml'
-service_folder_order = [
+service_order = [
     'Reality.Database',
     'Reality.Services.Identity',
     'Reality.Services.UPx',
@@ -35,7 +36,7 @@ def build_images():
     created_images = []
 
     # Build images
-    for folder in service_folder_order:
+    for folder in service_order:
         print("Building " + folder + "...")
         name = folder.lower()
 
@@ -72,7 +73,9 @@ def build_images():
     print("Done.")
 
 @app.command("up")
-def start_kubernetes():
+def start_kubernetes(
+    skip: Annotated[str, typer.Option(help="Skips failed configuration files and continues applying.")] = False
+):
     print("Starting Reality...")
     
     # Apply secrets
@@ -84,21 +87,24 @@ def start_kubernetes():
         exit(1)
 
     # Apply service configurations
-    for folder in service_folder_order:
+    for folder in service_order:
         service_file = os.path.join(folder, "kubernetes.yml")
         apply_step = subprocess.Popen(["kubectl", "apply", "-f", service_file], cwd=src_directory, stderr=subprocess.PIPE)
         apply_step.wait()
         error = apply_step.communicate()[1]
         if (apply_step.returncode != 0):
             print(error)
-            exit(1)
+            if (skip):
+                print("Skipping...")
+            else:
+                exit(1)
 
 @app.command("update")
 def update_kubernetes():
     print("Updating Kubernetes configuration...")
 
     # Apply service configurations
-    for folder in service_folder_order:
+    for folder in service_order:
         service_file = os.path.join(folder, "kubernetes.yml")
         apply_step = subprocess.Popen(["kubectl", "apply", "-f", service_file], cwd=src_directory, stderr=subprocess.PIPE)
         apply_step.wait()
