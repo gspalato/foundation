@@ -51,7 +51,7 @@ def build_images():
 
         has_dockerfile = os.path.isfile(dockerfile)
         if (not has_dockerfile):
-            print("No Dockerfile found in " + folder + ". Skipping...")
+            print("No Dockerfile found in " + service_folder + ". Skipping...")
             continue
 
         build_step = subprocess.Popen(["docker", "build", ".", "-f", os.path.join(folder, "Dockerfile"), "-t", tag],
