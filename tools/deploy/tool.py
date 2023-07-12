@@ -24,7 +24,7 @@ app = typer.Typer()
 def build_images():
     print("Building Docker images...")
 
-    login_step = subprocess.Popen(["docker", "login", registry_host], stderr=subprocess.PIPE)
+    login_step = subprocess.Popen(["docker", "login", registry_host or ""], stderr=subprocess.PIPE)
     login_step.wait()
     error = login_step.communicate()[1]
     if (login_step.returncode != 0):
