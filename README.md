@@ -178,6 +178,12 @@ kubectl create secret generic reality-registry --from-file=.dockerconfigjson=/pa
 python3 ./Reality.Kubernetes/tool.py build
 ```
 
+6. Run MongoDB locally.
+
+```sh
+mongod --dbpath /data/db --port 27017 --logpath mongodb/log --logappend --fork --bind_ip_all
+```
+
 6. Run the services.
 
 ```sh

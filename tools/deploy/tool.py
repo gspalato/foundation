@@ -8,7 +8,6 @@ from rich.prompt import Prompt
 registry_host = None # Set to None to push to docker.io.
 secrets_filename = 'secrets.yml'
 service_order = [
-    'Reality.Database',
     'Reality.Services.Identity',
     'Reality.Services.UPx',
     'Reality.Services.Portfolio',
