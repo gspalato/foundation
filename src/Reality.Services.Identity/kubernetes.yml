@@ -35,8 +35,7 @@ spec:
       # Using local registry.
       containers:
       - name: identity-service-pod
-        image: unreaalismlity.services.identity:latest
-        imagePullPolicy: IfNotPresent
+        image: unreaalism/reality.services.identity:latest
         ports:
         - containerPort: 80
         env:

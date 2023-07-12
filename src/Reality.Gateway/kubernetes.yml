@@ -36,7 +36,6 @@ spec:
       containers:
       - name: gateway-service-pod
         image: unreaalism/reality.services.gateway:latest
-        imagePullPolicy: IfNotPresent
         ports:
         - containerPort: 80
         envFrom:

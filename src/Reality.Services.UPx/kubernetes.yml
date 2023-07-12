@@ -36,7 +36,6 @@ spec:
       containers:
       - name: upx-service-pod
         image: unreaalism/reality.services.upx:latest
-        imagePullPolicy: IfNotPresent
         ports:
         - containerPort: 80
         env:

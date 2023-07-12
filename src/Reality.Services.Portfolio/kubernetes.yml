@@ -35,8 +35,7 @@ spec:
       containers:
         # Using local registry.
       - name: portfolio-service-pod
-        image: unreaalismlity.services.portfolio:latest
-        imagePullPolicy: IfNotPresent
+        image: unreaalism/reality.services.portfolio:latest
         ports:
         - containerPort: 80
         env:
