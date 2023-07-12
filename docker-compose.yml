@@ -1,7 +1,7 @@
 services:
   # Reverse Proxy
   proxy:
-    hostname: "proxy"
+    hostname: "proxy-service"
     ports:
       - "80:80"
     build:
@@ -12,7 +12,7 @@ services:
 
   # Portfolio Front-end
   portfolio:
-    hostname: "portfolio"
+    hostname: "portfolio-app"
     ports:
       - "8080:8080"
     expose:
@@ -25,7 +25,7 @@ services:
 
   # Reality API Gateway
   gateway:
-    hostname: "gateway"
+    hostname: "gateway-service"
     ports:
       - "4000:80"
     expose:
@@ -36,7 +36,7 @@ services:
     env_file:
       - .env
     environment:
-      - SERVICE_URLS=http://identity_service,http://upx_service,http://portfolio_service
+      - SERVICE_URLS=http://identity-service,http://upx-service,http://portfolio-service
     depends_on:
       - identity_service
       - upx_service
@@ -44,7 +44,7 @@ services:
 
   # Reality API Microservices
   identity_service:
-    hostname: "identity_service"
+    hostname: "identity-service"
     build:
       context: ./src
       dockerfile: ./Reality.Services.Identity/Dockerfile
@@ -56,7 +56,7 @@ services:
       - db
 
   upx_service:
-    hostname: "upx_service"
+    hostname: "upx-service"
     build:
       context: ./src
       dockerfile: ./Reality.Services.UPx/Dockerfile
@@ -68,7 +68,7 @@ services:
       - db
 
   static_service:
-    hostname: "static_service"
+    hostname: "static-service"
     build:
       context: ./src
       dockerfile: ./Reality.Services.Static/Dockerfile
@@ -82,7 +82,7 @@ services:
       - db
 
   portfolio_service:
-    hostname: "portfolio_service"
+    hostname: "portfolio-service"
     build:
       context: ./src
       dockerfile: ./Reality.Services.Portfolio/Dockerfile

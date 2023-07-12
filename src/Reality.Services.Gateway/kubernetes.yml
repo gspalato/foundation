@@ -38,6 +38,9 @@ spec:
         image: unreaalism/reality.services.gateway:latest
         ports:
         - containerPort: 80
+        env:
+          - name: SERVICE_URLS
+            value: http://identity-service,http://upx-service,http://portfolio-service
         envFrom:
           - secretRef:
               name: reality-secrets
