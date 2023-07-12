@@ -16,8 +16,8 @@ service_order = [
     'Reality.Proxy',
 ]
 
-parent_directory = os.path.dirname(os.getcwd())
-src_directory = os.path.join(parent_directory, 'src')
+main_directory = os.path.pardir(os.pardir(os.getcwd()))
+src_directory = os.path.join(main_directory, 'src')
 
 # App
 app = typer.Typer()
@@ -79,7 +79,7 @@ def start_kubernetes(
     print("Starting Reality...")
     
     # Apply secrets
-    secret_step = subprocess.Popen(["kubectl", "apply", "-f", secrets_filename], cwd=parent_directory, stderr=subprocess.PIPE)
+    secret_step = subprocess.Popen(["kubectl", "apply", "-f", secrets_filename], cwd=main_directory, stderr=subprocess.PIPE)
     secret_step.wait()
     error = secret_step.communicate()[1]
     if (secret_step.returncode != 0):
@@ -117,7 +117,7 @@ def update_kubernetes():
 def stop_kubernetes():
     print("Stopping Reality...")
 
-    stop_step = subprocess.Popen(["kubectl", "delete", "all", "--all"], cwd=parent_directory, stderr=subprocess.PIPE)
+    stop_step = subprocess.Popen(["kubectl", "delete", "all", "--all"], cwd=main_directory, stderr=subprocess.PIPE)
     stop_step.wait()
     error = stop_step.communicate()[1]
     if (stop_step.returncode != 0):
