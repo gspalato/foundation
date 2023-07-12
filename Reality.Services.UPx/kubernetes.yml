@@ -34,7 +34,7 @@ spec:
     spec:
       containers:
       - name: upx-service-pod
-        image: localhost:5000/reality.services.upx:latest
+        image: 127.0.0.1:5000/reality.services.upx:latest
         ports:
         - containerPort: 80
         env:
