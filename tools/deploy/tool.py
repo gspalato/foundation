@@ -74,7 +74,7 @@ def build_images():
 
 @app.command("up")
 def start_kubernetes(
-    skip: Annotated[str, typer.Option(help="Skips failed configuration files and continues applying.")] = False
+    ignore: Annotated[str, typer.Option(help="Ignores if a configuration file fails and continues deploying.")] = False
 ):
     print("Starting Reality...")
     
@@ -95,7 +95,7 @@ def start_kubernetes(
         if (apply_step.returncode != 0):
             print(error)
             if (skip):
-                print("Skipping...")
+                print("* Continuing...")
             else:
                 exit(1)
 
