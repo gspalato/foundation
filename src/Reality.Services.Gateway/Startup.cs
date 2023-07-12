@@ -59,7 +59,7 @@ namespace Reality.Services.Gateway
 
             foreach (var id in registeredHttpClients)
             {
-                graphQlServer.AddRemoteSchema(id, capabilities: new EndpointCapabilities
+                graphQlServer.AddRemoteSchema(id.Replace('-', '_'), capabilities: new EndpointCapabilities
                 {
                     Batching = BatchingSupport.RequestBatching,
                     Subscriptions = SubscriptionSupport.WebSocket
