@@ -12,7 +12,7 @@ services:
 
   # Portfolio Front-end
   portfolio:
-    hostname: "portfolio-app"
+    hostname: "portfolio-app-service"
     ports:
       - "8080:8080"
     expose:
