@@ -94,7 +94,7 @@ def start_kubernetes(
         error = apply_step.communicate()[1]
         if (apply_step.returncode != 0):
             print(error)
-            if (skip):
+            if (ignore):
                 print("* Continuing...")
             else:
                 exit(1)
