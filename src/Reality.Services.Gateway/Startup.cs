@@ -41,7 +41,7 @@ namespace Reality.Services.Gateway
             List<string> registeredHttpClients = new();
             foreach (var url in config.Service_Urls.Split(","))
             {
-                var id = url.Replace("http://", "");
+                var id = url.Replace("http://", "").Replace("-", "_");
                 services.AddHttpClient(id, (_, client) =>
                 {
                     client.BaseAddress = new Uri(new Uri(url), "/gql");
@@ -59,7 +59,7 @@ namespace Reality.Services.Gateway
 
             foreach (var id in registeredHttpClients)
             {
-                graphQlServer.AddRemoteSchema(id.Replace('-', '_'), capabilities: new EndpointCapabilities
+                graphQlServer.AddRemoteSchema(id, capabilities: new EndpointCapabilities
                 {
                     Batching = BatchingSupport.RequestBatching,
                     Subscriptions = SubscriptionSupport.WebSocket
