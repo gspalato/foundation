@@ -47,7 +47,7 @@ def build_images():
             print("No Dockerfile found in " + folder + ". Skipping...")
             continue
 
-        build_step = subprocess.Popen(["docker", "build", os.path.join(folder, "Dockerfile"), "-t", tag],
+        build_step = subprocess.Popen(["docker", "build", ".", "-f", os.path.join(folder, "Dockerfile"), "-t", tag],
                                       cwd=parent_directory, stderr=subprocess.PIPE)
         build_step.wait()
         error = build_step.communicate()[1]
