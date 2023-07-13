@@ -74,7 +74,7 @@ def build_images():
 
     print("Built images:")
     for image in created_images:
-        print("- " + image)
+        print("* " + image)
     print("Done.")
 
 @app.command("up")
@@ -128,5 +128,6 @@ def stop_kubernetes():
     if (stop_step.returncode != 0):
         print(error)
         exit(1)
-    
-app()
+
+if __name__ == "__main__":
+    app()
