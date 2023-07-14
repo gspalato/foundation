@@ -6,7 +6,7 @@ from rich.console import Console
 from rich.prompt import Prompt
 
 # Configurations
-kubectl = "microk8s kubectl"
+kubectl = ["microk8s", "kubectl"]
 registry_host = None # Set to None to push to docker.io.
 secrets_filename = 'secrets.yml'
 service_order = [
@@ -88,7 +88,7 @@ def start_kubernetes(
     
     # Apply secrets
     print("Applying secrets...")
-    secret_step = subprocess.Popen([kubectl, "apply", "-f", secrets_filename], cwd=main_directory, stderr=subprocess.PIPE)
+    secret_step = subprocess.Popen(kubectl + ["apply", "-f", secrets_filename], cwd=main_directory, stderr=subprocess.PIPE)
     secret_step.wait()
     error = secret_step.communicate()[1]
     if (secret_step.returncode != 0):
@@ -100,7 +100,7 @@ def start_kubernetes(
     for folder in service_order:
         print("* Applying " + folder + "...")
         service_file = os.path.join(folder, "kubernetes.yml")
-        apply_step = subprocess.Popen([kubectl, "apply", "-f", service_file], cwd=src_directory, stderr=subprocess.PIPE)
+        apply_step = subprocess.Popen(kubectl + ["apply", "-f", service_file], cwd=src_directory, stderr=subprocess.PIPE)
         apply_step.wait()
         error = apply_step.communicate()[1]
         if (apply_step.returncode != 0):
@@ -117,7 +117,7 @@ def update_kubernetes():
     # Apply service configurations
     for folder in service_order:
         service_file = os.path.join(folder, "kubernetes.yml")
-        apply_step = subprocess.Popen([kubectl, "apply", "-f", service_file], cwd=src_directory, stderr=subprocess.PIPE)
+        apply_step = subprocess.Popen(kubectl + ["apply", "-f", service_file], cwd=src_directory, stderr=subprocess.PIPE)
         apply_step.wait()
         error = apply_step.communicate()[1]
         if (apply_step.returncode != 0):
@@ -128,7 +128,7 @@ def update_kubernetes():
 def stop_kubernetes():
     print("Stopping Reality...")
 
-    stop_step = subprocess.Popen([kubectl, "delete", "pods,deployments,services", "--all"], cwd=main_directory, stderr=subprocess.PIPE)
+    stop_step = subprocess.Popen(kubectl + ["delete", "pods,deployments,services", "--all"], cwd=main_directory, stderr=subprocess.PIPE)
     stop_step.wait()
     error = stop_step.communicate()[1]
     if (stop_step.returncode != 0):
