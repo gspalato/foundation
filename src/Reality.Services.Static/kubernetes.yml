@@ -27,22 +27,22 @@ spec:
     matchLabels:
       io.reality.microservice: static
   # Pod Template
-  template: 
+  template:
     metadata:
       labels:
         io.reality.microservice: static
     spec:
       # Using local registry.
       containers:
-      - name: static-service-pod
-        image: unreaalism/reality.services.static:latest
-        ports:
-        - containerPort: 80
-        env:
-          - name: DatabaseName
-            value: Static
-        envFrom:
-          - secretRef:
-              name: reality-secrets
+        - name: static-service-pod
+          image: unreaalism/reality.services.static:latest
+          ports:
+            - containerPort: 80
+          env:
+            - name: DatabaseName
+              value: Static
+          envFrom:
+            - secretRef:
+                name: reality-secrets
       imagePullSecrets:
-      - name: reality-registry
+        - name: reality-registry

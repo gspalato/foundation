@@ -9,7 +9,7 @@ allowVolumeExpansion: true
 apiVersion: v1
 kind: PersistentVolume
 metadata:
-    name: database-persistent-volume
+  name: database-persistent-volume
 spec:
   capacity:
     storage: 2Gi
@@ -23,11 +23,11 @@ spec:
   nodeAffinity:
     required:
       nodeSelectorTerms:
-      - matchExpressions:
-        - key: size
-          operator: In
-          values:
-            - large
+        - matchExpressions:
+            - key: size
+              operator: In
+              values:
+                - large
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
@@ -62,39 +62,39 @@ metadata:
   labels:
     io.reality.microservice: database
 spec:
-  selector: 
+  selector:
     matchLabels:
       io.reality.microservice: database
   replicas: 1
-  strategy: 
+  strategy:
     type: "RollingUpdate"
-    rollingUpdate: 
+    rollingUpdate:
       maxSurge: 1
       maxUnavailable: 1
   minReadySeconds: 5
-  template: 
-    metadata: 
-      labels: 
+  template:
+    metadata:
+      labels:
         io.reality.microservice: database
     spec:
       containers:
-      - name: mongo
-        image: mongo:stable
-        imagePullPolicy: Always
-        resources:
-          requests:
-            memory: "256Mi"
-            cpu: "250m"
-          limits:
-            memory: "512Mi"
-            cpu: "500m"
-        ports: 
-          - containerPort: 27017
-            name: mongo
-        volumeMounts: 
-          - name: database-storage
-            mountPath: "/data/db"
-      volumes: 
+        - name: mongo
+          image: mongo:stable
+          imagePullPolicy: Always
+          resources:
+            requests:
+              memory: "256Mi"
+              cpu: "250m"
+            limits:
+              memory: "512Mi"
+              cpu: "500m"
+          ports:
+            - containerPort: 27017
+              name: mongo
+          volumeMounts:
+            - name: database-storage
+              mountPath: "/data/db"
+      volumes:
         - name: database-storage
-          persistentVolumeClaim: 
+          persistentVolumeClaim:
             claimName: database-persistent-volume-claim

@@ -27,22 +27,22 @@ spec:
     matchLabels:
       io.reality.microservice: identity
   # Pod Template
-  template: 
+  template:
     metadata:
       labels:
         io.reality.microservice: identity
     spec:
       # Using local registry.
       containers:
-      - name: identity-service-pod
-        image: unreaalism/reality.services.identity:latest
-        ports:
-        - containerPort: 80
-        env:
-          - name: DatabaseName
-            value: Identity
-        envFrom:
-          - secretRef:
-              name: reality-secrets
+        - name: identity-service-pod
+          image: unreaalism/reality.services.identity:latest
+          ports:
+            - containerPort: 80
+          env:
+            - name: DatabaseName
+              value: Identity
+          envFrom:
+            - secretRef:
+                name: reality-secrets
       imagePullSecrets:
-      - name: reality-registry
+        - name: reality-registry
