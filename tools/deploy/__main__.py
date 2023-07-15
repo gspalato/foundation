@@ -28,7 +28,8 @@ from typing import Tuple
 from typing_extensions import Annotated
 
 # Directories
-tool_directory = path.dirname(path.realpath(__file__))
+file_directory = path.dirname(path.realpath(__file__))
+tool_directory = path.dirname(file_directory)
 root_directory = path.dirname(tool_directory)
 src_directory = path.join(root_directory, 'src')
 
