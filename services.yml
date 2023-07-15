@@ -1,0 +1,100 @@
+api: reality
+order:
+  - name: database
+    type: microservice
+
+  - name: identity
+    type: microservice
+
+  - name: upx
+    type: microservice
+
+  - name: portfolio
+    type: microservice
+
+  - name: gateway
+    type: microservice
+
+  - name: proxy
+    type: microservice
+
+  - name: portfolio
+    type: application
+
+components:
+  - name: database
+    type: microservice
+    path: src/Reality.Database
+    mode:
+      compose:
+        build: false
+        sync: false
+      kubernetes:
+        build: false
+        sync: false
+
+  - name: identity
+    type: microservice
+    path: src/Reality.Services.Identity
+    mode:
+      compose:
+        build: true
+        sync: false
+      kubernetes:
+        build: true
+        sync: true
+
+  - name: upx
+    type: microservice
+    path: src/Reality.Services.UPx
+    mode:
+      compose:
+        build: true
+        sync: false
+      kubernetes:
+        build: true
+        sync: true
+
+  - name: portfolio
+    type: microservice
+    path: src/Reality.Services.Portfolio
+    mode:
+      compose:
+        build: true
+        sync: false
+      kubernetes:
+        build: true
+        sync: true
+
+  - name: gateway
+    type: microservice
+    path: src/Reality.Services.Gateway
+    mode:
+      compose:
+        build: true
+        sync: false
+      kubernetes:
+        build: true
+        sync: true
+
+  - name: proxy
+    type: microservice
+    path: src/Reality.Services.Proxy
+    mode:
+      compose:
+        build: true
+        sync: false
+      kubernetes:
+        build: false
+        sync: false
+
+  - name: portfolio
+    type: application
+    path: src/Portfolio
+    mode:
+      compose:
+        build: true
+        sync: false
+      kubernetes:
+        build: true
+        sync: true
