@@ -64,9 +64,10 @@ def check_docker(display: bool = False) -> Tuple[bool, list]:
     try:
         check_step = subprocess.Popen(["docker", "version"], cwd=root_directory, stderr=subprocess.PIPE)
         check_step.wait()
+        output, _ = check_step.communicate()
         if (check_step.returncode == 0):
             if (display):
-                dialogs.console.print("Found " + check_step.communicate()[0], style="gray")
+                dialogs.console.print("Found " + output, style="gray")
             return True, ["docker"]
         else:
             return False, []
@@ -79,9 +80,10 @@ def check_docker_compose(display: bool = False) -> Tuple[bool, list]:
     try: 
         check_step = subprocess.Popen(["docker-compose", "version"], cwd=root_directory, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         check_step.wait()
+        output, _ = check_step.communicate()
         if (check_step.returncode == 0):
             if (display):
-                dialogs.console.print("Found " + check_step.communicate()[0], style="gray")
+                dialogs.console.print("Found " + output, style="gray")
             return True, ["docker-compose"]
     except Exception:
         pass
@@ -89,9 +91,10 @@ def check_docker_compose(display: bool = False) -> Tuple[bool, list]:
     try:
         check_step = subprocess.Popen("docker", "compose", "version", cwd=root_directory, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         check_step.wait()
+        output, _ = check_step.communicate()
         if (check_step.returncode == 0):
             if (display):
-                dialogs.console.print("Found " + check_step.communicate()[0], style="gray")
+                dialogs.console.print("Found " + output, style="gray")
             return True, ["docker", "compose"]
     except Exception:
         pass
@@ -102,9 +105,10 @@ def check_kubernetes(display: bool = False) -> Tuple[bool, list]:
     try:
         check_step = subprocess.Popen(kubectl + ["version"], cwd=root_directory, stderr=subprocess.PIPE)
         check_step.wait()
+        output, _ = check_step.communicate()
         if (check_step.returncode == 0):
             if (display):
-                dialogs.console.print("Found " + check_step.communicate()[0], style="gray")
+                dialogs.console.print("Found " + output, style="gray")
             return True, kubectl
         else:
             return False, []
