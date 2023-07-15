@@ -60,11 +60,13 @@ def validate_mode_option(mode: str):
         return "Kubernetes"
 
 # Task functions
-def check_docker() -> Tuple[bool, list]:
+def check_docker(display: bool = False) -> Tuple[bool, list]:
     try:
         check_step = subprocess.Popen(["docker", "version"], cwd=root_directory, stderr=subprocess.PIPE)
         check_step.wait()
         if (check_step.returncode == 0):
+            if (display):
+                dialogs.console.print("Found " + check_step.communicate()[0], style="gray")
             return True, ["docker"]
         else:
             return False, []
@@ -73,11 +75,13 @@ def check_docker() -> Tuple[bool, list]:
 
     return False, []
 
-def check_docker_compose() -> Tuple[bool, list]:
+def check_docker_compose(display: bool = False) -> Tuple[bool, list]:
     try: 
         check_step = subprocess.Popen(["docker-compose", "version"], cwd=root_directory, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         check_step.wait()
         if (check_step.returncode == 0):
+            if (display):
+                dialogs.console.print("Found " + check_step.communicate()[0], style="gray")
             return True, ["docker-compose"]
     except Exception:
         pass
@@ -86,7 +90,24 @@ def check_docker_compose() -> Tuple[bool, list]:
         check_step = subprocess.Popen("docker", "compose", "version", cwd=root_directory, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         check_step.wait()
         if (check_step.returncode == 0):
+            if (display):
+                dialogs.console.print("Found " + check_step.communicate()[0], style="gray")
             return True, ["docker", "compose"]
+    except Exception:
+        pass
+
+    return False, []
+
+def check_kubernetes(display: bool = False) -> Tuple[bool, list]:
+    try:
+        check_step = subprocess.Popen(kubectl + ["version"], cwd=root_directory, stderr=subprocess.PIPE)
+        check_step.wait()
+        if (check_step.returncode == 0):
+            if (display):
+                dialogs.console.print("Found " + check_step.communicate()[0], style="gray")
+            return True, kubectl
+        else:
+            return False, []
     except Exception:
         pass
 
@@ -106,20 +127,6 @@ def login_docker_registry() -> str:
         exit(1)
 
     return username
-
-def check_kubernetes() -> Tuple[bool, list]:
-    try:
-        check_step = subprocess.Popen(kubectl + ["version"], cwd=root_directory, stderr=subprocess.PIPE)
-        check_step.wait()
-        if (check_step.returncode == 0):
-            dialogs.console.print(check_step.communicate()[0], style="gray")
-            return True, kubectl
-        else:
-            return False, []
-    except Exception:
-        pass
-
-    return False, []
 
 def build_compose(push: bool):
     # Check if docker-compose is installed.
@@ -198,7 +205,7 @@ def build_kubernetes(push: bool, username: str):
 
 def start_compose(build: bool, restart: bool):
     # Check if docker-compose is installed.
-    installed, cmd = check_docker_compose()
+    installed, cmd = check_docker_compose(display=True)
     if (not installed):
         dialogs.alert_docker_compose_not_found()
         exit(1)
@@ -219,7 +226,7 @@ def start_compose(build: bool, restart: bool):
 
 def start_kubernetes(build: bool, restart: bool, ignore: bool):
     # Check if docker-compose is installed.
-    installed, _ = check_kubernetes()
+    installed, _ = check_kubernetes(display=True)
     if (not installed):
         dialogs.alert_kubectl_not_found()
         exit(1)
