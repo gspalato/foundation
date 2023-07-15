@@ -124,7 +124,7 @@ def login_docker_registry() -> str:
 
     login_step = subprocess.Popen(["docker", "login", registry_host or "", "-u", username, "-p", password], stderr=subprocess.PIPE)
     login_step.wait()
-    error = login_step.communicate()[1]
+    _, error = login_step.communicate()
     if (login_step.returncode != 0):
         dialogs.error("Failed to login to registry.")
         dialogs.console.print_exception(error, style="red")
@@ -144,7 +144,7 @@ def build_compose(push: bool):
     dialogs.info("Building images...")
     build_step = subprocess.Popen(cmd + ["build"], cwd=root_directory, stdout= subprocess.STDOUT, stderr=subprocess.PIPE)
     build_step.wait()
-    error = build_step.communicate()[1]
+    _, error = build_step.communicate()
     if (build_step.returncode != 0):
         dialogs.error("Failed to build images.")
         dialogs.console.print(error, style="red")
@@ -154,7 +154,7 @@ def build_compose(push: bool):
         dialogs.info("[bold blue]Pushing to registry...")
         push_step = subprocess.Popen(cmd + ["push"], cwd=root_directory, stdout= subprocess.STDOUT, stderr=subprocess.PIPE)
         push_step.wait()
-        error = push_step.communicate()[1]
+        _, error = push_step.communicate()
         if (push_step.returncode != 0):
             dialogs.error("Failed to push images.")
             dialogs.console.print(error, style="red")
@@ -184,7 +184,7 @@ def build_kubernetes(push: bool, username: str):
         build_step = subprocess.Popen(["docker", "build", ".", "-f", os.path.join(component.path, "Dockerfile"), "-t", tag],
                                       cwd=root_directory, stdout= subprocess.STDOUT, stderr=subprocess.PIPE)
         build_step.wait()
-        error = build_step.communicate()[1]
+        _, error = build_step.communicate()
         if (build_step.returncode != 0):
             dialogs.error("Failed to build " + component.id + ".")
             dialogs.console.print_exception(error, style="red")
@@ -194,7 +194,7 @@ def build_kubernetes(push: bool, username: str):
             dialogs.info("Pushing " + component.id + " to registry...")
             push_step = subprocess.Popen(["docker", "push", tag], stdout= subprocess.STDOUT, stderr=subprocess.PIPE)
             push_step.wait()
-            error = push_step.communicate()[1]
+            _, error = push_step.communicate()
             if (build_step.returncode != 0):
                 dialogs.error("Failed to push " + component.id + ".")
                 dialogs.console.print_exception(error, style="red")
@@ -222,7 +222,7 @@ def start_compose(build: bool, restart: bool):
 
     start_step = subprocess.Popen(cmd + ["up", "-d"], cwd=root_directory, stdout=subprocess.STDOUT, stderr=subprocess.PIPE)
     start_step.wait()
-    error = start_step.communicate()[1]
+    _, error = start_step.communicate()
     if (start_step.returncode != 0):
         dialogs.error("Failed to start Reality on Compose mode.")
         dialogs.console.print_exception(error, style="red")
@@ -247,7 +247,7 @@ def start_kubernetes(build: bool, restart: bool, ignore: bool):
     secret_step = subprocess.Popen(kubectl + ["apply", "-f", secrets_filename],
                                    cwd=root_directory, stdout= subprocess.STDOUT, stderr=subprocess.PIPE)
     secret_step.wait()
-    error = secret_step.communicate()[1]
+    _, error = secret_step.communicate()
     if (secret_step.returncode != 0):
         dialogs.error("Failed to apply secrets.")
         dialogs.console.print_exception(error, style="red")
@@ -261,7 +261,7 @@ def start_kubernetes(build: bool, restart: bool, ignore: bool):
         apply_step = subprocess.Popen(kubectl + ["apply", "-f", service_file],
                                       cwd=src_directory, stdout= subprocess.STDOUT, stderr=subprocess.PIPE)
         apply_step.wait()
-        error = apply_step.communicate()[1]
+        _, error = apply_step.communicate()
         if (apply_step.returncode != 0):
             dialogs.error("Failed to apply service " + component.id + ".")
             dialogs.console.print_exception(error, style="red")
@@ -282,7 +282,7 @@ def stop_compose():
     stop_step = subprocess.Popen(cmd + ["down"], cwd=root_directory,
                                  stdout= subprocess.STDOUT, stderr=subprocess.PIPE)
     stop_step.wait()
-    error = stop_step.communicate()[1]
+    _, error = stop_step.communicate()
     if (stop_step.returncode != 0):
         print(error)
         exit(1)
@@ -299,7 +299,7 @@ def stop_kubernetes():
     stop_step = subprocess.Popen(kubectl + ["delete", "pods,deployments,services", "--all"],
                                  cwd=root_directory, stdout= subprocess.STDOUT, stderr=subprocess.PIPE)
     stop_step.wait()
-    error = stop_step.communicate()[1]
+    _, error = stop_step.communicate()
     if (stop_step.returncode != 0):
         print(error)
         exit(1)
