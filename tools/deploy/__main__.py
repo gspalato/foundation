@@ -98,6 +98,21 @@ def check_docker_compose() -> Tuple[bool, list]:
 
     return False, []
 
+def login_docker_registry() -> str:
+    # Login to registry
+    username = Prompt.ask("Enter your registry username: ", default="")
+    password = Prompt.ask("Enter your registry password: ", default="", password=True)
+
+    login_step = subprocess.Popen(["docker", "login", registry_host or "", "-u", username, "-p", password], stderr=subprocess.PIPE)
+    login_step.wait()
+    error = login_step.communicate()[1]
+    if (login_step.returncode != 0):
+        dialogs.error("Failed to login to registry.")
+        dialogs.console.print_exception(error, style="red")
+        exit(1)
+
+    return username
+
 def check_kubernetes() -> Tuple[bool, list]:
     try:
         check_step = subprocess.Popen(kubectl + ["version"], cwd=root_directory, stderr=subprocess.PIPE)
@@ -122,7 +137,7 @@ def build_compose(push: bool):
     # Build images
     # TODO: Properly read the component definition from services.yml to determine if it should be built.
     dialogs.info("Building images...")
-    build_step = subprocess.Popen(cmd + ["build"], cwd=root_directory, stderr=subprocess.PIPE)
+    build_step = subprocess.Popen(cmd + ["build"], cwd=root_directory, stdout= subprocess.STDOUT, stderr=subprocess.PIPE)
     build_step.wait()
     error = build_step.communicate()[1]
     if (build_step.returncode != 0):
@@ -132,7 +147,7 @@ def build_compose(push: bool):
 
     if (push): # TODO: Properly read the component definition from services.yml to determine if it should be pushed.
         dialogs.info("[bold blue]Pushing to registry...")
-        push_step = subprocess.Popen(cmd + ["push"], cwd=root_directory, stderr=subprocess.PIPE)
+        push_step = subprocess.Popen(cmd + ["push"], cwd=root_directory, stdout= subprocess.STDOUT, stderr=subprocess.PIPE)
         push_step.wait()
         error = push_step.communicate()[1]
         if (push_step.returncode != 0):
@@ -162,7 +177,7 @@ def build_kubernetes(push: bool, username: str):
             continue
 
         build_step = subprocess.Popen(["docker", "build", ".", "-f", os.path.join(component.path, "Dockerfile"), "-t", tag],
-                                      cwd=root_directory, stderr=subprocess.PIPE)
+                                      cwd=root_directory, stdout= subprocess.STDOUT, stderr=subprocess.PIPE)
         build_step.wait()
         error = build_step.communicate()[1]
         if (build_step.returncode != 0):
@@ -172,7 +187,7 @@ def build_kubernetes(push: bool, username: str):
 
         if (push): # TODO: Properly read the component definition from services.yml to determine if it should be pushed.
             dialogs.info("Pushing " + component.id + " to registry...")
-            push_step = subprocess.Popen(["docker", "push", tag], stderr=subprocess.PIPE)
+            push_step = subprocess.Popen(["docker", "push", tag], stdout= subprocess.STDOUT, stderr=subprocess.PIPE)
             push_step.wait()
             error = push_step.communicate()[1]
             if (build_step.returncode != 0):
@@ -187,12 +202,18 @@ def build_kubernetes(push: bool, username: str):
         dialogs.console.print("* " + image)
     dialogs.done("[bold green]\nDone.\n")
 
-def start_compose():
+def start_compose(build: bool, restart: bool):
     # Check if docker-compose is installed.
     installed, cmd = check_docker_compose()
     if (not installed):
         dialogs.alert_docker_compose_not_found()
         exit(1)
+
+    if (restart):
+        stop_compose()
+
+    if (build):
+        build_compose(False)
 
     start_step = subprocess.Popen(cmd + ["up", "-d"], cwd=root_directory, stdout=subprocess.STDOUT, stderr=subprocess.PIPE)
     start_step.wait()
@@ -202,16 +223,24 @@ def start_compose():
         dialogs.console.print_exception(error, style="red")
         exit(1)
 
-def start_kubernetes(ignore: bool):
+def start_kubernetes(build: bool, restart: bool, ignore: bool):
     # Check if docker-compose is installed.
     installed, _ = check_kubernetes()
     if (not installed):
         dialogs.alert_kubectl_not_found()
         exit(1)
 
+    if (restart):
+        stop_kubernetes()
+
+    if (build):
+        username = login_docker_registry()
+        build_kubernetes(False, username)
+
     # Apply secrets
     dialogs.info("Applying secrets...")
-    secret_step = subprocess.Popen(kubectl + ["apply", "-f", secrets_filename], cwd=root_directory, stderr=subprocess.PIPE)
+    secret_step = subprocess.Popen(kubectl + ["apply", "-f", secrets_filename],
+                                   cwd=root_directory, stdout= subprocess.STDOUT, stderr=subprocess.PIPE)
     secret_step.wait()
     error = secret_step.communicate()[1]
     if (secret_step.returncode != 0):
@@ -224,7 +253,8 @@ def start_kubernetes(ignore: bool):
     for component in reality_services_config.components:
         print("* Applying " + component.id + "...")
         service_file = os.path.join(component.path, "kubernetes.yml")
-        apply_step = subprocess.Popen(kubectl + ["apply", "-f", service_file], cwd=src_directory, stderr=subprocess.PIPE)
+        apply_step = subprocess.Popen(kubectl + ["apply", "-f", service_file],
+                                      cwd=src_directory, stdout= subprocess.STDOUT, stderr=subprocess.PIPE)
         apply_step.wait()
         error = apply_step.communicate()[1]
         if (apply_step.returncode != 0):
@@ -234,6 +264,41 @@ def start_kubernetes(ignore: bool):
                 dialogs.console.print("[italic gray]Continuing...")
             else:
                 exit(1)
+
+def stop_compose():
+    # Check if docker-compose is installed.
+    installed, cmd = check_docker_compose()
+    if (not installed):
+        dialogs.alert_docker_compose_not_found()
+        exit(1)
+
+    dialogs.warn("Stopping Reality on Compose mode...")
+
+    stop_step = subprocess.Popen(cmd + ["down"], cwd=root_directory,
+                                 stdout= subprocess.STDOUT, stderr=subprocess.PIPE)
+    stop_step.wait()
+    error = stop_step.communicate()[1]
+    if (stop_step.returncode != 0):
+        print(error)
+        exit(1)
+
+def stop_kubernetes():
+    # Check if kubectl is installed.
+    installed = check_kubernetes()
+    if (not installed):
+        dialogs.alert_kubectl_not_found()
+        exit(1)
+
+    dialogs.warn("Stopping Reality on Kubernetes mode...")
+
+    stop_step = subprocess.Popen(kubectl + ["delete", "pods,deployments,services", "--all"],
+                                 cwd=root_directory, stdout= subprocess.STDOUT, stderr=subprocess.PIPE)
+    stop_step.wait()
+    error = stop_step.communicate()[1]
+    if (stop_step.returncode != 0):
+        print(error)
+        exit(1)
+
 
 # Commands
 
@@ -264,16 +329,7 @@ def build(
             exit(1)
 
     # Login to registry
-    username = Prompt.ask("Enter your registry username: ", default="")
-    password = Prompt.ask("Enter your registry password: ", default="", password=True)
-
-    login_step = subprocess.Popen(["docker", "login", registry_host or "", "-u", username, "-p", password], stderr=subprocess.PIPE)
-    login_step.wait()
-    error = login_step.communicate()[1]
-    if (login_step.returncode != 0):
-        dialogs.error("Failed to login to registry.")
-        dialogs.console.print_exception(error, style="red")
-        exit(1)
+    username = login_docker_registry()
 
     if (mode == "Compose"):
         build_compose(push)
@@ -284,49 +340,26 @@ def build(
 @app.command("up")
 def start(
     mode: Annotated[str, typer.Option("-m", help="The mode to build the images in.", callback=validate_mode_option)] = "Compose",
-    ignore: Annotated[str, typer.Option(help="Ignores if a configuration file fails and continues deploying.")] = False
+    ignore: Annotated[str, typer.Option(help="Ignores if a configuration file fails and continues deploying.")] = False,
+    build: Annotated[bool, typer.Option("-b", help="Builds the images before starting.")] = False,
+    restart: Annotated[bool, typer.Option("-r", help="Kills the services before starting.")] = False,
 ):
     dialogs.info("Starting Reality on " + mode + " mode!")
     
     if (mode == "Compose"):
-        start_compose()
+        start_compose(build, restart)
     elif (mode == "Kubernetes"):
-        start_kubernetes(ignore)
+        start_kubernetes(build, restart, ignore)
 
 
 @app.command("down")
 def down(
     mode: Annotated[str, typer.Option("-m", help="The mode to build the images in.", callback=validate_mode_option)] = "Compose",
 ):
-    dialogs.warn("Stopping Reality on " + mode + " mode...")
-
     if (mode == "Compose"):
-        # Check if docker-compose is installed.
-        installed, cmd = check_docker_compose()
-        if (not installed):
-            dialogs.alert_docker_compose_not_found()
-            exit(1)
-
-        stop_step = subprocess.Popen(cmd + ["down"], cwd=root_directory, stderr=subprocess.PIPE)
-        stop_step.wait()
-        error = stop_step.communicate()[1]
-        if (stop_step.returncode != 0):
-            print(error)
-            exit(1)
-
+        stop_compose()
     elif (mode == "Kubernetes"):
-        # Check if kubectl is installed.
-        installed = check_kubernetes()
-        if (not installed):
-            dialogs.alert_kubectl_not_found()
-            exit(1)
-
-        stop_step = subprocess.Popen(kubectl + ["delete", "pods,deployments,services", "--all"], cwd=root_directory, stderr=subprocess.PIPE)
-        stop_step.wait()
-        error = stop_step.communicate()[1]
-        if (stop_step.returncode != 0):
-            print(error)
-            exit(1)
+        stop_kubernetes()
 
 
 if __name__ == "__main__":
