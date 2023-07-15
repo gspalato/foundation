@@ -78,6 +78,7 @@ def check_docker_compose() -> Tuple[bool, list]:
         check_step = subprocess.Popen(["docker-compose", "version"], cwd=root_directory, stderr=subprocess.PIPE)
         check_step.wait()
         if (check_step.returncode == 0):
+            dialogs.console.print(check_step.communicate()[0], style="gray")
             return True, ["docker-compose"]
         else:
             return False, []
@@ -85,9 +86,10 @@ def check_docker_compose() -> Tuple[bool, list]:
         pass
     
     try:
-        check_step = subprocess.Popen("docker", "compose", "version", cwd=root_directory, stderr=subprocess.PIPE)
+        check_step = subprocess.Popen("docker", "compose", "version", cwd=root_directory, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         check_step.wait()
         if (check_step.returncode == 0):
+            dialogs.console.print(check_step.communicate()[0], style="gray")
             return True, ["docker", "compose"]
         else:
             return False, []
@@ -101,6 +103,7 @@ def check_kubernetes() -> Tuple[bool, list]:
         check_step = subprocess.Popen(kubectl + ["version"], cwd=root_directory, stderr=subprocess.PIPE)
         check_step.wait()
         if (check_step.returncode == 0):
+            dialogs.console.print(check_step.communicate()[0], style="gray")
             return True, kubectl
         else:
             return False, []
@@ -191,7 +194,7 @@ def start_compose():
         dialogs.alert_docker_compose_not_found()
         exit(1)
 
-    start_step = subprocess.Popen(cmd + ["up", "-d"], cwd=root_directory, stderr=subprocess.PIPE)
+    start_step = subprocess.Popen(cmd + ["up", "-d"], cwd=root_directory, stdout=subprocess.STDOUT, stderr=subprocess.PIPE)
     start_step.wait()
     error = start_step.communicate()[1]
     if (start_step.returncode != 0):

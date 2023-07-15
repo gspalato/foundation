@@ -97,7 +97,7 @@ services:
   db:
     hostname: "db"
     image: mongo
-    restart: on-failure
+    restart: always
     expose:
       - "27017"
     ports:
