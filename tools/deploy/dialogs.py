@@ -13,22 +13,25 @@ class Dialogs:
         }
 
     def welcome(self) -> None:
-        self.console.print(self.texts["welcome"], style="bold blue")
+        self.console.log(self.texts["welcome"], style="bold blue")
 
     def info(self, message: str) -> None:
-        self.console.print(message, style="bold blue")
+        self.console.log(message, style="bold blue")
 
     def done(self, message: str) -> None:
-        self.console.print(message, style="bold green")
+        self.console.log(message, style="bold green")
 
     def warn(self, message: str) -> None:
-        self.console.print(message, style="bold yellow")
+        self.console.log(message, style="bold yellow")
 
     def error(self, message: str) -> None:
-        self.console.print(message, style="bold red")
+        self.console.log(message, style="bold red")
 
     def debug(self, message: str) -> None:
-        self.console.print(message, style="bold magenta")
+        self.console.log(message, style="bold magenta")
+
+    def log(self, message: str) -> None:
+        self.console.log(message)
 
 
     def alert_docker_not_found(self) -> None:
