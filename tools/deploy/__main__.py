@@ -80,8 +80,6 @@ def check_docker_compose() -> Tuple[bool, list]:
         if (check_step.returncode == 0):
             dialogs.console.print(check_step.communicate()[0], style="gray")
             return True, ["docker-compose"]
-        else:
-            return False, []
     except Exception:
         pass
     
@@ -91,8 +89,6 @@ def check_docker_compose() -> Tuple[bool, list]:
         if (check_step.returncode == 0):
             dialogs.console.print(check_step.communicate()[0], style="gray")
             return True, ["docker", "compose"]
-        else:
-            return False, []
     except Exception:
         pass
 
