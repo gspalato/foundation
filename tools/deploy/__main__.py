@@ -66,7 +66,7 @@ def check_docker(display: bool = False) -> Tuple[bool, list]:
     path = shutil.which("docker")
     if (path):
         if (display):
-            dialogs.console.print("Found Docker.", style="gray")
+            dialogs.console.print("Found Docker.", style="bright_black")
         return True, ["docker"]
     else:
         return False, []
@@ -79,7 +79,7 @@ def check_docker(display: bool = False) -> Tuple[bool, list]:
         output, _ = check_step.communicate()
         if (check_step.returncode == 0):
             if (display):
-                dialogs.console.print("Found " + output, style="gray")
+                dialogs.console.print("Found " + output, style="bright_black")
             return True, ["docker"]
         else:
             return False, []
@@ -95,7 +95,7 @@ def check_docker_compose(display: bool = False) -> Tuple[bool, list]:
     path = shutil.which("docker-compose")
     if (path):
         if (display):
-            dialogs.console.print("Found Docker Compose.", style="gray")
+            dialogs.console.print("Found Docker Compose.", style="bright_black")
         return True, ["docker-compose"]
     
     docker_exists, _ = check_docker()
@@ -111,7 +111,7 @@ def check_docker_compose(display: bool = False) -> Tuple[bool, list]:
         print(_)
         if (check_step.returncode == 0):
             if (display):
-                dialogs.console.print("Found " + output, style="gray")
+                dialogs.console.print("Found " + output, style="bright_black")
             return True, ["docker", "compose"]
     except Exception:
         print("catched exception when checking docker compose")
@@ -126,7 +126,7 @@ def check_kubernetes(display: bool = False) -> Tuple[bool, list]:
         output, _ = check_step.communicate()
         if (check_step.returncode == 0):
             if (display):
-                dialogs.console.print("Found " + output, style="gray")
+                dialogs.console.print("Found " + output, style="bright_black")
             return True, kubectl
         else:
             return False, []
@@ -284,7 +284,7 @@ def start_kubernetes(build: bool, restart: bool, ignore: bool):
             dialogs.error("Failed to apply service " + component.id + ".")
             dialogs.console.print_exception(error, style="red")
             if (ignore):
-                dialogs.console.print("[italic gray]Continuing...")
+                dialogs.console.print("[italic bright_black]Continuing...")
             else:
                 exit(1)
 
