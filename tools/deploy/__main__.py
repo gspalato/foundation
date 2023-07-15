@@ -24,7 +24,7 @@ from os import path
 from rich.prompt import Prompt
 import subprocess
 import typer
-from typing import Tuple
+from typing import List, Tuple
 from typing_extensions import Annotated
 
 # Directories
@@ -61,14 +61,15 @@ def validate_mode_option(mode: str):
         return "Kubernetes"
 
 # Helper functions
-def execute_command(cmd: list[str], cwd: str = None, *args) -> Tuple[int, str, str]:
+def execute_command(cmd: List[str], *args, cwd: str = None) -> Tuple[int, str, str]:
     step = subprocess.Popen(cmd, cwd=cwd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     step.wait()
     output, error = step.communicate(args)
     return step.returncode, output, error
 
 # Task functions
-def check_docker(display: bool = False) -> Tuple[bool, list]:
+def check_docker(display: bool = False) -> Tuple[bool, List[str]]:
+    """ Checks if Docker is installed. Returns a bool indicating if it's installed and the command to use it."""
     import shutil
 
     path = shutil.which("docker")
@@ -79,14 +80,13 @@ def check_docker(display: bool = False) -> Tuple[bool, list]:
     else:
         return False, []
 
-def check_docker_compose() -> Tuple[bool, list]:
+def check_docker_compose() -> Tuple[bool, List[str]]:
+    """ Checks if Docker Compose is installed. Returns a bool indicating if it's installed and the command to use it."""
     import shutil
 
     # First check for an older docker-compose command.
     path = shutil.which("docker-compose")
     if (path):
-        if (display):
-            dialogs.console.log("Found Docker Compose.", style="bright_black")
         return True, ["docker-compose"]
     
     docker_exists, _ = check_docker()
@@ -97,14 +97,14 @@ def check_docker_compose() -> Tuple[bool, list]:
     try:
         code, _, _ = execute_command(["docker", "compose", "version"], cwd=root_directory)
         if (code == 0):
-            dialogs.console.log("Found Docker Compose.", style="bright_black")
             return True, ["docker", "compose"]
     except Exception:
         pass
 
     return False, []
 
-def check_kubernetes(display: bool = False) -> Tuple[bool, list]:
+def check_kubernetes(display: bool = False) -> Tuple[bool, List[str]]:
+    """ Checks if Kubectl is installed. Returns a bool indicating if it's installed and the command to use it."""
     try:
         code, output, _ = execute_command(kubectl + ["version"], cwd=root_directory)
         if (code == 0):
@@ -119,6 +119,7 @@ def check_kubernetes(display: bool = False) -> Tuple[bool, list]:
     return False, []
 
 def login_docker_registry() -> str:
+    """ Logs into the Docker registry. Returns the username used to login. """
     # Login to registry
     username = Prompt.ask("Enter your registry username: ", default="")
     password = Prompt.ask("Enter your registry password: ", default="", password=True)
