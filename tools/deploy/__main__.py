@@ -5,7 +5,7 @@
 # Note: this is a work in progress and is not yet complete.
 #
 # Usage:
-#   python -m tools.deploy [command]
+#   python3 tools/deploy [command]
 #
 # Commands:
 #   build       Builds the Docker images for Reality.
@@ -71,23 +71,6 @@ def check_docker(display: bool = False) -> Tuple[bool, list]:
         return True, ["docker"]
     else:
         return False, []
-    
-    # Old way of checking for docker.
-
-    try:
-        check_step = subprocess.Popen(["docker", "version"], cwd=root_directory, stderr=subprocess.PIPE)
-        check_step.wait()
-        output, _ = check_step.communicate()
-        if (check_step.returncode == 0):
-            if (display):
-                dialogs.console.print("Found " + output, style="bright_black")
-            return True, ["docker"]
-        else:
-            return False, []
-    except Exception:
-        pass
-
-    return False, []
 
 def check_docker_compose(display: bool = False) -> Tuple[bool, list]:
     import shutil
@@ -161,7 +144,7 @@ def build_compose(push: bool):
     # Build images
     # TODO: Properly read the component definition from services.yml to determine if it should be built.
     dialogs.info("Building images...")
-    build_step = subprocess.Popen(cmd + ["build"], cwd=root_directory, stdout= subprocess.STDOUT, stderr=subprocess.PIPE)
+    build_step = subprocess.Popen(cmd + ["build"], cwd=root_directory, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     build_step.wait()
     _, error = build_step.communicate()
     if (build_step.returncode != 0):
@@ -171,7 +154,7 @@ def build_compose(push: bool):
 
     if (push): # TODO: Properly read the component definition from services.yml to determine if it should be pushed.
         dialogs.info("[bold blue]Pushing to registry...")
-        push_step = subprocess.Popen(cmd + ["push"], cwd=root_directory, stdout= subprocess.STDOUT, stderr=subprocess.PIPE)
+        push_step = subprocess.Popen(cmd + ["push"], cwd=root_directory, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         push_step.wait()
         _, error = push_step.communicate()
         if (push_step.returncode != 0):
@@ -201,7 +184,7 @@ def build_kubernetes(push: bool, username: str):
             continue
 
         build_step = subprocess.Popen(["docker", "build", ".", "-f", path.join(component.path, "Dockerfile"), "-t", tag],
-                                      cwd=root_directory, stdout= subprocess.STDOUT, stderr=subprocess.PIPE)
+                                      cwd=root_directory, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         build_step.wait()
         _, error = build_step.communicate()
         if (build_step.returncode != 0):
@@ -211,7 +194,7 @@ def build_kubernetes(push: bool, username: str):
 
         if (push): # TODO: Properly read the component definition from services.yml to determine if it should be pushed.
             dialogs.info("Pushing " + component.id + " to registry...")
-            push_step = subprocess.Popen(["docker", "push", tag], stdout= subprocess.STDOUT, stderr=subprocess.PIPE)
+            push_step = subprocess.Popen(["docker", "push", tag], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
             push_step.wait()
             _, error = push_step.communicate()
             if (build_step.returncode != 0):
@@ -239,7 +222,7 @@ def start_compose(build: bool, restart: bool):
     if (build):
         build_compose(False)
 
-    start_step = subprocess.Popen(cmd + ["up", "-d"], cwd=root_directory, stdout=subprocess.STDOUT, stderr=subprocess.PIPE)
+    start_step = subprocess.Popen(cmd + ["up", "-d"], cwd=root_directory, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     start_step.wait()
     _, error = start_step.communicate()
     if (start_step.returncode != 0):
@@ -264,7 +247,7 @@ def start_kubernetes(build: bool, restart: bool, ignore: bool):
     # Apply secrets
     dialogs.info("Applying secrets...")
     secret_step = subprocess.Popen(kubectl + ["apply", "-f", secrets_filename],
-                                   cwd=root_directory, stdout= subprocess.STDOUT, stderr=subprocess.PIPE)
+                                   cwd=root_directory, stdout= subprocess.PIPE, stderr=subprocess.PIPE)
     secret_step.wait()
     _, error = secret_step.communicate()
     if (secret_step.returncode != 0):
@@ -278,7 +261,7 @@ def start_kubernetes(build: bool, restart: bool, ignore: bool):
         print("* Applying " + component.id + "...")
         service_file = path.join(component.path, "kubernetes.yml")
         apply_step = subprocess.Popen(kubectl + ["apply", "-f", service_file],
-                                      cwd=src_directory, stdout= subprocess.STDOUT, stderr=subprocess.PIPE)
+                                      cwd=src_directory, stdout= subprocess.PIPE, stderr=subprocess.PIPE)
         apply_step.wait()
         _, error = apply_step.communicate()
         if (apply_step.returncode != 0):
@@ -299,7 +282,7 @@ def stop_compose():
     dialogs.warn("Stopping Reality on Compose mode...")
 
     stop_step = subprocess.Popen(cmd + ["down"], cwd=root_directory,
-                                 stdout= subprocess.STDOUT, stderr=subprocess.PIPE)
+                                 stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     stop_step.wait()
     _, error = stop_step.communicate()
     if (stop_step.returncode != 0):
@@ -316,7 +299,7 @@ def stop_kubernetes():
     dialogs.warn("Stopping Reality on Kubernetes mode...")
 
     stop_step = subprocess.Popen(kubectl + ["delete", "pods,deployments,services", "--all"],
-                                 cwd=root_directory, stdout= subprocess.STDOUT, stderr=subprocess.PIPE)
+                                 cwd=root_directory, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     stop_step.wait()
     _, error = stop_step.communicate()
     if (stop_step.returncode != 0):
