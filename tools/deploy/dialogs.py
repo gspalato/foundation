@@ -5,7 +5,7 @@ class Dialogs:
 
     def __init__(self) -> None:
         self.texts = {
-            "welcome": "Welcome to the Reality Deploy Tool!",
+            "welcome": "Welcome to the Reality Deployment Tool!",
 
             "docker_not_found": "Docker is not installed. Please install it and try again.",
             "docker_compose_not_found": "Docker Compose is not installed. Please install it and try again.",
@@ -22,7 +22,7 @@ class Dialogs:
         self.console.log(message, style="bold green")
 
     def warn(self, message: str) -> None:
-        self.console.log(message, style="bold yellow")
+        self.console.log(message, style="bold dark_orange3")
 
     def error(self, message: str) -> None:
         self.console.log(message, style="bold red")
