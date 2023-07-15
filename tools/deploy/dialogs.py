@@ -1,7 +1,7 @@
 from rich.console import Console
 
 class Dialogs:
-    console = Console()
+    console = Console(log_path=False)
 
     def __init__(self) -> None:
         self.texts = {
@@ -13,7 +13,7 @@ class Dialogs:
         }
 
     def welcome(self) -> None:
-        self.console.log(self.texts["welcome"], style="bold blue")
+        self.console.print(self.texts["welcome"], style="bold blue")
 
     def info(self, message: str) -> None:
         self.console.log(message, style="bold blue")

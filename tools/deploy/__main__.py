@@ -141,7 +141,7 @@ def build_compose(push: bool):
     dialogs.warn("Warning! Compose mode will push images to the registry according to each services 'image' property.")
     dialogs.warn("If you want to push to a registry, please edit the 'docker-compose.yml' file and set 'image' property for each service.")
 
-    with dialogs.console.status("[bold blue]Building images...") as status:
+    with dialogs.console.status("[bold blue]Building container images...") as status:
         # Build images
         # TODO: Properly read the component definition from services.yml to determine if it should be built.
         build_step = subprocess.Popen(cmd + ["build"], cwd=root_directory, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
@@ -162,7 +162,7 @@ def build_compose(push: bool):
                 dialogs.console.print_exception(error, style="red")
                 exit(1)
 
-    dialogs.done("Done.")
+    dialogs.done("Built container images on Compose mode.")
 
 def build_kubernetes(push: bool, username: str):
     dialogs.warn("Warning! Kubernetes mode builds and pushes images to the registry according to the 'services.yml' file.")
@@ -206,9 +206,9 @@ def build_kubernetes(push: bool, username: str):
 
             created_images.append(tag)
 
-    dialogs.console.log("Built images:")
+    dialogs.console.log("Built container images on Kubernetes mode:")
     for image in created_images:
-        dialogs.console.print("* " + image)
+        dialogs.console.print("* " + image, style="bright_black")
 
     dialogs.done("\nDone.\n")
 
@@ -225,13 +225,16 @@ def start_compose(build: bool, restart: bool):
     if (build):
         build_compose(False)
 
-    start_step = subprocess.Popen(cmd + ["up", "-d"], cwd=root_directory, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-    start_step.wait()
-    _, error = start_step.communicate()
-    if (start_step.returncode != 0):
-        dialogs.error("Failed to start Reality on Compose mode.")
-        dialogs.console.print_exception(error, style="red")
-        exit(1)
+    with dialogs.console.status("[bold blue]Starting Reality on Compose mode..."):
+        start_step = subprocess.Popen(cmd + ["up", "-d"], cwd=root_directory, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        start_step.wait()
+        _, error = start_step.communicate()
+        if (start_step.returncode != 0):
+            dialogs.error("Failed to start Reality on Compose mode.")
+            dialogs.console.print_exception(error, style="red")
+            exit(1)
+    
+    dialogs.done("Started Reality on Compose mode.")
 
 def start_kubernetes(build: bool, restart: bool, ignore: bool):
     # Check if docker-compose is installed.
@@ -275,6 +278,8 @@ def start_kubernetes(build: bool, restart: bool, ignore: bool):
                     dialogs.console.log("[italic bright_black]Continuing...")
                 else:
                     exit(1)
+    
+    dialogs.done("Started Reality on Kubernetes mode.")
 
 def stop_compose():
     # Check if docker-compose is installed.
