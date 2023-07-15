@@ -75,10 +75,9 @@ def check_docker() -> Tuple[bool, list]:
 
 def check_docker_compose() -> Tuple[bool, list]:
     try: 
-        check_step = subprocess.Popen(["docker-compose", "version"], cwd=root_directory, stderr=subprocess.PIPE)
+        check_step = subprocess.Popen(["docker-compose", "version"], cwd=root_directory, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         check_step.wait()
         if (check_step.returncode == 0):
-            dialogs.console.print(check_step.communicate()[0], style="gray")
             return True, ["docker-compose"]
     except Exception:
         pass
@@ -87,7 +86,6 @@ def check_docker_compose() -> Tuple[bool, list]:
         check_step = subprocess.Popen("docker", "compose", "version", cwd=root_directory, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         check_step.wait()
         if (check_step.returncode == 0):
-            dialogs.console.print(check_step.communicate()[0], style="gray")
             return True, ["docker", "compose"]
     except Exception:
         pass
