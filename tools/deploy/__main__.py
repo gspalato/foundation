@@ -61,6 +61,18 @@ def validate_mode_option(mode: str):
 
 # Task functions
 def check_docker(display: bool = False) -> Tuple[bool, list]:
+    import shutil
+
+    path = shutil.which("docker")
+    if (path):
+        if (display):
+            dialogs.console.print("Found Docker.", style="gray")
+        return True, ["docker"]
+    else:
+        return False, []
+    
+    # Old way of checking for docker.
+
     try:
         check_step = subprocess.Popen(["docker", "version"], cwd=root_directory, stderr=subprocess.PIPE)
         check_step.wait()
@@ -77,26 +89,32 @@ def check_docker(display: bool = False) -> Tuple[bool, list]:
     return False, []
 
 def check_docker_compose(display: bool = False) -> Tuple[bool, list]:
-    try: 
-        check_step = subprocess.Popen(["docker-compose", "version"], cwd=root_directory, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-        check_step.wait()
-        output, _ = check_step.communicate()
-        if (check_step.returncode == 0):
-            if (display):
-                dialogs.console.print("Found " + output, style="gray")
-            return True, ["docker-compose"]
-    except Exception:
-        pass
+    import shutil
+
+    # First check for an older docker-compose command.
+    path = shutil.which("docker-compose")
+    if (path):
+        if (display):
+            dialogs.console.print("Found Docker Compose.", style="gray")
+        return True, ["docker-compose"]
     
+    docker_exists, _ = check_docker()
+    if (not docker_exists):
+        return False, []
+
+    # Then, check for the docker compose command.
     try:
         check_step = subprocess.Popen("docker", "compose", "version", cwd=root_directory, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         check_step.wait()
         output, _ = check_step.communicate()
+        print(output)
+        print(_)
         if (check_step.returncode == 0):
             if (display):
                 dialogs.console.print("Found " + output, style="gray")
             return True, ["docker", "compose"]
     except Exception:
+        print("catched exception when checking docker compose")
         pass
 
     return False, []
