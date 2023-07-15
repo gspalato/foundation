@@ -20,7 +20,7 @@
 
 from configuration import Configuration
 from dialogs import Dialogs
-import os
+from os import path
 from rich.prompt import Prompt
 import subprocess
 import typer
@@ -28,9 +28,9 @@ from typing import Tuple
 from typing_extensions import Annotated
 
 # Directories
-tool_directory = os.path.dirname(os.path.realpath(__file__))
-root_directory = os.path.join(tool_directory, '..', '..')
-src_directory = os.path.join(root_directory, 'src')
+tool_directory = path.dirname(path.realpath(__file__))
+root_directory = path.dirname(tool_directory)
+src_directory = path.join(root_directory, 'src')
 
 # Definitions
 app = typer.Typer()
@@ -38,7 +38,7 @@ dialogs = Dialogs()
 
 # Configurations
 reality_services_config = Configuration()
-reality_services_config.load_from_file(os.path.join(root_directory, 'services.yml'))
+reality_services_config.load_from_file(path.join(root_directory, 'services.yml'))
 
 kubectl = ["kubectl"]
 registry_host = None # Set to None to push to docker.io.
@@ -190,16 +190,16 @@ def build_kubernetes(push: bool, username: str):
     for component in reality_services_config.components:
         dialogs.debug("Building " + component.id + " from folder " + component.path + "...")
 
-        service_folder = os.path.join(root_directory, component.path)
-        dockerfile = os.path.join(service_folder, "Dockerfile")
-        tag = registry_host and os.path.join(registry_host, component.id) or os.path.join(username, component.id)
+        service_folder = path.join(root_directory, component.path)
+        dockerfile = path.join(service_folder, "Dockerfile")
+        tag = registry_host and path.join(registry_host, component.id) or path.join(username, component.id)
 
-        has_dockerfile = os.path.isfile(dockerfile)
+        has_dockerfile = path.isfile(dockerfile)
         if (not has_dockerfile):
             dialogs.debug("No Dockerfile found in " + service_folder + ". Skipping...")
             continue
 
-        build_step = subprocess.Popen(["docker", "build", ".", "-f", os.path.join(component.path, "Dockerfile"), "-t", tag],
+        build_step = subprocess.Popen(["docker", "build", ".", "-f", path.join(component.path, "Dockerfile"), "-t", tag],
                                       cwd=root_directory, stdout= subprocess.STDOUT, stderr=subprocess.PIPE)
         build_step.wait()
         _, error = build_step.communicate()
@@ -275,7 +275,7 @@ def start_kubernetes(build: bool, restart: bool, ignore: bool):
     dialogs.info("Applying service configurations...")
     for component in reality_services_config.components:
         print("* Applying " + component.id + "...")
-        service_file = os.path.join(component.path, "kubernetes.yml")
+        service_file = path.join(component.path, "kubernetes.yml")
         apply_step = subprocess.Popen(kubectl + ["apply", "-f", service_file],
                                       cwd=src_directory, stdout= subprocess.STDOUT, stderr=subprocess.PIPE)
         apply_step.wait()
