@@ -46,7 +46,7 @@ def build_command(
                                              cwd=ROOT_DIR)
             if (code != 0):
                 console.error("Failed to build " + component.id + ".")
-                console.print_exception(error, style="red")
+                console.print_exception(error)
                 exit(1)
 
             if (push): # TODO: Properly read the component definition from services.yml to determine if it should be pushed.
@@ -54,7 +54,7 @@ def build_command(
                 code, _, error = Shell.execute(["docker", "push", tag], cwd=ROOT_DIR)
                 if (code != 0):
                     console.error("Failed to push " + component.id + ".")
-                    console.print_exception(error, style="red")
+                    console.print_exception(error)
                     exit(1)
 
             created_images.append(tag)
@@ -94,7 +94,7 @@ def up_command(
                                          cwd=SRC_DIR)
         if (code != 0):
             console.error("Failed to apply secrets.")
-            console.print_exception(error, style="red")
+            console.print_exception(error)
             exit(1)
 
         # Apply service configurations
@@ -107,7 +107,7 @@ def up_command(
                                              cwd=SRC_DIR)
             if (code != 0):
                 console.error("[bold red]Failed to apply service " + component.id + ".")
-                console.print_exception(error, style="red")
+                console.print_exception(error)
                 if (ignore):
                     console.log("[italic bright_black]Continuing...")
                 else:
