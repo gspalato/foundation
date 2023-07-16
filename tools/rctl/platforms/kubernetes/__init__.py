@@ -22,14 +22,14 @@ def build_command(
     push: Annotated[bool, typer.Option("-p", help="Pushes the images to the registry after building.")] = True
 ) -> str:
     """Builds the container images."""
-    
+
     console.warn("Warning! Kubernetes mode builds and pushes images to the registry according to the 'reality.yml' file.")
     console.warn("If you want to push to a different registry, please edit the 'reality.yml' file and set 'registry' property.")
 
     registry = configuration.settings["registry"]
     created_images = []
 
-    username = Utils.login_to_registry()
+    username = Utils.login_to_registry(registry)
 
     with console.status("[bold blue]Building images...") as status:
 
