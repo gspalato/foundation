@@ -17,10 +17,12 @@ from platforms.compose.api import client
 app: Typer = Typer()
 
 # Add the subcommands.
-@app.command("build", help="Builds the container images.")
+@app.command("build")
 def build_command(
     push: Annotated[bool, typer.Option("-p", help="Pushes the images to the registry after building.")] = True
 ) -> str:
+    """Builds the container images."""
+    
     console.warn("Warning! Kubernetes mode builds and pushes images to the registry according to the 'reality.yml' file.")
     console.warn("If you want to push to a different registry, please edit the 'reality.yml' file and set 'registry' property.")
 
@@ -75,12 +77,13 @@ def build_command(
 
     return username
 
-@app.command("up", help="Starts Reality on Kubernetes mode. Creates services, deployments and pods for each Reality service.")
+@app.command("up")
 def up_command(
     ignore: Annotated[str, typer.Option(help="Ignores if a configuration file fails and continues deploying.")] = False,
     build: Annotated[bool, typer.Option("-b", help="Builds the images before starting.")] = False,
     restart: Annotated[bool, typer.Option("-r", help="Kills the services before starting.")] = False,
 ):
+    """Starts Reality on Kubernetes mode. Creates services, deployments and pods for each Reality service."""
     # Check if docker-compose is installed.
     installed, cmd = Checks.get_kubernetes()
     if (not installed):
@@ -121,8 +124,9 @@ def up_command(
     
     console.done("Started Reality on Kubernetes mode.")
 
-@app.command("down", help="Stops Reality on Kubernetes mode and deletes all services, deployments and pods.")
+@app.command("down")
 def down_command():
+    """Stops Reality on Kubernetes mode and deletes all services, deployments and pods."""
     # Check if kubectl is installed.
     installed, cmd = Checks.get_kubernetes()
     if (not installed):
