@@ -1,6 +1,6 @@
 from typing import List, Tuple
 
-from __main__ import ROOT_DIR
+from directories import ROOT_DIR
 from shell import Shell
 
 
