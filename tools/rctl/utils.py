@@ -23,7 +23,7 @@ class Utils:
             code, _, error = Shell.execute(["docker", "login", host or "", "-u", username, "-p", password])
             if (code != 0):
                 console.error("Failed to login to registry.")
-                console.print_exception(error)
+                console.error_panel(error)
                 exit(1)
         
         if (host is None):

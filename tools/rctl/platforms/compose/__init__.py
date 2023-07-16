@@ -39,7 +39,7 @@ def build_command(
             code, _, error = Shell.execute(cmd + ["push"], cwd=ROOT_DIR)
             if (code != 0):
                 console.error("Failed to push images.")
-                console.print_exception(error)
+                console.error_panel(error)
                 exit(1)
 
     console.done("Built container images on Compose mode.")
@@ -65,7 +65,7 @@ def up_command(
         code, _, error = Shell.execute(cmd + ["up", "-d"], cwd=ROOT_DIR)
         if (code != 0):
             console.error("Failed to start Reality on Compose mode.")
-            console.console.print_exception(error)
+            console.console.error_panel(error)
             exit(1)
     
     console.done("Started Reality on Compose mode.")
@@ -81,7 +81,7 @@ def down_command():
     with console.status("Stopping Reality on Compose mode..."):
         code, _, error = Shell.execute(cmd + ["down"], cwd=ROOT_DIR)
         if (code != 0):
-            console.print_exception(error)
+            console.error_panel(error)
             exit(1)
 
     console.done("Stopped Reality on Compose.")
@@ -97,7 +97,7 @@ def restart_command():
     with console.status("Restarting Reality on Compose mode..."):
         code, _, error = Shell.execute(cmd + ["restart"], cwd=ROOT_DIR)
         if (code != 0):
-            console.print_exception(error)
+            console.error_panel(error)
             exit(1)
 
     console.done("Restarted Reality on Compose.")
