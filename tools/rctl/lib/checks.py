@@ -1,8 +1,7 @@
 from typing import List, Tuple
 
-from directories import ROOT_DIR
-from shell import Shell
-
+from lib.directories import ROOT_DIR
+from lib.shell import Shell
 
 class Checks:
     @staticmethod

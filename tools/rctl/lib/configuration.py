@@ -1,10 +1,10 @@
 from typing import List
-from component import Component, ComponentBuildSettings, ComponentPlatformBuildSettings
 import os
 import yaml
 from yaml.loader import SafeLoader
 
-from directories import ROOT_DIR
+from lib.component import Component, ComponentBuildSettings, ComponentPlatformBuildSettings
+from lib.directories import ROOT_DIR
 
 class Configuration:
     def __init__(self):

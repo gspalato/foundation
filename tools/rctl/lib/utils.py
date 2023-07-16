@@ -1,7 +1,7 @@
 from rich.prompt import Prompt
 
-from console import console
-from shell import Shell
+from lib.console import console
+from lib.shell import Shell
 
 class Utils:
     @staticmethod
