@@ -30,7 +30,7 @@ components:
     type: microservice
     path: src/Reality.Database
     build:
-      context: /src
+      context: src
       dockerfile: Reality.Database/Dockerfile
       platforms:
         compose:
@@ -48,7 +48,7 @@ components:
     type: microservice
     path: src/Reality.Services.Identity
     build:
-      context: /src
+      context: src
       dockerfile: Reality.Services.Identity/Dockerfile
       platforms:
         compose:
@@ -66,7 +66,7 @@ components:
     type: microservice
     path: src/Reality.Services.UPx
     build:
-      context: /src
+      context: src
       dockerfile: Reality.Servies.UPx/Dockerfile
       platforms:
         compose:
@@ -84,7 +84,7 @@ components:
     type: microservice
     path: src/Reality.Services.Portfolio
     build:
-      context: /src
+      context: src
       dockerfile: Reality.Services.Portfolio/Dockerfile
       platforms:
         compose:
@@ -102,7 +102,7 @@ components:
     type: microservice
     path: src/Reality.Services.Gateway
     build:
-      context: /src
+      context: src
       dockerfile: Reality.Services.Gateway/Dockerfile
       platforms:
         compose:
@@ -120,7 +120,7 @@ components:
     type: microservice
     path: src/Reality.Services.Proxy
     build:
-      context: /src
+      context: src
       dockerfile: Reality.Services.Proxy/Dockerfile
       platforms:
         compose:
@@ -138,7 +138,7 @@ components:
     type: application
     path: src/Portfolio
     build:
-      context: /src
+      context: src
       dockerfile: Portfolio/Dockerfile
       platforms:
         compose:
