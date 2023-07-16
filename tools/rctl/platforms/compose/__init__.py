@@ -2,11 +2,11 @@ import typer
 from typer import Typer
 from typing_extensions import Annotated
 
-from configuration import configuration
-from console import console
-from directories import ROOT_DIR
-from checks import Checks
-from shell import Shell
+from lib.configuration import configuration
+from lib.console import console
+from lib.directories import ROOT_DIR
+from lib.checks import Checks
+from lib.shell import Shell
 
 # Create the app.
 app: Typer = Typer()

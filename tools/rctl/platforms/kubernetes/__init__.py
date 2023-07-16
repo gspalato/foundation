@@ -4,12 +4,12 @@ import typer
 from typer import Typer
 from typing_extensions import Annotated
 
-from configuration import configuration
-from console import console
-from directories import ROOT_DIR, SRC_DIR
-from checks import Checks
-from shell import Shell
-from utils import Utils
+from lib.configuration import configuration
+from lib.console import console
+from lib.directories import ROOT_DIR, SRC_DIR
+from lib.checks import Checks
+from lib.shell import Shell
+from lib.utils import Utils
 
 # Create the app.
 app: Typer = Typer()
