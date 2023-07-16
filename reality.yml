@@ -30,8 +30,8 @@ components:
     type: microservice
     path: src/Reality.Database
     build:
-      context: ./src
-      dockerfile: ./Reality.Database/Dockerfile
+      context: /src
+      dockerfile: Reality.Database/Dockerfile
       platforms:
         compose:
           build: false
@@ -48,8 +48,8 @@ components:
     type: microservice
     path: src/Reality.Services.Identity
     build:
-      context: ./src
-      dockerfile: ./Reality.Services.Identity/Dockerfile
+      context: /src
+      dockerfile: Reality.Services.Identity/Dockerfile
       platforms:
         compose:
           build: true
@@ -66,8 +66,8 @@ components:
     type: microservice
     path: src/Reality.Services.UPx
     build:
-      context: ./src
-      dockerfile: ./Reality.Servies.UPx/Dockerfile
+      context: /src
+      dockerfile: Reality.Servies.UPx/Dockerfile
       platforms:
         compose:
           build: true
@@ -84,8 +84,8 @@ components:
     type: microservice
     path: src/Reality.Services.Portfolio
     build:
-      context: ./src
-      dockerfile: ./Reality.Services.Portfolio/Dockerfile
+      context: /src
+      dockerfile: Reality.Services.Portfolio/Dockerfile
       platforms:
         compose:
           build: true
@@ -102,8 +102,8 @@ components:
     type: microservice
     path: src/Reality.Services.Gateway
     build:
-      context: ./src
-      dockerfile: ./Reality.Services.Gateway/Dockerfile
+      context: /src
+      dockerfile: Reality.Services.Gateway/Dockerfile
       platforms:
         compose:
           build: true
@@ -120,8 +120,8 @@ components:
     type: microservice
     path: src/Reality.Services.Proxy
     build:
-      context: ./src
-      dockerfile: ./Reality.Services.Proxy/Dockerfile
+      context: /src
+      dockerfile: Reality.Services.Proxy/Dockerfile
       platforms:
         compose:
           build: true
@@ -138,8 +138,8 @@ components:
     type: application
     path: src/Portfolio
     build:
-      context: ./src
-      dockerfile: ./Portfolio/Dockerfile
+      context: /src
+      dockerfile: Portfolio/Dockerfile
       platforms:
         compose:
           build: true
