@@ -1,7 +1,9 @@
 from rich import console
 
 class Console(console.Console):
-    def __init__(self) -> None:
+    def __init__(self, *args, **kwargs) -> None:
+        super().__init__(*args, **kwargs)
+
         self.texts = {
             "welcome": "Welcome to [magenta]rctl[/magenta]!",
 
