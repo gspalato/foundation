@@ -16,7 +16,7 @@ def build(
     console.warn("Warning! Kubernetes mode builds and pushes images to the registry according to the 'services.yml' file.")
     console.warn("If you want to push to a different registry, please edit the 'services.yml' file and set 'registry' property.")
 
-    registry = config.settings.registry
+    registry = config.settings["registry"]
     created_images = []
 
     username = Utils.login_to_registry()
@@ -83,7 +83,7 @@ def up(
     with console.console.status("[bold blue]Starting Reality on Kubernetes mode...") as status:
         # Apply secrets
         status.update("[bold blue]Applying secrets...")
-        code, _, error = Shell.execute(cmd + ["apply", "-f", config.settings.secrets_file],
+        code, _, error = Shell.execute(cmd + ["apply", "-f", config.settings["secrets_file"]],
                                          cwd=SRC_DIR)
         if (code != 0):
             console.error("Failed to apply secrets.")

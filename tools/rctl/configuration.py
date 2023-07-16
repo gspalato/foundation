@@ -32,9 +32,9 @@ class Configuration:
             registry = settings["registry"]
             secrets_file = settings["secrets_file"]
 
-            self.settings.kubectl_command = kubectl_command
-            self.settings.registry = registry
-            self.settings.secrets_file = secrets_file
+            self.settings["kubectl_command"] = kubectl_command
+            self.settings["registry"] = registry
+            self.settings["secrets_file"] = secrets_file
 
             components = []
 
