@@ -73,7 +73,7 @@ def up_command(
         code, _, error = Shell.execute(cmd + ["up", "-d"], cwd=ROOT_DIR)
         if (code != 0):
             console.error("Failed to start Reality on Compose mode.")
-            console.console.error_panel(error)
+            console.error_panel(error)
             exit(1)
     
     console.done("Started Reality on Compose mode.")

@@ -96,7 +96,7 @@ def up_command(
     if (build):
         username = build_command(False, username)
 
-    with console.console.status("[bold blue]Starting Reality on Kubernetes mode...") as status:
+    with console.status("[bold blue]Starting Reality on Kubernetes mode...") as status:
         # Apply secrets
         status.update("[bold blue]Applying secrets...")
         code, _, error = Shell.execute(cmd + ["apply", "-f", configuration.settings["secrets_file"]],
