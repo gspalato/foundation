@@ -4,9 +4,12 @@ services:
     hostname: "proxy-service"
     ports:
       - "80:80"
-    build:
-      context: ./src
-      dockerfile: ./Reality.Services.Proxy/Dockerfile
+    image: nginx:latest
+    #build:
+    #  context: ./src
+    #  dockerfile: ./Reality.Services.Proxy/Dockerfile
+    volumes:
+      - /etc/nginx:/etc/nginx
     depends_on:
       - gateway-service
 
@@ -26,13 +29,13 @@ services:
   # Reality API Gateway
   gateway-service:
     hostname: "gateway-service"
+    build:
+      context: ./src
+      dockerfile: ./Reality.Services.Gateway/Dockerfile
     ports:
       - "4000:80"
     expose:
       - "80"
-    build:
-      context: ./src
-      dockerfile: ./Reality.Services.Gateway/Dockerfile
     env_file:
       - .env
     environment:
