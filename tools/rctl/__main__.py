@@ -28,18 +28,6 @@ import typer
 
 import platforms.compose as compose
 import platforms.kubernetes as kubernetes
-from configuration import Configuration
-from console import Console
-
-# Directories
-FILE_DIR = path.dirname(path.abspath(__file__))
-TOOLS_DIR = path.dirname(FILE_DIR)
-ROOT_DIR = path.dirname(TOOLS_DIR)
-SRC_DIR = path.join(ROOT_DIR, "src")
-
-# Read the configuration.
-config = Configuration()
-config.load_from_file(path.join(ROOT_DIR, 'reality.yml'))
 
 # Create the app.
 app = typer.Typer()
@@ -47,12 +35,9 @@ app.add_typer(compose.app, name="compose", help="Reality on Compose commands.")
 app.add_typer(kubernetes.app, name="kubernetes", help="Reality on Kubernetes commands.")
 app.add_typer(kubernetes.app, name="k8s", help="Reality on Kubernetes commands.")
 
-console: Console = Console(log_path=False)
-
 # Run the app.
 if __name__ == "__main__":
     app()
-
 
 # TODO: Create an unified configuration file for both Docker Compose and Kubernetes mode.
 # TODO: Create an utility class that parses this configuration file and generates the Docker Compose and Kubernetes files on demand.

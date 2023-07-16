@@ -3,6 +3,8 @@ import os
 import yaml
 from yaml.loader import SafeLoader
 
+from directories import ROOT_DIR
+
 class Configuration:
     def __init__(self):
         self.api = None
@@ -58,5 +60,5 @@ class Configuration:
                     continue
                 self.components.append(component[0])
 
-
-                
+configuration = Configuration()
+configuration.load_from_file(os.path.join(ROOT_DIR, 'reality.yml'))

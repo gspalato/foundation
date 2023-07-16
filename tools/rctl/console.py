@@ -39,3 +39,5 @@ class Console(console.Console):
 
     def alert_kubectl_not_found(self) -> None:
         self.error(self.texts["kubectl_not_found"])
+
+console = Console(log_path=False)

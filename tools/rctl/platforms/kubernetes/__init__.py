@@ -4,10 +4,12 @@ import typer
 from typer import Typer
 from typing_extensions import Annotated
 
-from rctl.__main__ import ROOT_DIR, SRC_DIR, config, console
-from rctl.checks import Checks
-from rctl.shell import Shell
-from rctl.utils import Utils
+from configuration import configuration
+from console import console
+from directories import ROOT_DIR, SRC_DIR
+from checks import Checks
+from shell import Shell
+from utils import Utils
 
 # Create the app.
 app: Typer = Typer()
@@ -20,7 +22,7 @@ def build(
     console.warn("Warning! Kubernetes mode builds and pushes images to the registry according to the 'services.yml' file.")
     console.warn("If you want to push to a different registry, please edit the 'services.yml' file and set 'registry' property.")
 
-    registry = config.settings["registry"]
+    registry = configuration.settings["registry"]
     created_images = []
 
     username = Utils.login_to_registry()
@@ -28,7 +30,7 @@ def build(
     with console.status("[bold blue]Building images...") as status:
 
         # TODO: Properly read the component definition from services.yml to determine if it should be built.
-        for component in config.components:
+        for component in configuration.components:
             status.update("Building " + component.id + " from folder " + component.path + "...")
 
             service_folder = path.join(ROOT_DIR, component.path)
@@ -87,7 +89,7 @@ def up(
     with console.console.status("[bold blue]Starting Reality on Kubernetes mode...") as status:
         # Apply secrets
         status.update("[bold blue]Applying secrets...")
-        code, _, error = Shell.execute(cmd + ["apply", "-f", config.settings["secrets_file"]],
+        code, _, error = Shell.execute(cmd + ["apply", "-f", configuration.settings["secrets_file"]],
                                          cwd=SRC_DIR)
         if (code != 0):
             console.error("Failed to apply secrets.")
@@ -96,7 +98,7 @@ def up(
 
         # Apply service configurations
         status.update("Applying service configurations...")
-        for component in config.components:
+        for component in configuration.components:
             console.log("* Applying " + component.id + "...")
             service_file = path.join(component.path, "kubernetes.yml")
 
