@@ -1,17 +1,20 @@
+from typing import List
 from component import Component, ComponentBuildSettings, ComponentPlatformBuildSettings
 import os
 import yaml
 from yaml.loader import SafeLoader
 
+from directories import ROOT_DIR
+
 class Configuration:
     def __init__(self):
-        self.api = None
+        self.api: str = None
         self.settings = {
             "kubectl_command": ["kubectl"],
             "registry": None,
             "secrets_file": "./secrets.yml"
         }
-        self.components = []
+        self.components: List[Component] = []
 
     def load_from_file(self, path: str):
         if (not os.path.isfile(path)):

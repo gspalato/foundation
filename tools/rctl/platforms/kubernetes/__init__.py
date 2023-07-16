@@ -29,7 +29,7 @@ def build_command(
 
     with console.status("[bold blue]Building images...") as status:
 
-        # TODO: Properly read the component definition from services.yml to determine if it should be built.
+        # TODO: Properly read the component definition from reality.yml to determine if it should be built.
         for component in configuration.components:
             status.update("Building " + component.id + " from folder " + component.path + "...")
 
@@ -42,14 +42,14 @@ def build_command(
                 console.debug("No Dockerfile found in " + service_folder + ". Skipping...")
                 continue
 
-            code, _, error = Shell.execute(["docker", "build", ".", "-f", path.join(component.path, "Dockerfile"), "-t", tag],
-                                             cwd=ROOT_DIR)
+            code, _, error = Shell.execute(["docker", "build", ".", "-f", component.build.dockerfile, "-t", tag],
+                                             cwd=path.join(SRC_DIR, component.build.context))
             if (code != 0):
                 console.error("Failed to build " + component.id + ".")
                 console.error_panel(error)
                 exit(1)
 
-            if (push): # TODO: Properly read the component definition from services.yml to determine if it should be pushed.
+            if (push): # TODO: Properly read the component definition from reality.yml to determine if it should be pushed.
                 status.update("Pushing " + component.id + " to registry...")
                 code, _, error = Shell.execute(["docker", "push", tag], cwd=ROOT_DIR)
                 if (code != 0):
