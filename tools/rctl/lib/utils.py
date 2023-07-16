@@ -1,7 +1,10 @@
+from docker.errors import APIError
 from rich.prompt import Prompt
 
 from lib.console import console
 from lib.shell import Shell
+
+from platforms.compose.api import client
 
 class Utils:
     @staticmethod
@@ -20,10 +23,11 @@ class Utils:
         password = Prompt.ask("Enter your registry password: ", show_default=False, password=True)
 
         with console.status("[bold blue]Logging in to registry...") as status:
-            code, _, error = Shell.execute(["docker", "login", host or "", "-u", username, "-p", password])
-            if (code != 0):
+            try:
+                client.login(username, password, registry=host)
+            except APIError as error:
                 console.error("Failed to login to registry.")
-                console.error_panel(error)
+                console.error_panel(error.explanation)
                 exit(1)
         
         if (host is None):
