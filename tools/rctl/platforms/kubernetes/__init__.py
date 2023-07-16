@@ -16,9 +16,9 @@ app: Typer = Typer()
 
 # Add the subcommands.
 @app.command("build", help="Builds the container images.")
-def build(
+def build_command(
     push: Annotated[bool, typer.Option("-p", help="Pushes the images to the registry after building.")] = True
-):
+) -> str:
     console.warn("Warning! Kubernetes mode builds and pushes images to the registry according to the 'services.yml' file.")
     console.warn("If you want to push to a different registry, please edit the 'services.yml' file and set 'registry' property.")
 
@@ -67,8 +67,10 @@ def build(
 
     console.done("\nDone.\n")
 
+    return username
+
 @app.command("up", help="Starts Reality on Kubernetes mode. Creates services, deployments and pods for each Reality service.")
-def up(
+def up_command(
     ignore: Annotated[str, typer.Option(help="Ignores if a configuration file fails and continues deploying.")] = False,
     build: Annotated[bool, typer.Option("-b", help="Builds the images before starting.")] = False,
     restart: Annotated[bool, typer.Option("-r", help="Kills the services before starting.")] = False,
@@ -80,11 +82,10 @@ def up(
         exit(1)
 
     if (restart):
-        down()
+        down_command()
 
     if (build):
-        username = Utils.login_to_registry()
-        build(False, username)
+        username = build_command(False, username)
 
     with console.console.status("[bold blue]Starting Reality on Kubernetes mode...") as status:
         # Apply secrets
@@ -115,7 +116,7 @@ def up(
     console.done("Started Reality on Kubernetes mode.")
 
 @app.command("down", help="Stops Reality on Kubernetes mode and deletes all services, deployments and pods.")
-def down():
+def down_command():
     # Check if kubectl is installed.
     installed, cmd = Checks.get_kubernetes()
     if (not installed):
@@ -132,16 +133,16 @@ def down():
     console.done("Done.")
 
 @app.command("restart")
-def restart():
+def restart_command():
     """To be implemented."""
     pass
 
 @app.command("status")
-def status():
+def status_command():
     """To be implemented."""
     pass
 
 @app.command("logs")
-def logs():
+def logs_command():
     """To be implemented."""
     pass

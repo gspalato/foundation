@@ -13,7 +13,7 @@ app: Typer = Typer()
 
 # Add the subcommands.
 @app.command("build", help="Builds the container images.")
-def build(
+def build_command(
     push: Annotated[bool, typer.Option("-p", help="Pushes the images to the registry after building.")] = True
 ):
     # Check if Docker Compose is installed.
@@ -45,7 +45,7 @@ def build(
     console.done("Built container images on Compose mode.")
 
 @app.command("up", help="Starts Reality on Compose mode.")
-def up(
+def up_command(
     build: Annotated[bool, typer.Option("-b", help="Builds the images before starting.")] = False,
     restart: Annotated[bool, typer.Option("-r", help="Kills the services before starting.")] = False,
 ):
@@ -56,10 +56,10 @@ def up(
         exit(1)
 
     if (restart):
-        down()
+        down_command()
 
     if (build):
-        build(False)
+        build_command(False)
 
     with console.status("[bold blue]Starting Reality on Compose mode..."):
         code, _, error = Shell.execute(cmd + ["up", "-d"], cwd=ROOT_DIR)
@@ -71,7 +71,7 @@ def up(
     console.done("Started Reality on Compose mode.")
 
 @app.command("down", help="Stops Reality on Compose mode and deletes all containers.")
-def down():
+def down_command():
     # Check if Docker Compose is installed.
     installed, cmd = Checks.get_docker_compose()
     if (not installed):
@@ -87,7 +87,7 @@ def down():
     console.done("Stopped Reality on Compose.")
 
 @app.command("restart", help="Restarts Reality on Compose mode.")
-def restart():
+def restart_command():
     # Check if Docker Compose is installed.
     installed, cmd = Checks.get_docker_compose()
     if (not installed):
@@ -103,11 +103,11 @@ def restart():
     console.done("Restarted Reality on Compose.")
 
 @app.command("status")
-def status():
+def status_command():
     """To be implemented."""
     pass
 
 @app.command("logs")
-def logs():
+def logs_command():
     """To be implemented."""
     pass
