@@ -8,7 +8,7 @@ from lib.directories import ROOT_DIR
 
 class Configuration:
     def __init__(self):
-        self.api: str = None
+        self.api: str = ""
         self.settings = {
             "kubectl_command": ["kubectl"],
             "registry": None,
