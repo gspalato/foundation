@@ -1,9 +1,7 @@
-from component import Component
+from component import Component, ComponentBuildSettings, ComponentPlatformBuildSettings
 import os
 import yaml
 from yaml.loader import SafeLoader
-
-from directories import ROOT_DIR
 
 class Configuration:
     def __init__(self):
@@ -50,7 +48,20 @@ class Configuration:
                 _type = entry["type"]
                 path = entry["path"]
 
-                component = Component(_id, name, _type, path)
+                context = entry["build"]["context"]
+                dockerfile = entry["build"]["dockerfile"]
+                build_on_compose = entry["build"]["platforms"]["compose"]["build"]
+                push_on_compose = entry["build"]["platforms"]["compose"]["push"]
+                build_on_kubernetes = entry["build"]["platforms"]["kubernetes"]["build"]
+                push_on_kubernetes = entry["build"]["platforms"]["kubernetes"]["push"]
+
+                platform_build_settings = ComponentPlatformBuildSettings(build_on_compose, build_on_kubernetes,
+                                                                         push_on_compose, push_on_kubernetes)
+                
+                build_settings = ComponentBuildSettings(context, dockerfile, platform_build_settings)
+
+                component = Component(_id, name, _type, path, build_settings)
+
                 components.append(component)
             
             # Append all components to the ordered all list.

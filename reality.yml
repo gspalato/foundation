@@ -32,17 +32,17 @@ components:
     build:
       context: ./src
       dockerfile: ./Reality.Database/Dockerfile
+      platforms:
+        compose:
+          build: false
+          push: false
+        kubernetes:
+          build: false
+          push: false
     replicas: 1
     ports:
       - expose: 27017
         containerPort: 27017
-    mode:
-      compose:
-        build: false
-        sync: false
-      kubernetes:
-        build: false
-        sync: false
 
   - name: identity
     type: microservice
@@ -50,17 +50,17 @@ components:
     build:
       context: ./src
       dockerfile: ./Reality.Services.Identity/Dockerfile
+      platforms:
+        compose:
+          build: true
+          push: false
+        kubernetes:
+          build: true
+          push: true
     replicas: 1
     ports:
       - expose: 80
         containerPort: 80
-    mode:
-      compose:
-        build: true
-        sync: false
-      kubernetes:
-        build: true
-        sync: true
 
   - name: upx
     type: microservice
@@ -68,17 +68,17 @@ components:
     build:
       context: ./src
       dockerfile: ./Reality.Servies.UPx/Dockerfile
+      platforms:
+        compose:
+          build: true
+          push: false
+        kubernetes:
+          build: true
+          push: true
     replicas: 1
     ports:
       - expose: 80
         containerPort: 80
-    mode:
-      compose:
-        build: true
-        sync: false
-      kubernetes:
-        build: true
-        sync: true
 
   - name: portfolio
     type: microservice
@@ -86,17 +86,17 @@ components:
     build:
       context: ./src
       dockerfile: ./Reality.Services.Portfolio/Dockerfile
+      platforms:
+        compose:
+          build: true
+          push: false
+        kubernetes:
+          build: true
+          push: true
     replicas: 1
     ports:
       - expose: 80
         containerPort: 80
-    mode:
-      compose:
-        build: true
-        sync: false
-      kubernetes:
-        build: true
-        sync: true
 
   - name: gateway
     type: microservice
@@ -104,17 +104,17 @@ components:
     build:
       context: ./src
       dockerfile: ./Reality.Services.Gateway/Dockerfile
+      platforms:
+        compose:
+          build: true
+          push: false
+        kubernetes:
+          build: true
+          push: true
     replicas: 1
     ports:
       - expose: 80
         containerPort: 80
-    mode:
-      compose:
-        build: true
-        sync: false
-      kubernetes:
-        build: true
-        sync: true
 
   - name: proxy
     type: microservice
@@ -122,17 +122,17 @@ components:
     build:
       context: ./src
       dockerfile: ./Reality.Services.Proxy/Dockerfile
+      platforms:
+        compose:
+          build: true
+          push: false
+        kubernetes:
+          build: false
+          push: false
     replicas: 1
     ports:
       - expose: 80
         containerPort: 80
-    mode:
-      compose:
-        build: true
-        sync: false
-      kubernetes:
-        build: false
-        sync: false
 
   - name: portfolio
     type: application
@@ -140,14 +140,14 @@ components:
     build:
       context: ./src
       dockerfile: ./Portfolio/Dockerfile
+      platforms:
+        compose:
+          build: true
+          push: false
+        kubernetes:
+          build: true
+          push: true
     replicas: 1
     ports:
       - expose: 80
         containerPort: 80
-    mode:
-      compose:
-        build: true
-        sync: false
-      kubernetes:
-        build: true
-        sync: true
