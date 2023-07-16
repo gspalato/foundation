@@ -1,3 +1,5 @@
+from rich.columns import Columns
+from rich.table import Table
 import typer
 from typer import Typer
 from typing_extensions import Annotated
@@ -115,7 +117,20 @@ def restart_command():
 @app.command("status")
 def status_command():
     """To be implemented."""
-    pass
+    services = client.services.list()
+    containers = client.containers.list()
+
+    services_table = Table(headers=Columns(["Name", "Containers", "Ports"]),title="Services")
+    containers_table = Table(headers=Columns(["Name", "Service", "Status", "Ports"]), title="Containers")
+
+    for service in services:
+        services_table.add_row(service.name, len(service.tasks), "---")
+
+    for container in containers:
+        containers_table.add_row(container.name, container.labels["com.docker.compose.service"], container.status, "---")
+
+    console.print(services_table)
+    console.print(containers_table)
 
 @app.command("logs")
 def logs_command():
