@@ -16,8 +16,8 @@ class Utils:
         else:
             console.info("Using registry host at " + host + ".")
 
-        username = Prompt.ask("Enter your registry username: ", default="")
-        password = Prompt.ask("Enter your registry password: ", default="", password=True)
+        username = Prompt.ask("Enter your registry username: ", show_default=False)
+        password = Prompt.ask("Enter your registry password: ", show_default=False, password=True)
 
         with console.status("[bold blue]Logging in to registry...") as status:
             code, _, error = Shell.execute(["docker", "login", host or "", "-u", username, "-p", password])
