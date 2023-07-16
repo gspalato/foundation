@@ -2,9 +2,9 @@ import typer
 from typer import Typer
 from typing_extensions import Annotated
 
-from tools.rctl.__main__ import ROOT_DIR, console
-from tools.rctl.checks import Checks
-from tools.rctl.shell import Shell
+from rctl.__main__ import ROOT_DIR, console
+from rctl.checks import Checks
+from rctl.shell import Shell
 
 # Create the app.
 app: Typer = Typer()

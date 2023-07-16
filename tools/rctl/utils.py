@@ -1,7 +1,7 @@
 from rich.prompt import Prompt
 
-from tools.rctl.__main__ import console
-from tools.rctl.shell import Shell
+from rctl.__main__ import console
+from rctl.shell import Shell
 
 class Utils:
     @staticmethod

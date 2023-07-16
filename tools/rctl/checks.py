@@ -1,7 +1,7 @@
 from typing import List, Tuple
 
-from tools.rctl.__main__ import ROOT_DIR
-from tools.rctl.shell import Shell
+from __main__ import ROOT_DIR
+from shell import Shell
 
 
 class Checks:

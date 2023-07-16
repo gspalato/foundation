@@ -4,10 +4,10 @@ import typer
 from typer import Typer
 from typing_extensions import Annotated
 
-from tools.rctl.__main__ import ROOT_DIR, SRC_DIR, config, console
-from tools.rctl.checks import Checks
-from tools.rctl.shell import Shell
-from tools.rctl.utils import Utils
+from rctl.__main__ import ROOT_DIR, SRC_DIR, config, console
+from rctl.checks import Checks
+from rctl.shell import Shell
+from rctl.utils import Utils
 
 # Create the app.
 app: Typer = Typer()
