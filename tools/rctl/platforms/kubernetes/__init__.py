@@ -11,6 +11,8 @@ from lib.checks import Checks
 from lib.shell import Shell
 from lib.utils import Utils
 
+from platforms.compose.api import client
+
 # Create the app.
 app: Typer = Typer()
 
@@ -19,8 +21,8 @@ app: Typer = Typer()
 def build_command(
     push: Annotated[bool, typer.Option("-p", help="Pushes the images to the registry after building.")] = True
 ) -> str:
-    console.warn("Warning! Kubernetes mode builds and pushes images to the registry according to the 'services.yml' file.")
-    console.warn("If you want to push to a different registry, please edit the 'services.yml' file and set 'registry' property.")
+    console.warn("Warning! Kubernetes mode builds and pushes images to the registry according to the 'reality.yml' file.")
+    console.warn("If you want to push to a different registry, please edit the 'reality.yml' file and set 'registry' property.")
 
     registry = configuration.settings["registry"]
     created_images = []
@@ -31,6 +33,10 @@ def build_command(
 
         # TODO: Properly read the component definition from reality.yml to determine if it should be built.
         for component in configuration.components:
+            if (not component.build.platforms.kubernetes.build):
+                status.update(f"Component {component.id} is set to not build on Kubernetes mode. Skipping...")
+                continue
+
             status.update("Building " + component.id + " from folder " + component.path + "...")
 
             service_folder = path.join(ROOT_DIR, component.path)
@@ -49,7 +55,7 @@ def build_command(
                 console.error_panel(error)
                 exit(1)
 
-            if (push): # TODO: Properly read the component definition from reality.yml to determine if it should be pushed.
+            if (component.build.platforms.push_on_kubernetes or push): # TODO: Properly read the component definition from reality.yml to determine if it should be pushed.
                 status.update("Pushing " + component.id + " to registry...")
                 code, _, error = Shell.execute(["docker", "push", tag], cwd=ROOT_DIR)
                 if (code != 0):

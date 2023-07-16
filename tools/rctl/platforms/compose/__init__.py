@@ -8,6 +8,8 @@ from lib.directories import ROOT_DIR
 from lib.checks import Checks
 from lib.shell import Shell
 
+from platforms.compose.api import client
+
 # Create the app.
 app: Typer = Typer()
 
