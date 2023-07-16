@@ -39,7 +39,7 @@ dialogs = Dialogs()
 
 # Configurations
 reality_services_config = Configuration()
-reality_services_config.load_from_file(path.join(root_directory, 'services.yml'))
+reality_services_config.load_from_file(path.join(root_directory, 'reality.yml'))
 
 kubectl = ["kubectl"]
 registry_host = None # Set to None to push to docker.io.

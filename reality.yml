@@ -1,4 +1,9 @@
 api: reality
+settings:
+  kubectl_command:
+    - kubectl
+  registry: null
+  secrets_file: ./secrets.yml
 order:
   - name: database
     type: microservice
@@ -20,11 +25,17 @@ order:
 
   - name: portfolio
     type: application
-
 components:
   - name: database
     type: microservice
     path: src/Reality.Database
+    build:
+      context: ./src
+      dockerfile: ./Reality.Database/Dockerfile
+    replicas: 1
+    ports:
+      - expose: 27017
+        containerPort: 27017
     mode:
       compose:
         build: false
@@ -36,6 +47,13 @@ components:
   - name: identity
     type: microservice
     path: src/Reality.Services.Identity
+    build:
+      context: ./src
+      dockerfile: ./Reality.Services.Identity/Dockerfile
+    replicas: 1
+    ports:
+      - expose: 80
+        containerPort: 80
     mode:
       compose:
         build: true
@@ -47,6 +65,13 @@ components:
   - name: upx
     type: microservice
     path: src/Reality.Services.UPx
+    build:
+      context: ./src
+      dockerfile: ./Reality.Servies.UPx/Dockerfile
+    replicas: 1
+    ports:
+      - expose: 80
+        containerPort: 80
     mode:
       compose:
         build: true
@@ -58,6 +83,13 @@ components:
   - name: portfolio
     type: microservice
     path: src/Reality.Services.Portfolio
+    build:
+      context: ./src
+      dockerfile: ./Reality.Services.Portfolio/Dockerfile
+    replicas: 1
+    ports:
+      - expose: 80
+        containerPort: 80
     mode:
       compose:
         build: true
@@ -69,6 +101,13 @@ components:
   - name: gateway
     type: microservice
     path: src/Reality.Services.Gateway
+    build:
+      context: ./src
+      dockerfile: ./Reality.Services.Gateway/Dockerfile
+    replicas: 1
+    ports:
+      - expose: 80
+        containerPort: 80
     mode:
       compose:
         build: true
@@ -80,6 +119,13 @@ components:
   - name: proxy
     type: microservice
     path: src/Reality.Services.Proxy
+    build:
+      context: ./src
+      dockerfile: ./Reality.Services.Proxy/Dockerfile
+    replicas: 1
+    ports:
+      - expose: 80
+        containerPort: 80
     mode:
       compose:
         build: true
@@ -91,6 +137,13 @@ components:
   - name: portfolio
     type: application
     path: src/Portfolio
+    build:
+      context: ./src
+      dockerfile: ./Portfolio/Dockerfile
+    replicas: 1
+    ports:
+      - expose: 80
+        containerPort: 80
     mode:
       compose:
         build: true
