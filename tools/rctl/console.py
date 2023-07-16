@@ -1,5 +1,6 @@
 from rich import console
 from rich.panel import Panel
+from rich.segment import Segment
 
 class Console(console.Console):
     def __init__(self, *args, **kwargs) -> None:
@@ -29,7 +30,8 @@ class Console(console.Console):
         self.log(message, style="bold red")
 
     def error_panel(self, message: str) -> None:
-        panel = Panel(message, title="Error", border_style="red")
+        segment = Segment(message, style="white")
+        panel = Panel(segment, title="Error", border_style="red")
         self.print(panel)
 
     def debug(self, message: str) -> None:
