@@ -67,7 +67,7 @@ components:
     path: src/Reality.Services.UPx
     build:
       context: src
-      dockerfile: Reality.Servies.UPx/Dockerfile
+      dockerfile: Reality.Services.UPx/Dockerfile
       platforms:
         compose:
           build: true
