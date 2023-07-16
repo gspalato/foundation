@@ -45,6 +45,7 @@ config.load_from_file(path.join(ROOT_DIR, 'reality.yml'))
 app = typer.Typer()
 app.add_typer(compose.app, name="compose", help="Reality on Compose commands.")
 app.add_typer(kubernetes.app, name="kubernetes", help="Reality on Kubernetes commands.")
+app.add_typer(kubernetes.app, name="k8s", help="Reality on Kubernetes commands.")
 
 console: Console = Console(log_path=False)
 

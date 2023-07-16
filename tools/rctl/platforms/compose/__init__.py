@@ -4,4 +4,4 @@ from typer import Typer
 app: Typer = Typer()
 
 # Add the subcommands.
-from commands import *
+from platforms.compose.commands import *
