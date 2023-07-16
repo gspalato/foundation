@@ -43,7 +43,7 @@ def build_command(
                 continue
 
             code, _, error = Shell.execute(["docker", "build", ".", "-f", component.build.dockerfile, "-t", tag],
-                                             cwd=path.join(SRC_DIR, component.build.context))
+                                             cwd=path.join(ROOT_DIR, component.build.context))
             if (code != 0):
                 console.error("Failed to build " + component.id + ".")
                 console.error_panel(error)
