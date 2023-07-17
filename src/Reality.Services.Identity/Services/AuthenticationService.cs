@@ -7,6 +7,7 @@ using Reality.Common.Data;
 using Reality.Common.Entities;
 using Reality.Common.Payloads;
 using Reality.Common.Roles;
+using System.Linq;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Security.Cryptography;
@@ -70,13 +71,15 @@ namespace Reality.Services.Identity.Services
                 new Claim("user", JsonSerializer.Serialize(user))
             };
 
+            var expires = user.Roles.Any(r => r is Role.Project) ? null : DateTime.Now.AddHours(1);
+
             var signingCredentials = new SigningCredentials(JwtSecurityKey, SecurityAlgorithms.HmacSha256);
 
             var token = new JwtSecurityToken(
                 "realityapibyunreaalism",
                 "unreaalism",
                 claims,
-                expires: DateTime.Now.AddHours(1),
+                expires: expires,
                 signingCredentials: signingCredentials
             );
 
