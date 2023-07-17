@@ -53,8 +53,10 @@ namespace Reality.Common.Services
         /// <returns>An User object.</returns>
         public User? ExtractUser(TokenValidationResult validationResult)
         {
+            Console.WriteLine("Reached ExtractUser. User claim:");
+            Console.WriteLine(validationResult.Claims.FirstOrDefault(x => x.Key == "user").Value);
             var json = validationResult.Claims.First(x => x.Key == "user").Value;
-            
+
             User? user;
             try
             {
@@ -65,7 +67,7 @@ namespace Reality.Common.Services
                 Console.WriteLine(e.Message);
                 return null;
             }
-            
+
             return user;
         }
 

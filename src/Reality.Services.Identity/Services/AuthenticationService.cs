@@ -71,7 +71,7 @@ namespace Reality.Services.Identity.Services
                 new Claim("user", JsonSerializer.Serialize(user))
             };
 
-            DateTime? expires = user.Roles.Any(r => r is Role.Project) ? null : DateTime.Now.AddHours(1);
+            DateTime expires = user.Roles.Any(r => r is Role.Project) ? DateTime.Now.AddDays(30) : DateTime.Now.AddHours(1);
 
             var signingCredentials = new SigningCredentials(JwtSecurityKey, SecurityAlgorithms.HmacSha256);
 
