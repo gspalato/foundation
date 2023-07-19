@@ -94,6 +94,7 @@ Reality is a microservice GraphQL back-end and platform for my projects, allowin
 ### Prerequisites
 
 - Docker
+- Python 3 <span style="color:#555">(If you'll use `rctl`)</span>
 - .NET 6
 
 ### Installation
@@ -102,16 +103,22 @@ To get a local copy up and running with:
 
 #### Docker Compose
 
-1. Clone the repo
+1. Clone the repository
 
 ```sh
 git clone https://github.com/gspalato/reality.git
 ```
 
-2. Build docker image
+2. Alias `rctl` (Optional)
 
 ```sh
-docker compose build
+alias rctl="python3 tools/rctl"
+```
+
+3. Build docker images
+
+```sh
+rctl compose build
 ```
 
 3. Configure environment variables in a `.env` file:
@@ -129,10 +136,13 @@ DatabasePassword=example
 4. Start it
 
 ```sh
-docker compose up -d
+rctl compose up
 ```
 
 #### Kubernetes
+
+> **⚠️ Warning!** Kubernetes is a work-in-progress and is NOT properly configured.
+> If you aren't familiar, then please use Docker Compose instead.
 
 ##### Using a private registry
 
@@ -162,7 +172,7 @@ stringData:
 
 2. Run `docker login` to login to your registry.
 
-3. Configure the Reality Deploy tool to use your registry.
+3. Configure the Reality Control Tool (`rctl`) to use your registry.
 
 4. Configure the `kubernetes.yml` files to use your registry for the images.
 
@@ -175,7 +185,7 @@ kubectl create secret generic reality-registry --from-file=.dockerconfigjson=/pa
 5. Build the services.
 
 ```sh
-python3 ./Reality.Kubernetes/tool.py build
+python3 tools/rctl build
 ```
 
 6. Run MongoDB locally.
@@ -187,7 +197,7 @@ mongod --dbpath /data/db --port 27017 --logpath mongodb/log --logappend --fork -
 6. Run the services.
 
 ```sh
-python3 ./Reality.Kubernetes/tool.py up
+python3 tools/rctl up
 ```
 
 <p align="right">(<a href="#top">back to top</a>)</p>
