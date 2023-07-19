@@ -14,7 +14,7 @@ namespace Reality.SDK.Database.Mongo
         private readonly MongoClient Client;
         private readonly IMongoDatabase Database;
 
-        public DatabaseContext(BaseConfiguration config)
+        public DatabaseContext(IBaseConfiguration config)
         {
             Client = new MongoClient(new MongoClientSettings()
             {

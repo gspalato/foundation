@@ -35,6 +35,19 @@ namespace Reality.SDK
             return this;
         }
 
+        public ServiceBuilder LoadConfiguration<I, T>()
+            where T : class, I, new()
+            where I : class
+        {
+            T config = Activator.CreateInstance<T>();
+            WebApplicationBuilder.Configuration.Bind(config);
+            WebApplicationBuilder.Services.AddSingleton<I, T>((_) => config);
+
+            LoadConfiguration<T>();
+
+            return this;
+        }
+
         public ServiceBuilder Configure(Action<WebApplicationBuilder> configure)
         {
             configure(WebApplicationBuilder);

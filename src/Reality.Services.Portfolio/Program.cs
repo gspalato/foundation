@@ -1,12 +1,15 @@
 ﻿using Octokit;
 using Octokit.Internal;
+using Reality.Common.Configurations;
 using Reality.SDK;
 using Reality.SDK.API.GraphQL;
 using Reality.SDK.Database.Mongo;
 using Reality.Services.Portfolio.Configurations;
 using Reality.Services.Portfolio.Services;
 using Reality.Services.Portfolio.Types;
+
 new ServiceBuilder(args)
+    .LoadConfiguration<IBaseConfiguration, Configuration>()
     .LoadConfiguration<Configuration>()
     .UseMongo()
     .UseGraphQL("/gql", (server, services, builder) =>

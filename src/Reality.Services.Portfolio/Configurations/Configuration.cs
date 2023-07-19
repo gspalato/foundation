@@ -2,7 +2,7 @@
 
 namespace Reality.Services.Portfolio.Configurations;
 
-public class Configuration : BaseConfiguration
+public class Configuration : BaseConfiguration, IBaseConfiguration
 {
     public string GithubToken { get; set; } = default!;
 
