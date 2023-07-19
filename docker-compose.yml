@@ -70,19 +70,19 @@ services:
     depends_on:
       - db
 
-  static-service:
-    hostname: "static-service"
-    build:
-      context: ./src
-      dockerfile: ./Reality.Services.Static/Dockerfile
-    env_file:
-      - .env
-    environment:
-      - DatabaseName=Static
-    volumes:
-      - static:/etc/reality/static/files
-    depends_on:
-      - db
+  #static-service:
+  #  hostname: "static-service"
+  #  build:
+  #    context: ./src
+  #    dockerfile: ./Reality.Services.Static/Dockerfile
+  #  env_file:
+  #    - .env
+  #  environment:
+  #    - DatabaseName=Static
+  #  volumes:
+  #    - static:/etc/reality/static/files
+  #  depends_on:
+  #    - db
 
   portfolio-service:
     hostname: "portfolio-service"
