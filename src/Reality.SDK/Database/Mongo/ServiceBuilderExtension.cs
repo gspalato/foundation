@@ -1,3 +1,5 @@
+using Microsoft.Extensions.DependencyInjection;
+
 namespace Reality.SDK.Database.Mongo
 {
     public static class ServiceBuilderExtension

@@ -1,5 +1,6 @@
-using HotChocolate.AspNetCore;
 using HotChocolate.Execution.Configuration;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Reality.SDK.API.GraphQL
 {
