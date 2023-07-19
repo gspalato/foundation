@@ -1,5 +1,6 @@
 using HotChocolate.Stitching;
 using Microsoft.AspNetCore;
+using Microsoft.AspNetCore.Cors.Infrastructure;
 using Reality.SDK;
 using Reality.SDK.API.GraphQL;
 using Reality.SDK.Database.Mongo;
@@ -36,15 +37,14 @@ new ServiceBuilder(args)
             logger.LogDebug($"Added remote schema \"{id}\"");
         }
     })
-    .Configure((WebApplication app) =>
-    {
-        app.UseCors(builder => builder
-            .AllowAnyOrigin()
-            .AllowAnyMethod()
-            .AllowAnyHeader());
-    })
+    .AddCors("AllowAll", new CorsPolicyBuilder()
+        .AllowAnyOrigin()
+        .AllowAnyHeader()
+        .AllowAnyMethod()
+        .Build())
     .Build()
     .Run();
+
 /*
 namespace Reality.Services.Gateway
 {

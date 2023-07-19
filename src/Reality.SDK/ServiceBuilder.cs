@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Cors.Infrastructure;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -42,6 +43,25 @@ namespace Reality.SDK
         public ServiceBuilder Configure(Action<WebApplication> configure)
         {
             Actions.Add(configure);
+            return this;
+        }
+
+        public ServiceBuilder AddCors(string policyName, CorsPolicy policy)
+        {
+
+            Configure((WebApplicationBuilder appBuilder) =>
+            {
+                appBuilder.Services.AddCors(options =>
+                {
+                    options.AddPolicy(policyName, policy);
+                });
+            });
+
+            Configure((WebApplication app) =>
+            {
+                app.UseCors(policyName);
+            });
+
             return this;
         }
 
