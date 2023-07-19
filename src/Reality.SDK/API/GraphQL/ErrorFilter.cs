@@ -1,4 +1,6 @@
-namespace Reality.Services.Identity
+using Microsoft.Extensions.Logging;
+
+namespace Reality.SDK.API.GraphQL
 {
     public class ErrorFilter : IErrorFilter
     {
