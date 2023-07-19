@@ -12,6 +12,7 @@ namespace Reality.SDK.API.GraphQL
             {
                 var server = b.Services.AddGraphQLServer();
                 server.AddMutationConventions();
+                server.AddDiagnosticEventListener<DiagnosticEventListener>();
 
                 b.Services.AddErrorFilter<ErrorFilter>();
 
