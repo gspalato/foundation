@@ -5,10 +5,10 @@ namespace Reality.Services.UPx.Types
 {
     public class Query
     {
-        public Task<IEnumerable<Use>> GetUsesAsync([Service] IRepository<Use> useRepository) =>
+        public Task<List<Use>> GetUsesAsync([Service] IRepository<Use> useRepository) =>
             useRepository.GetAllAsync();
 
-        public async Task<IEnumerable<Resume>> GetResumesAsync([Service] IRepository<Use> useRepository)
+        public async Task<List<Resume>> GetResumesAsync([Service] IRepository<Use> useRepository)
         {
             var uses = await useRepository.GetAllAsync();
 
@@ -35,7 +35,7 @@ namespace Reality.Services.UPx.Types
                 };
             });
 
-            return list;
+            return list.ToList();
         }
 
         public async Task<Resume> GetTotalResumeAsync([Service] IRepository<Use> useRepository)
