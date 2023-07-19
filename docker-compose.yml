@@ -39,7 +39,7 @@ services:
     env_file:
       - .env
     environment:
-      - SERVICE_URLS=http://identity-service,http://upx-service,http://portfolio-service
+      - ServiceUrls=http://identity-service,http://upx-service,http://portfolio-service
     depends_on:
       - identity-service
       - upx-service

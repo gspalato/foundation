@@ -9,9 +9,9 @@ namespace Reality.SDK
 {
     public class ServiceBuilder
     {
-        public IConfiguration? Configuration { get; set; }
+        public IConfiguration Configuration { get; set; }
 
-        private WebApplicationBuilder? WebApplicationBuilder { get; set; }
+        private WebApplicationBuilder WebApplicationBuilder { get; set; }
         private WebApplication? WebApplication { get; set; }
 
         private List<Action<WebApplication>> Actions { get; set; }
@@ -20,13 +20,14 @@ namespace Reality.SDK
         {
             WebApplicationBuilder = WebApplication.CreateBuilder(args);
 
+            WebApplicationBuilder.Configuration.AddEnvironmentVariables();
+            Configuration = WebApplicationBuilder.Configuration;
+
             Actions = new();
         }
 
         public ServiceBuilder LoadConfiguration<T>() where T : class, new()
         {
-            WebApplicationBuilder!.Configuration.AddEnvironmentVariables();
-
             T config = Activator.CreateInstance<T>();
             WebApplicationBuilder.Configuration.Bind(config);
             WebApplicationBuilder.Services.AddSingleton(config);
@@ -88,7 +89,6 @@ namespace Reality.SDK
             foreach (var action in Actions)
                 action(WebApplication);
 
-            WebApplicationBuilder = null;
             Actions.Clear();
 
             return this;

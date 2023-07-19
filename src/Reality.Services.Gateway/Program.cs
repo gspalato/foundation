@@ -1,22 +1,23 @@
 using HotChocolate.Stitching;
-using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Cors.Infrastructure;
+using NLog;
 using Reality.SDK;
 using Reality.SDK.API.GraphQL;
 using Reality.SDK.Database.Mongo;
-using Reality.Services.Gateway.Configurations;
 
 new ServiceBuilder(args)
-    .LoadConfiguration<GatewayConfiguration>()
     .UseMongo()
-    .UseGraphQL("/gql", (server, services) =>
+    .UseGraphQL("/gql", (server, services, builder) =>
     {
-        var provider = services.BuildServiceProvider();
-        var logger = provider.GetRequiredService<ILogger<ServiceBuilder>>();
-        var config = provider.GetRequiredService<GatewayConfiguration>();
+        Logger logger = LogManager.GetCurrentClassLogger();
 
         // GraphQL HTTP Schema Stitching
-        foreach (var url in config.Service_Urls.Split(","))
+        // TODO: Implement proper service discovery.
+        var urls = builder.Configuration.GetValue<string>("ServiceUrls");
+        if (urls is null || urls == string.Empty)
+            throw new Exception("ServiceUrls is not defined.");
+
+        foreach (var url in urls.Split(","))
         {
             var id = url.Replace("http://", "").Replace("-", "_");
             services.AddHttpClient(id, (_, client) =>
@@ -34,7 +35,7 @@ new ServiceBuilder(args)
                 Subscriptions = SubscriptionSupport.WebSocket
             });
 
-            logger.LogDebug($"Added remote schema \"{id}\"");
+            logger.Info($"GraphQL Schema Stitched: {id} -> {url}");
         }
     })
     .AddCors("AllowAll", new CorsPolicyBuilder()
@@ -44,23 +45,3 @@ new ServiceBuilder(args)
         .Build())
     .Build()
     .Run();
-
-/*
-namespace Reality.Services.Gateway
-{
-    public static class Program
-    {
-        public static void Main(string[] args)
-        {
-            BuildWebHost(args).Run();
-        }
-
-        public static IWebHost BuildWebHost(string[] args)
-        {
-            return WebHost.CreateDefaultBuilder(args)
-                .UseStartup<Startup>()
-                .Build();
-        }
-    }
-}
-*/
