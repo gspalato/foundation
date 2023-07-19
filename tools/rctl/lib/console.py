@@ -29,7 +29,7 @@ class Console(console.Console):
     def error(self, message: str) -> None:
         self.log(message, style="bold red")
 
-    def error_panel(self, message: str) -> None:
+    def error_panel(self, message) -> None:
         segment = Segment(message, style="white")
         panel = Panel(segment, title="Error", border_style="red")
         self.print(panel)
