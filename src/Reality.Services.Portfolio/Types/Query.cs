@@ -1,12 +1,12 @@
 ﻿using HotChocolate;
-using Reality.Services.Portfolio.Repositories;
+using Reality.SDK.Database.Mongo;
 using Project = Reality.Common.Entities.Project;
 
 namespace Reality.Services.Portfolio.Types
 {
     public class Query
     {
-        public async Task<IEnumerable<Project>> GetProjectsAsync([Service] IProjectRepository projectRepository)
+        public async Task<IEnumerable<Project>> GetProjectsAsync([Service] IRepository<Project> projectRepository)
         {
             return await projectRepository.GetAllAsync();
         }

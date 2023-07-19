@@ -1,7 +1,7 @@
 ﻿using MongoDB.Driver;
 using Octokit;
+using Reality.SDK.Database.Mongo;
 using Reality.Services.Portfolio.Configurations;
-using Reality.Services.Portfolio.Repositories;
 using YamlDotNet.Serialization;
 using YamlDotNet.Serialization.NamingConventions;
 using Project = Reality.Common.Entities.Project;
@@ -15,13 +15,13 @@ public class ProjectService : IHostedService, IDisposable
     private GitHubClient GitHubClient { get; }
     private ILogger<ProjectService> Logger { get; }
 
-    private readonly IProjectRepository ProjectRepository;
+    private readonly IRepository<Project> ProjectRepository;
 
     private int ExecutionCount;
     private Timer? Timer;
 
     public ProjectService(Configuration configuration, GitHubClient github,
-        IProjectRepository projectRepository, ILogger<ProjectService> logger)
+        IRepository<Project> projectRepository, ILogger<ProjectService> logger)
     {
         Configuration = configuration;
 
