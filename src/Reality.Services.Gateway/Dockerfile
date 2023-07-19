@@ -10,6 +10,7 @@ WORKDIR /src
 
 COPY ["Reality.Services.Gateway/Reality.Services.Gateway.csproj", "Reality.Services.Gateway/"]
 COPY ["Reality.Common/Reality.Common.csproj", "Reality.Common/"]
+COPY ["Reality.SDK/Reality.SDK.csproj", "Reality.SDK/"]
 RUN dotnet restore "Reality.Services.Gateway/Reality.Services.Gateway.csproj"
 COPY . .
 
