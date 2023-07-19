@@ -32,7 +32,6 @@ namespace Reality.Services.Identity.Types
             }
             catch (Exception e)
             {
-                Console.WriteLine($"==============================> {e.Message}");
                 return new AuthenticationPayload
                 {
                     Error = e.Message

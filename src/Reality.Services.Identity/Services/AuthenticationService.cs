@@ -47,7 +47,6 @@ namespace Reality.Services.Identity.Services
                 var roles = user.Roles;
 
                 var verify = Hasher.VerifyHashedPassword(username, user.PasswordHash, password);
-                Console.WriteLine($"================================> {verify.ToString()}");
                 if (verify != PasswordVerificationResult.Success)
                     return new AuthenticationPayload()
                     {
