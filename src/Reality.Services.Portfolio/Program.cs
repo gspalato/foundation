@@ -15,11 +15,8 @@ new ServiceBuilder(args)
     .UseMongo()
     .UseGraphQL("/gql", (server, services, builder) =>
     {
-        server.ConfigureSchema(_ =>
-        {
-            _.AddRootType(typeof(Query), OperationType.Query);
-            _.AddType(typeof(Project));
-        });
+        server
+            .AddQueryType<Query>();
 
         server
             .AddMongoDbFiltering()
