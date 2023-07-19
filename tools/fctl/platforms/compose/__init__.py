@@ -70,7 +70,7 @@ def up_command(
         build_command(False)
 
     with console.status("[bold blue]Starting Foundation on Compose mode..."):
-        code, _, error = Shell.execute(cmd + ["up", "-d"], cwd=ROOT_DIR)
+        code, _, error = Shell.execute(cmd + ["up", "-d", "-p", "fndtn"], cwd=ROOT_DIR)
         if (code != 0):
             console.error("Failed to start Foundation on Compose mode.")
             console.error_panel(error)
