@@ -11,6 +11,7 @@ namespace Reality.SDK.API.GraphQL
             builder.Configure((WebApplicationBuilder b) =>
             {
                 var server = b.Services.AddGraphQLServer();
+                server.AddMutationConventions();
 
                 if (configure != null)
                     configure(server, b.Services, builder);
