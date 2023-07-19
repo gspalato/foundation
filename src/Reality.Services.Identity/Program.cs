@@ -5,6 +5,7 @@ using Reality.Common.Services;
 using Reality.SDK;
 using Reality.SDK.API.GraphQL;
 using Reality.SDK.Database.Mongo;
+using Reality.Services.Identity;
 using Reality.Services.Identity.Services;
 using Reality.Services.Identity.Types;
 using System.IdentityModel.Tokens.Jwt;
@@ -14,6 +15,8 @@ new ServiceBuilder(args)
     .UseMongo()
     .UseGraphQL("/gql", (server, services, builder) =>
     {
+        services.AddErrorFilter<ErrorFilter>();
+
         server.AddQueryType<Query>();
         server.AddMutationType<Mutation>();
 
