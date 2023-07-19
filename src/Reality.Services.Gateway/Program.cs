@@ -1,6 +1,7 @@
 using HotChocolate.Stitching;
 using Microsoft.AspNetCore.Cors.Infrastructure;
 using NLog;
+using NLog.Config;
 using Reality.SDK;
 using Reality.SDK.API.GraphQL;
 using Reality.SDK.Database.Mongo;
@@ -9,7 +10,10 @@ new ServiceBuilder(args)
     .UseMongo()
     .UseGraphQL("/gql", (server, services, builder) =>
     {
-        Logger logger = LogManager.GetCurrentClassLogger();
+        Logger logger = LogManager
+            .Setup()
+            .LoadConfiguration(new LoggingConfiguration())
+            .GetCurrentClassLogger();
 
         // GraphQL HTTP Schema Stitching
         // TODO: Implement proper service discovery.
