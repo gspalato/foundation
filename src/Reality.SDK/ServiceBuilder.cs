@@ -26,6 +26,11 @@ namespace Reality.SDK
             Actions = new();
         }
 
+        /// <summary>
+        /// Binds loaded configuration to the specified type.
+        /// </summary>
+        /// <typeparam name="T">The type of the configuration class.</typeparam>
+        /// <returns>The current instance of the <see cref="ServiceBuilder"/> class.</returns>
         public ServiceBuilder LoadConfiguration<T>() where T : class, new()
         {
             T config = Activator.CreateInstance<T>();
@@ -35,6 +40,12 @@ namespace Reality.SDK
             return this;
         }
 
+        /// <summary>
+        /// Binds loaded configuration to the specified type, utilizing the specified interface.
+        /// </summary>
+        /// <typeparam name="I">The type of the interface.</typeparam>
+        /// <typeparam name="T">The type of the configuration class.</typeparam>
+        /// <returns>The current instance of the <see cref="ServiceBuilder"/> class.</returns>
         public ServiceBuilder LoadConfiguration<I, T>()
             where T : class, I, new()
             where I : class
