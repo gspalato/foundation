@@ -10,7 +10,7 @@ using Reality.Services.Identity.Types;
 using System.IdentityModel.Tokens.Jwt;
 
 new ServiceBuilder(args)
-    .BindConfiguration<BaseConfiguration>()
+    .BindConfiguration<IBaseConfiguration, BaseConfiguration>()
     .UseMongo()
     .UseGraphQL("/gql", (server, services, builder) =>
     {
