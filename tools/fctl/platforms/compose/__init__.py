@@ -4,7 +4,6 @@ import typer
 from typer import Typer
 from typing_extensions import Annotated
 
-from lib.configuration import configuration
 from lib.console import console
 from lib.directories import ROOT_DIR
 from lib.checks import Checks
@@ -70,7 +69,7 @@ def up_command(
         build_command(False)
 
     with console.status("[bold blue]Starting Foundation on Compose mode..."):
-        code, _, error = Shell.execute(cmd + ["up", "-d", "-p", "fndtn"], cwd=ROOT_DIR)
+        code, _, error = Shell.execute(['COMPOSE_PROJECT_NAME="fndtn"'] + cmd + ["up", "-d"], cwd=ROOT_DIR)
         if (code != 0):
             console.error("Failed to start Foundation on Compose mode.")
             console.error_panel(error)
@@ -88,7 +87,7 @@ def down_command():
         console.alert_docker_compose_not_found()
         exit(1)
 
-    with console.status("Stopping Foundation on Compose mode..."):
+    with console.status("[bold blue]Stopping Foundation on Compose mode..."):
         code, _, error = Shell.execute(cmd + ["down"], cwd=ROOT_DIR)
         if (code != 0):
             console.error_panel(error)
