@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using MongoDB.Driver;
-using Reality.Common.Data;
 using Reality.Common.Roles;
 using Reality.Common.Entities;
+using Reality.SDK.Database.Mongo;
 
 namespace Reality.Services.Identity.Services
 {

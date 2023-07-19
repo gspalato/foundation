@@ -37,7 +37,7 @@ namespace Reality.SDK
 
         public ServiceBuilder Configure(Action<WebApplicationBuilder> configure)
         {
-            configure(WebApplicationBuilder!);
+            configure(WebApplicationBuilder);
             return this;
         }
 
