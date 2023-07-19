@@ -23,10 +23,21 @@ namespace Reality.Services.Identity.Types
         public async Task<AuthenticationPayload> AuthenticateAsync(string username, string password,
             [Service] IAuthenticationService authService)
         {
-            var result = await authService.AuthenticateAsync(username, password);
-            Console.WriteLine(result.Error);
+            try
+            {
+                var result = await authService.AuthenticateAsync(username, password);
+                Console.WriteLine(result.Error);
 
-            return result;
+                return result;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine($"==============================> {e.Message}");
+                return new AuthenticationPayload
+                {
+                    Error = e.Message
+                };
+            }
         }
     }
 }

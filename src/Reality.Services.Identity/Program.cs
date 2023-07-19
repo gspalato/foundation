@@ -36,13 +36,7 @@ new ServiceBuilder(args)
             .AddSingleton<JwtSecurityTokenHandler>()
             .AddAuthorization()
             .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-            .AddJwtBearer(options => options.TokenValidationParameters = Reality.Common.Configurations.TokenConfiguration.ValidationParameters);
-
-    })
-    .Configure((WebApplication app) =>
-    {
-        app.UseAuthentication();
-        app.UseAuthorization();
+            .AddJwtBearer(options => options.TokenValidationParameters = TokenConfiguration.ValidationParameters);
     })
     .Build()
     .Run();
