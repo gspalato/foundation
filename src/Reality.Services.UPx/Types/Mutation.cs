@@ -2,18 +2,23 @@
 using HotChocolate.Subscriptions;
 using Reality.Common.Entities;
 using Reality.Common.Services;
+using Reality.Services.UPx.Payloads;
 using Reality.Services.UPx.Repositories;
 
 namespace Reality.Services.UPx.Types
 {
     public class Mutation
     {
-        public async Task<bool> RegisterStationUseAsync(int startTimestamp, int endTimestamp, int duration,
+        public async Task<RegisterStationUsePayload> RegisterStationUseAsync(int startTimestamp, int endTimestamp, int duration,
             double distributedWater, double economizedPlastic, double bottleQuantityEquivalent, string token,
             [Service] IUseRepository useRepository, [Service] IAuthorizationService authorizationService)
         {
             if (token.Length is 0)
-                return false;
+                return new RegisterStationUsePayload
+                {
+                    Successful = false,
+                    Error = "Token is empty."
+                };
 
             var result = await authorizationService.CheckAuthorizationAsync(token);
             var roles = authorizationService.ExtractRoles(result).Select(r => (int)r);
@@ -24,7 +29,11 @@ namespace Reality.Services.UPx.Types
             if (!result.IsValid)
             {
                 Console.WriteLine("Invalid token.");
-                return false;
+                return new RegisterStationUsePayload
+                {
+                    Successful = false,
+                    Error = "Invalid token."
+                };
             }
 
             try
@@ -42,7 +51,11 @@ namespace Reality.Services.UPx.Types
             if (!allowed)
             {
                 Console.WriteLine("Unauthorized.");
-                return false;
+                return new RegisterStationUsePayload
+                {
+                    Successful = false,
+                    Error = "Unauthorized."
+                };
             }
 
             Use use = new()
@@ -57,7 +70,7 @@ namespace Reality.Services.UPx.Types
 
             await useRepository.InsertAsync(use);
 
-            return true;
+            return new RegisterStationUsePayload { Successful = true };
         }
     }
 }
