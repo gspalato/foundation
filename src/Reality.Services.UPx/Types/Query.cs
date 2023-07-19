@@ -1,14 +1,14 @@
 ﻿using Reality.Common.Entities;
-using Reality.Services.UPx.Repositories;
+using Reality.SDK.Database.Mongo;
 
 namespace Reality.Services.UPx.Types
 {
     public class Query
     {
-        public Task<IEnumerable<Use>> GetUsesAsync([Service] IUseRepository useRepository) =>
+        public Task<IEnumerable<Use>> GetUsesAsync([Service] IRepository<Use> useRepository) =>
             useRepository.GetAllAsync();
 
-        public async Task<IEnumerable<Resume>> GetResumesAsync([Service] IUseRepository useRepository)
+        public async Task<IEnumerable<Resume>> GetResumesAsync([Service] IRepository<Use> useRepository)
         {
             var uses = await useRepository.GetAllAsync();
 
@@ -21,8 +21,9 @@ namespace Reality.Services.UPx.Types
 
             // Group by
             var perDateGroup = uses.GroupBy(_ => GetDayTimestamp(_.StartTimestamp));
-            
-            var list = perDateGroup.Select(_ => {
+
+            var list = perDateGroup.Select(_ =>
+            {
                 return new Resume()
                 {
                     Timestamp = _.Key,
@@ -37,7 +38,7 @@ namespace Reality.Services.UPx.Types
             return list;
         }
 
-        public async Task<Resume> GetTotalResumeAsync([Service] IUseRepository useRepository)
+        public async Task<Resume> GetTotalResumeAsync([Service] IRepository<Use> useRepository)
         {
             var uses = await useRepository.GetAllAsync();
 

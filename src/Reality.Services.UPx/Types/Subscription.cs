@@ -1,7 +1,5 @@
-using HotChocolate;
-using HotChocolate.Types;
 using Reality.Common.Entities;
-using Reality.Services.UPx.Repositories;
+using Reality.SDK.Database.Mongo;
 
 namespace Reality.Services.UPx.Types
 {
@@ -9,7 +7,7 @@ namespace Reality.Services.UPx.Types
     {
         [Subscribe(MessageType = typeof(IEnumerable<Resume>))]
         [Topic("OnStationUpdate")]
-        public async Task<IEnumerable<Resume>> OnStationUpdate([Service] IUseRepository useRepository)
+        public async Task<IEnumerable<Resume>> OnStationUpdate([Service] IRepository<Use> useRepository)
             => await new Query().GetResumesAsync(useRepository);
 
     }

@@ -1,6 +1,6 @@
 ﻿using Reality.Common.Entities;
 using Reality.Common.Services;
-using Reality.Services.UPx.Repositories;
+using Reality.SDK.Database.Mongo;
 using Reality.Services.UPx.Types.Payloads;
 
 namespace Reality.Services.UPx.Types
@@ -8,7 +8,7 @@ namespace Reality.Services.UPx.Types
     public class Mutation
     {
         public async Task<RegisterStationUsePayload> RegisterStationUseAsync(RegisterStationUseInput input,
-            [Service] IUseRepository useRepository, [Service] IAuthorizationService authorizationService)
+            [Service] IRepository<Use> useRepository, [Service] IAuthorizationService authorizationService)
         {
             if (input.Token.Length is 0)
                 return new RegisterStationUsePayload

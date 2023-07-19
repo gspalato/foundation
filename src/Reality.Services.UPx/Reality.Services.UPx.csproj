@@ -18,5 +18,6 @@
 
 	<ItemGroup>
 		<ProjectReference Include="..\Reality.Common\Reality.Common.csproj" />
+		<ProjectReference Include="..\Reality.SDK\Reality.SDK.csproj" />
 	</ItemGroup>
 </Project>

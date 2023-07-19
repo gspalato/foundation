@@ -5,11 +5,11 @@ using Reality.Common.Configurations;
 using Reality.Common.Data;
 using Reality.Common.Entities;
 using Reality.Common.Services;
-using Reality.Services.UPx.Repositories;
 using Reality.Services.UPx.Types;
 using System.IdentityModel.Tokens.Jwt;
 using System.Reflection;
 
+/*
 namespace Reality.Services.UPx
 {
     public class Startup
@@ -93,3 +93,4 @@ namespace Reality.Services.UPx
         }
     }
 }
+*/
