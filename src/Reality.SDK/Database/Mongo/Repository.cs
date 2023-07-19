@@ -6,7 +6,7 @@ namespace Reality.SDK.Database.Mongo
     {
         IMongoCollection<T> Collection { get; }
 
-        Task<IEnumerable<T>> GetAllAsync();
+        Task<List<T>> GetAllAsync();
         Task<T> GetByIdAsync(string id);
         Task<T> InsertAsync(T entity);
         Task<bool> RemoveAsync(string id);
@@ -24,7 +24,7 @@ namespace Reality.SDK.Database.Mongo
             Collection = dataContext.GetCollection<T>(typeof(T).Name);
         }
 
-        public async Task<IEnumerable<T>> GetAllAsync()
+        public async Task<List<T>> GetAllAsync()
         {
             return await Collection.Find(_ => true).ToListAsync();
         }

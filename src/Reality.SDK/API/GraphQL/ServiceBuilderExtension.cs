@@ -1,3 +1,4 @@
+using HotChocolate.AspNetCore;
 using HotChocolate.Execution.Configuration;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
@@ -22,7 +23,10 @@ namespace Reality.SDK.API.GraphQL
 
             builder.Configure((WebApplication app) =>
             {
-                app.MapGraphQL(path);
+                app.MapGraphQL(path).WithOptions(new GraphQLServerOptions
+                {
+                    Tool = { Enable = false }
+                });
             });
 
             return builder;
@@ -32,7 +36,11 @@ namespace Reality.SDK.API.GraphQL
         {
             builder.Configure((WebApplication app) =>
             {
-                app.MapBananaCakePop(path);
+                app.MapBananaCakePop(path).WithOptions(new GraphQLToolOptions
+                {
+                    Enable = true,
+                    GraphQLEndpoint = path
+                });
             });
 
             return builder;
