@@ -1,18 +1,13 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
 using MongoDB.Driver;
-using Reality.Common;
 using Reality.Common.Configurations;
-using Reality.Common.Data;
-using Reality.Common.Entities;
-using Reality.Common.Payloads;
 using Reality.Common.Roles;
-using System.Linq;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
-using System.Security.Cryptography;
-using System.Text;
 using System.Text.Json;
+using Reality.Services.Identity.Entities;
+using Reality.Services.Identity.Payloads;
 
 namespace Reality.Services.Identity.Services
 {
@@ -23,15 +18,18 @@ namespace Reality.Services.Identity.Services
 
     public class AuthenticationService : IAuthenticationService
     {
+        private readonly ILogger<AuthenticationService> Logger;
+
         private readonly IPasswordHasher<string> Hasher;
         private readonly IUserService UserService;
 
         private readonly SymmetricSecurityKey JwtSecurityKey;
         private readonly JwtSecurityTokenHandler JwtTokenHandler;
 
-        public AuthenticationService(IPasswordHasher<string> hasher,
+        public AuthenticationService(ILogger<AuthenticationService> logger, IPasswordHasher<string> hasher,
             IUserService userService, JwtSecurityTokenHandler jwtTokenHandler)
         {
+            Logger = logger;
             Hasher = hasher;
             UserService = userService;
             JwtSecurityKey = TokenConfiguration.SecurityKey;
@@ -40,27 +38,38 @@ namespace Reality.Services.Identity.Services
 
         public async Task<AuthenticationPayload> AuthenticateAsync(string username, string password)
         {
-            var user = await UserService.GetUserAsync(username);
-            if (user is null)
-                return new AuthenticationPayload();
+            try
+            {
+                var user = await UserService.GetUserAsync(username);
+                if (user is null)
+                    return new AuthenticationPayload();
 
-            var roles = user.Roles;
+                var roles = user.Roles;
 
-            var verify = Hasher.VerifyHashedPassword(username, user.PasswordHash, password);
-            Console.WriteLine(verify.ToString());
-            if (verify != PasswordVerificationResult.Success)
+                var verify = Hasher.VerifyHashedPassword(username, user.PasswordHash, password);
+                Console.WriteLine(verify.ToString());
+                if (verify != PasswordVerificationResult.Success)
+                    return new AuthenticationPayload()
+                    {
+                        Error = "Wrong password."
+                    };
+
+                return new AuthenticationPayload
+                {
+                    Successful = true,
+                    Token = GenerateAccessToken((User)user),
+                    User = (User)user,
+                    Error = ""
+                };
+            }
+            catch (Exception e)
+            {
+                Logger.LogError(e, "Failed to authenticate user.");
                 return new AuthenticationPayload()
                 {
-                    Error = "Wrong password."
+                    Error = e.Message
                 };
-
-            return new AuthenticationPayload
-            {
-                Successful = true,
-                Token = GenerateAccessToken((User)user),
-                User = (User)user,
-                Error = ""
-            };
+            }
         }
 
         private string GenerateAccessToken(User user)

@@ -1,6 +1,6 @@
-﻿using Reality.Common.Entities;
+﻿using Reality.Services.Identity.Entities;
 
-namespace Reality.Common.Payloads
+namespace Reality.Services.Identity.Payloads
 {
     public class AuthenticationPayload
     {

@@ -1,11 +1,8 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using MongoDB.Driver;
-using Reality.Common;
 using Reality.Common.Data;
-using Reality.Common.Entities;
 using Reality.Common.Roles;
-
-using RCommonEntities = Reality.Common.Entities;
+using Reality.Services.Identity.Entities;
 
 namespace Reality.Services.Identity.Services
 {
@@ -40,7 +37,7 @@ namespace Reality.Services.Identity.Services
 
             var hashedPassword = Hasher.HashPassword(username, password);
 
-            var user = new Reality.Common.Entities.FullUser()
+            var user = new Reality.Services.Identity.Entities.FullUser()
             {
                 Username = username,
                 PasswordHash = hashedPassword,
@@ -54,20 +51,20 @@ namespace Reality.Services.Identity.Services
 
         public async Task DeleteUserAsync(string username)
         {
-            var filter = Builders<Reality.Common.Entities.FullUser>.Filter.Where(x => x.Username == username);
+            var filter = Builders<FullUser>.Filter.Where(x => x.Username == username);
             await Users.FindOneAndDeleteAsync(filter);
         }
 
-        public async Task<Reality.Common.Entities.FullUser?> GetUserAsync(string username)
+        public async Task<FullUser?> GetUserAsync(string username)
         {
-            var filter = Builders<Reality.Common.Entities.FullUser>.Filter.Where(x => x.Username == username);
+            var filter = Builders<FullUser>.Filter.Where(x => x.Username == username);
             var found = await Users.FindAsync(filter);
             return found.FirstOrDefault();
         }
 
-        public async Task<Reality.Common.Entities.FullUser?> GetUserByIdAsync(string id)
+        public async Task<FullUser?> GetUserByIdAsync(string id)
         {
-            var filter = Builders<Reality.Common.Entities.FullUser>.Filter.Where(x => x.Id == id);
+            var filter = Builders<FullUser>.Filter.Where(x => x.Id == id);
             var found = await Users.FindAsync(filter);
             return found.FirstOrDefault();
         }

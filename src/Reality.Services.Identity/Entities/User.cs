@@ -1,6 +1,7 @@
 ﻿using Reality.Common.Roles;
+using Reality.SDK.Database.Mongo;
 
-namespace Reality.Common.Entities
+namespace Reality.Services.Identity.Entities
 {
     public class User : BaseEntity
     {
