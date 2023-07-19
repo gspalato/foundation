@@ -1,4 +1,5 @@
-﻿using Octokit;
+﻿using HotChocolate.Language;
+using Octokit;
 using Octokit.Internal;
 using Reality.Common.Configurations;
 using Reality.SDK;
@@ -14,8 +15,11 @@ new ServiceBuilder(args)
     .UseMongo()
     .UseGraphQL("/gql", (server, services, builder) =>
     {
-        server.AddQueryType<Query>();
-        server.AddType<Project>();
+        server.ConfigureSchema(_ =>
+        {
+            _.AddRootType(typeof(Query), OperationType.Query);
+            _.AddType(typeof(Project));
+        });
 
         server
             .AddMongoDbFiltering()
