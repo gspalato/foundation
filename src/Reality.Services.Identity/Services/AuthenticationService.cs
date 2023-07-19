@@ -6,7 +6,7 @@ using Reality.Common.Roles;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text.Json;
-using Reality.Services.Identity.Entities;
+using Reality.Common.Entities;
 using Reality.Services.Identity.Payloads;
 
 namespace Reality.Services.Identity.Services

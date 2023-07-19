@@ -2,7 +2,7 @@
 using MongoDB.Driver;
 using Reality.Common.Data;
 using Reality.Common.Roles;
-using Reality.Services.Identity.Entities;
+using Reality.Common.Entities;
 
 namespace Reality.Services.Identity.Services
 {
@@ -37,7 +37,7 @@ namespace Reality.Services.Identity.Services
 
             var hashedPassword = Hasher.HashPassword(username, password);
 
-            var user = new Reality.Services.Identity.Entities.FullUser()
+            var user = new FullUser()
             {
                 Username = username,
                 PasswordHash = hashedPassword,

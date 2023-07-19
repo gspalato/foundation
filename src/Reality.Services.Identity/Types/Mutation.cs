@@ -1,6 +1,6 @@
 ﻿using Reality.Common.Roles;
 using Reality.Common.Services;
-using Reality.Services.Identity.Entities;
+using Reality.Common.Entities;
 using Reality.Services.Identity.Payloads;
 using Reality.Services.Identity.Services;
 

@@ -1,4 +1,4 @@
-using Reality.Services.Identity.Entities;
+using Reality.Common.Entities;
 
 namespace Reality.Services.Identity.Payloads
 {
