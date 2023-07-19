@@ -2,7 +2,7 @@
 
 namespace Reality.SDK.Database.Mongo
 {
-    public interface IRepository<T> where T : BaseEntity
+    public interface IRepository<T> where T : Reality.Common.Entities.BaseEntity
     {
         IMongoCollection<T> Collection { get; }
 
@@ -12,7 +12,7 @@ namespace Reality.SDK.Database.Mongo
         Task<bool> RemoveAsync(string id);
     }
 
-    public class Repository<T> : IRepository<T> where T : BaseEntity
+    public class Repository<T> : IRepository<T> where T : Reality.Common.Entities.BaseEntity
     {
         public IMongoCollection<T> Collection { get; private set; }
 
