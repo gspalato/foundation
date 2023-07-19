@@ -1,6 +1,6 @@
 ﻿using Reality.Common.Services;
-using Reality.Services.Identity.Payloads;
 using Reality.Services.Identity.Services;
+using Reality.Services.Identity.Types.Payloads;
 
 namespace Reality.Services.Identity.Types
 {

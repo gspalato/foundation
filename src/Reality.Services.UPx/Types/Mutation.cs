@@ -1,26 +1,23 @@
-﻿using HotChocolate;
-using HotChocolate.Subscriptions;
-using Reality.Common.Entities;
+﻿using Reality.Common.Entities;
 using Reality.Common.Services;
-using Reality.Services.UPx.Payloads;
 using Reality.Services.UPx.Repositories;
+using Reality.Services.UPx.Types.Payloads;
 
 namespace Reality.Services.UPx.Types
 {
     public class Mutation
     {
-        public async Task<RegisterStationUsePayload> RegisterStationUseAsync(int startTimestamp, int endTimestamp, int duration,
-            double distributedWater, double economizedPlastic, double bottleQuantityEquivalent, string token,
+        public async Task<RegisterStationUsePayload> RegisterStationUseAsync(RegisterStationUseInput input,
             [Service] IUseRepository useRepository, [Service] IAuthorizationService authorizationService)
         {
-            if (token.Length is 0)
+            if (input.Token.Length is 0)
                 return new RegisterStationUsePayload
                 {
                     Successful = false,
                     Error = "Token is empty."
                 };
 
-            var result = await authorizationService.CheckAuthorizationAsync(token);
+            var result = await authorizationService.CheckAuthorizationAsync(input.Token);
             var roles = authorizationService.ExtractRoles(result).Select(r => (int)r);
             bool allowed;
 
@@ -60,12 +57,12 @@ namespace Reality.Services.UPx.Types
 
             Use use = new()
             {
-                StartTimestamp = startTimestamp,
-                EndTimestamp = endTimestamp,
-                Duration = duration,
-                DistributedWater = distributedWater,
-                EconomizedPlastic = economizedPlastic,
-                BottleQuantityEquivalent = bottleQuantityEquivalent
+                StartTimestamp = input.StartTimestamp,
+                EndTimestamp = input.EndTimestamp,
+                Duration = input.Duration,
+                DistributedWater = input.DistributedWater,
+                EconomizedPlastic = input.EconomizedPlastic,
+                BottleQuantityEquivalent = input.BottleQuantityEquivalent
             };
 
             await useRepository.InsertAsync(use);

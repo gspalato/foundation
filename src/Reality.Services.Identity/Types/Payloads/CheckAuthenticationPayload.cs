@@ -1,6 +1,6 @@
 using Reality.Common.Entities;
 
-namespace Reality.Services.Identity.Payloads
+namespace Reality.Services.Identity.Types.Payloads
 {
     public class CheckAuthenticationPayload
     {

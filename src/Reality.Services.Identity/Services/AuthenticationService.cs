@@ -7,7 +7,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text.Json;
 using Reality.Common.Entities;
-using Reality.Services.Identity.Payloads;
+using Reality.Services.Identity.Types.Payloads;
 
 namespace Reality.Services.Identity.Services
 {

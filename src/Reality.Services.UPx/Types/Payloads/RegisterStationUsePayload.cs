@@ -1,4 +1,4 @@
-namespace Reality.Services.UPx.Payloads
+namespace Reality.Services.UPx.Types.Payloads
 {
     public class RegisterStationUsePayload
     {

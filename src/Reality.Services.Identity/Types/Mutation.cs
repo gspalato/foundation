@@ -1,7 +1,7 @@
 ﻿using Reality.Common.Roles;
 using Reality.Common.Services;
 using Reality.Common.Entities;
-using Reality.Services.Identity.Payloads;
+using Reality.Services.Identity.Types.Payloads;
 using Reality.Services.Identity.Services;
 
 namespace Reality.Services.Identity.Types
