@@ -31,7 +31,7 @@ namespace Reality.SDK
         /// </summary>
         /// <typeparam name="T">The type of the configuration class.</typeparam>
         /// <returns>The current instance of the <see cref="ServiceBuilder"/> class.</returns>
-        public ServiceBuilder LoadConfiguration<T>() where T : class, new()
+        public ServiceBuilder BindConfiguration<T>() where T : class, new()
         {
             T config = Activator.CreateInstance<T>();
             WebApplicationBuilder.Configuration.Bind(config);
@@ -46,7 +46,7 @@ namespace Reality.SDK
         /// <typeparam name="I">The type of the interface.</typeparam>
         /// <typeparam name="T">The type of the configuration class.</typeparam>
         /// <returns>The current instance of the <see cref="ServiceBuilder"/> class.</returns>
-        public ServiceBuilder LoadConfiguration<I, T>()
+        public ServiceBuilder BindConfiguration<I, T>()
             where T : class, I, new()
             where I : class
         {
@@ -54,7 +54,7 @@ namespace Reality.SDK
             WebApplicationBuilder.Configuration.Bind(config);
             WebApplicationBuilder.Services.AddSingleton<I, T>((_) => config);
 
-            LoadConfiguration<T>();
+            BindConfiguration<T>();
 
             return this;
         }

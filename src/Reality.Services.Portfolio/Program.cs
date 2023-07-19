@@ -9,8 +9,8 @@ using Reality.Services.Portfolio.Services;
 using Reality.Services.Portfolio.Types;
 
 new ServiceBuilder(args)
-    .LoadConfiguration<IBaseConfiguration, Configuration>()
-    .LoadConfiguration<Configuration>()
+    .BindConfiguration<IBaseConfiguration, Configuration>()
+    .BindConfiguration<Configuration>()
     .UseMongo()
     .UseGraphQL("/gql", (server, services, builder) =>
     {
@@ -22,6 +22,9 @@ new ServiceBuilder(args)
             .AddMongoDbPagingProviders()
             .AddMongoDbProjections()
             .AddMongoDbSorting();
+
+        server
+            .ModifyRequestOptions(opt => opt.IncludeExceptionDetails = true);
     })
     .Configure((WebApplicationBuilder builder) =>
     {
