@@ -1,0 +1,48 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: identity-service
+spec:
+  selector:
+    io.foundation.microservice: identity
+  ports:
+    - name: http
+      protocol: TCP
+      port: 80
+      targetPort: 80
+    - name: https
+      protocol: TCP
+      port: 443
+      targetPort: 443
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: identity-service-deployment
+  labels:
+    io.foundation.microservice: identity
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      io.foundation.microservice: identity
+  # Pod Template
+  template:
+    metadata:
+      labels:
+        io.foundation.microservice: identity
+    spec:
+      # Using local registry.
+      containers:
+        - name: identity-service-pod
+          image: unreaalism/foundation.services.identity:latest
+          ports:
+            - containerPort: 80
+          env:
+            - name: DatabaseName
+              value: Identity
+          envFrom:
+            - secretRef:
+                name: foundation-secrets
+      imagePullSecrets:
+        - name: foundation-registry

@@ -7,7 +7,7 @@ services:
     image: nginx:latest
     #build:
     #  context: ./src
-    #  dockerfile: ./Reality.Services.Proxy/Dockerfile
+    #  dockerfile: ./Foundation.Services.Proxy/Dockerfile
     volumes:
       - /etc/nginx:/etc/nginx
     depends_on:
@@ -26,12 +26,12 @@ services:
     depends_on:
       - gateway-service
 
-  # Reality API Gateway
+  # Foundation API Gateway
   gateway-service:
     hostname: "gateway-service"
     build:
       context: ./src
-      dockerfile: ./Reality.Services.Gateway/Dockerfile
+      dockerfile: ./Foundation.Services.Gateway/Dockerfile
     ports:
       - "4000:80"
     expose:
@@ -45,12 +45,12 @@ services:
       - upx-service
       - portfolio-service
 
-  # Reality API Microservices
+  # Foundation API Microservices
   identity-service:
     hostname: "identity-service"
     build:
       context: ./src
-      dockerfile: ./Reality.Services.Identity/Dockerfile
+      dockerfile: ./Foundation.Services.Identity/Dockerfile
     env_file:
       - .env
     environment:
@@ -62,7 +62,7 @@ services:
     hostname: "upx-service"
     build:
       context: ./src
-      dockerfile: ./Reality.Services.UPx/Dockerfile
+      dockerfile: ./Foundation.Services.UPx/Dockerfile
     env_file:
       - .env
     environment:
@@ -74,7 +74,7 @@ services:
     hostname: "portfolio-service"
     build:
       context: ./src
-      dockerfile: ./Reality.Services.Portfolio/Dockerfile
+      dockerfile: ./Foundation.Services.Portfolio/Dockerfile
     env_file:
       - .env
     environment:

@@ -1,0 +1,48 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: gateway-service
+spec:
+  selector:
+    io.foundation.microservice: gateway
+  ports:
+    - name: http
+      protocol: TCP
+      port: 80
+      targetPort: 80
+    - name: https
+      protocol: TCP
+      port: 443
+      targetPort: 443
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: gateway-service-deployment
+  labels:
+    io.foundation.microservice: gateway
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      io.foundation.microservice: gateway
+  # Pod Template
+  template:
+    metadata:
+      labels:
+        io.foundation.microservice: gateway
+    spec:
+      # Using local registry.
+      containers:
+        - name: gateway-service-pod
+          image: unreaalism/foundation.services.gateway:latest
+          ports:
+            - containerPort: 80
+          env:
+            - name: SERVICE_URLS
+              value: http://identity-service,http://upx-service,http://portfolio-service
+          envFrom:
+            - secretRef:
+                name: foundation-secrets
+      imagePullSecrets:
+        - name: foundation-registry

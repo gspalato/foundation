@@ -3,17 +3,17 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.0.31912.275
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Reality.Services.Gateway", "Reality.Services.Gateway\Reality.Services.Gateway.csproj", "{7BDB2F34-4424-44A7-98E9-00A1E624CC43}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Foundation.Services.Gateway", "Foundation.Services.Gateway\Foundation.Services.Gateway.csproj", "{7BDB2F34-4424-44A7-98E9-00A1E624CC43}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Reality.Common", "Reality.Common\Reality.Common.csproj", "{0272ADBE-8C1F-4031-A5CD-78311865CB81}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Foundation.Common", "Foundation.Common\Foundation.Common.csproj", "{0272ADBE-8C1F-4031-A5CD-78311865CB81}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Reality.Services.Identity", "Reality.Services.Identity\Reality.Services.Identity.csproj", "{E1056567-7F43-475B-8373-46CE6EE5C8E4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Foundation.Services.Identity", "Foundation.Services.Identity\Foundation.Services.Identity.csproj", "{E1056567-7F43-475B-8373-46CE6EE5C8E4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Reality.Services.UPx", "Reality.Services.UPx\Reality.Services.UPx.csproj", "{5D267EB2-521A-408F-8A3C-B2C47DB00A4A}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Foundation.Services.UPx", "Foundation.Services.UPx\Foundation.Services.UPx.csproj", "{5D267EB2-521A-408F-8A3C-B2C47DB00A4A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Reality.Services.Static", "Reality.Services.Static\Reality.Services.Static.csproj", "{54147037-8807-4171-AC78-4E09D4A5C4BC}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Foundation.Services.Static", "Foundation.Services.Static\Foundation.Services.Static.csproj", "{54147037-8807-4171-AC78-4E09D4A5C4BC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Reality.Services.Portfolio", "Reality.Services.Portfolio\Reality.Services.Portfolio.csproj", "{E9EE580F-5A89-4104-B7DB-88F9E3D70BDD}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Foundation.Services.Portfolio", "Foundation.Services.Portfolio\Foundation.Services.Portfolio.csproj", "{E9EE580F-5A89-4104-B7DB-88F9E3D70BDD}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

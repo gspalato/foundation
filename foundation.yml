@@ -1,0 +1,153 @@
+api: foundation
+settings:
+  kubectl_command:
+    - kubectl
+  registry: null
+  secrets_file: ./secrets.yml
+order:
+  - name: database
+    type: microservice
+
+  - name: identity
+    type: microservice
+
+  - name: upx
+    type: microservice
+
+  - name: portfolio
+    type: microservice
+
+  - name: gateway
+    type: microservice
+
+  - name: proxy
+    type: microservice
+
+  - name: portfolio
+    type: application
+components:
+  - name: database
+    type: microservice
+    path: src/Foundation.Database
+    build:
+      context: src
+      dockerfile: Foundation.Database/Dockerfile
+      platforms:
+        compose:
+          build: false
+          push: false
+        kubernetes:
+          build: false
+          push: false
+    replicas: 1
+    ports:
+      - expose: 27017
+        containerPort: 27017
+
+  - name: identity
+    type: microservice
+    path: src/Foundation.Services.Identity
+    build:
+      context: src
+      dockerfile: Foundation.Services.Identity/Dockerfile
+      platforms:
+        compose:
+          build: true
+          push: false
+        kubernetes:
+          build: true
+          push: true
+    replicas: 1
+    ports:
+      - expose: 80
+        containerPort: 80
+
+  - name: upx
+    type: microservice
+    path: src/Foundation.Services.UPx
+    build:
+      context: src
+      dockerfile: Foundation.Services.UPx/Dockerfile
+      platforms:
+        compose:
+          build: true
+          push: false
+        kubernetes:
+          build: true
+          push: true
+    replicas: 1
+    ports:
+      - expose: 80
+        containerPort: 80
+
+  - name: portfolio
+    type: microservice
+    path: src/Foundation.Services.Portfolio
+    build:
+      context: src
+      dockerfile: Foundation.Services.Portfolio/Dockerfile
+      platforms:
+        compose:
+          build: true
+          push: false
+        kubernetes:
+          build: true
+          push: true
+    replicas: 1
+    ports:
+      - expose: 80
+        containerPort: 80
+
+  - name: gateway
+    type: microservice
+    path: src/Foundation.Services.Gateway
+    build:
+      context: src
+      dockerfile: Foundation.Services.Gateway/Dockerfile
+      platforms:
+        compose:
+          build: true
+          push: false
+        kubernetes:
+          build: true
+          push: true
+    replicas: 1
+    ports:
+      - expose: 80
+        containerPort: 80
+
+  - name: proxy
+    type: microservice
+    path: src/Foundation.Services.Proxy
+    build:
+      context: src
+      dockerfile: Foundation.Services.Proxy/Dockerfile
+      platforms:
+        compose:
+          build: true
+          push: false
+        kubernetes:
+          build: false
+          push: false
+    replicas: 1
+    ports:
+      - expose: 80
+        containerPort: 80
+
+  - name: portfolio
+    type: application
+    path: src/Portfolio
+    build:
+      context: src
+      dockerfile: Portfolio/Dockerfile
+      platforms:
+        compose:
+          build: true
+          push: false
+        kubernetes:
+          build: true
+          push: true
+    replicas: 1
+    ports:
+      - expose: 80
+        containerPort: 80

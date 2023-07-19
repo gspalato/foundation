@@ -1,0 +1,49 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: proxy-service
+spec:
+  type: LoadBalancer
+  selector:
+    io.foundation.microservice: proxy
+  ports:
+    - name: http
+      protocol: TCP
+      port: 80
+      targetPort: http
+    - name: https
+      protocol: TCP
+      port: 443
+      targetPort: https
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: proxy-service-deployment
+  labels:
+    io.foundation.microservice: proxy
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      io.foundation.microservice: proxy
+  # Pod Template
+  template:
+    metadata:
+      labels:
+        io.foundation.microservice: proxy
+    spec:
+      # Using local registry.
+      containers:
+        - name: proxy-service-pod
+          image: unreaalism/foundation.services.proxy:latest
+          ports:
+            - name: http
+              containerPort: 80
+            - name: https
+              containerPort: 443
+          envFrom:
+            - secretRef:
+                name: foundation-secrets
+      imagePullSecrets:
+        - name: foundation-registry

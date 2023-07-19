@@ -1,9 +1,9 @@
 <div id="top"></div>
 
 <div align="center">
-  <img src="https://img.shields.io/github/languages/top/gspalato/reality?style=for-the-badge"/>
-  <img src="https://img.shields.io/github/issues-raw/gspalato/reality?style=for-the-badge"/>
-  <img src="https://img.shields.io/github/contributors/gspalato/reality?style=for-the-badge">
+  <img src="https://img.shields.io/github/languages/top/gspalato/foundation?style=for-the-badge"/>
+  <img src="https://img.shields.io/github/issues-raw/gspalato/foundation?style=for-the-badge"/>
+  <img src="https://img.shields.io/github/contributors/gspalato/foundation?style=for-the-badge">
 </div>
 
 <!-- PROJECT LOGO -->
@@ -11,23 +11,23 @@
 <div align="center">
   <br />
 
-  <a href="https://github.com/gspalato/reality">
-    <img src="https://raw.githubusercontent.com/gspalato/reality/master/.project/icon_circle.png" alt="Logo" width="150" height="150">
+  <a href="https://github.com/gspalato/foundation">
+    <img src="https://raw.githubusercontent.com/gspalato/foundation/master/.project/icon_circle.png" alt="Logo" width="150" height="150">
   </a>
 
-<h3 align="center"><b>Reality</b></h3>
+<h3 align="center"><b>Foundation</b></h3>
 
   <p align="center">
     A microservice platform and back-end for my projects and deployments.
     <br />
-    <a href="https://github.com/gspalato/reality"><strong>Explore the docs »</strong></a>
+    <a href="https://github.com/gspalato/foundation"><strong>Explore the docs »</strong></a>
     <br />
     <br />
     <a href="https://portfolio-gspalato.vercel.app">View Portfolio</a>
     ·
-    <a href="https://github.com/gspalato/reality/issues">Report Bug</a>
+    <a href="https://github.com/gspalato/foundation/issues">Report Bug</a>
     ·
-    <a href="https://github.com/gspalato/reality/issues">Request Feature</a>
+    <a href="https://github.com/gspalato/foundation/issues">Request Feature</a>
   </p>
 </div>
 
@@ -75,7 +75,7 @@
 
 ## About The Project
 
-Reality is a microservice GraphQL back-end and platform for my projects, allowing easy deployments with an authentication server and database.
+Foundation is a microservice GraphQL back-end and platform for my projects, allowing easy deployments with an authentication server and database.
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
@@ -94,7 +94,7 @@ Reality is a microservice GraphQL back-end and platform for my projects, allowin
 ### Prerequisites
 
 - Docker
-- Python 3 <span style="color:#555">(If you'll use `rctl`)</span>
+- Python 3 <span style="color:#555">(If you'll use `fctl`)</span>
 - .NET 6
 
 ### Installation
@@ -106,25 +106,25 @@ To get a local copy up and running with:
 1. Clone the repository
 
 ```sh
-git clone https://github.com/gspalato/reality.git
+git clone https://github.com/gspalato/foundation.git
 ```
 
-2. Alias `rctl` (Optional)
+2. Alias `fctl` (Optional)
 
 ```sh
-alias rctl="python3 tools/rctl"
+alias fctl="python3 tools/fctl"
 ```
 
 3. Build docker images
 
 ```sh
-rctl compose build
+fctl compose build
 ```
 
 3. Configure environment variables in a `.env` file:
 
 ```env
-REALITY_JWT_SECURITY_KEY=insert_your_256_byte_key_here
+FOUNDATION_JWT_SECURITY_KEY=insert_your_256_byte_key_here
 
 GithubToken=your_github_token_here
 
@@ -136,7 +136,7 @@ DatabasePassword=example
 4. Start it
 
 ```sh
-rctl compose up
+fctl compose up
 ```
 
 #### Kubernetes
@@ -149,7 +149,7 @@ rctl compose up
 1. Clone the repo
 
 ```sh
-git clone https://github.com/gspalato/reality.git
+git clone https://github.com/gspalato/foundation.git
 ```
 
 2. Create a secrets.yml file:
@@ -158,10 +158,10 @@ git clone https://github.com/gspalato/reality.git
 apiVersion: v1
 kind: Secret
 metadata:
-  name: reality-secrets
+  name: foundation-secrets
 type: Opaque
 stringData:
-  REALITY_JWT_SECURITY_KEY: insert_your_256_byte_key_here
+  FOUNDATION_JWT_SECURITY_KEY: insert_your_256_byte_key_here
 
   GithubToken: your_github_token_here
 
@@ -172,20 +172,20 @@ stringData:
 
 2. Run `docker login` to login to your registry.
 
-3. Configure the Reality Control Tool (`rctl`) to use your registry.
+3. Configure the Foundation Control Tool (`fctl`) to use your registry.
 
 4. Configure the `kubernetes.yml` files to use your registry for the images.
 
 5. Clone the docker registry's login to Kubernetes
 
 ```sh
-kubectl create secret generic reality-registry --from-file=.dockerconfigjson=/path/to/.docker/config.json --type=kubernetes.io/dockerconfigjson
+kubectl create secret generic foundation-registry --from-file=.dockerconfigjson=/path/to/.docker/config.json --type=kubernetes.io/dockerconfigjson
 ```
 
 5. Build the services.
 
 ```sh
-python3 tools/rctl build
+python3 tools/fctl build
 ```
 
 6. Run MongoDB locally.
@@ -197,7 +197,7 @@ mongod --dbpath /data/db --port 27017 --logpath mongodb/log --logappend --fork -
 6. Run the services.
 
 ```sh
-python3 tools/rctl up
+python3 tools/fctl up
 ```
 
 <p align="right">(<a href="#top">back to top</a>)</p>
@@ -235,7 +235,7 @@ Will handle static file uploads and manipulation, as well as operations such as 
 - [ ] Add my portfolio's front-end as a service.
 - [ ] Simplify configuration.
 
-See the [open issues](https://github.com/gspalato/reality/issues) for a full list of proposed features (and known issues).
+See the [open issues](https://github.com/gspalato/foundation/issues) for a full list of proposed features (and known issues).
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
@@ -270,23 +270,23 @@ Distributed under the MIT License. See `LICENSE.txt` for more information.
 
 Gabriel Spalato Marques - [@gspalato](https://twitter.com/gspalato) - unreaalism@gmail.com
 
-Project Link: [https://github.com/gspalato/reality](https://github.com/gspalato/reality)
+Project Link: [https://github.com/gspalato/foundation](https://github.com/gspalato/foundation)
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
 <!-- MARKDOWN LINKS & IMAGES -->
 <!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
 
-[contributors-shield]: https://img.shields.io/github/contributors/gspalato/reality.svg?style=for-the-badge
-[contributors-url]: https://github.com/gspalato/reality/graphs/contributors
-[forks-shield]: https://img.shields.io/github/forks/gspalato/reality.svg?style=for-the-badge
-[forks-url]: https://github.com/gspalato/reality/network/members
-[stars-shield]: https://img.shields.io/github/stars/gspalato/reality.svg?style=for-the-badge
-[stars-url]: https://github.com/gspalato/reality/stargazers
-[issues-shield]: https://img.shields.io/github/issues/gspalato/reality.svg?style=for-the-badge
-[issues-url]: https://github.com/gspalato/reality/issues
-[license-shield]: https://img.shields.io/github/license/gspalato/reality.svg?style=for-the-badge
-[license-url]: https://github.com/gspalato/reality/blob/master/LICENSE.txt
+[contributors-shield]: https://img.shields.io/github/contributors/gspalato/foundation.svg?style=for-the-badge
+[contributors-url]: https://github.com/gspalato/foundation/graphs/contributors
+[forks-shield]: https://img.shields.io/github/forks/gspalato/foundation.svg?style=for-the-badge
+[forks-url]: https://github.com/gspalato/foundation/network/members
+[stars-shield]: https://img.shields.io/github/stars/gspalato/foundation.svg?style=for-the-badge
+[stars-url]: https://github.com/gspalato/foundation/stargazers
+[issues-shield]: https://img.shields.io/github/issues/gspalato/foundation.svg?style=for-the-badge
+[issues-url]: https://github.com/gspalato/foundation/issues
+[license-shield]: https://img.shields.io/github/license/gspalato/foundation.svg?style=for-the-badge
+[license-url]: https://github.com/gspalato/foundation/blob/master/LICENSE.txt
 [linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=for-the-badge&logo=linkedin&colorB=555
 [linkedin-url]: https://linkedin.com/in/gspalato
 [product-screenshot]: images/screenshot.png
