@@ -1,4 +1,5 @@
 using System.IdentityModel.Tokens.Jwt;
+using Reality.Common.Configurations;
 using Reality.Common.Entities;
 using Reality.Common.Services;
 using Reality.SDK;
@@ -7,6 +8,7 @@ using Reality.SDK.Database.Mongo;
 using Reality.Services.UPx.Types;
 
 new ServiceBuilder(args)
+    .BindConfiguration<IBaseConfiguration, BaseConfiguration>()
     .UseMongo()
     .UseGraphQL("/gql", (server, services, builder) =>
     {
@@ -29,23 +31,3 @@ new ServiceBuilder(args)
     })
     .Build()
     .Run();
-
-/*
-namespace Reality.Services.UPx
-{
-    public static class Program
-    {
-        public static void Main(string[] args)
-        {
-            BuildWebHost(args).Run();
-        }
-
-        public static IWebHost BuildWebHost(string[] args)
-        {
-            return WebHost.CreateDefaultBuilder(args)
-                .UseStartup<Startup>()
-                .Build();
-        }
-    }
-}
-*/
