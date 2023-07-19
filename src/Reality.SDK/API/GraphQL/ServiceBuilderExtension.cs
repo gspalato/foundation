@@ -13,6 +13,8 @@ namespace Reality.SDK.API.GraphQL
                 var server = b.Services.AddGraphQLServer();
                 server.AddMutationConventions();
 
+                b.Services.AddErrorFilter<ErrorFilter>();
+
                 if (configure != null)
                     configure(server, b.Services, builder);
             });
@@ -20,6 +22,16 @@ namespace Reality.SDK.API.GraphQL
             builder.Configure((WebApplication app) =>
             {
                 app.MapGraphQL(path);
+            });
+
+            return builder;
+        }
+
+        public static ServiceBuilder UseGraphQLPlayground(this ServiceBuilder builder, string path)
+        {
+            builder.Configure((WebApplication app) =>
+            {
+                app.MapBananaCakePop(path);
             });
 
             return builder;

@@ -42,6 +42,7 @@ new ServiceBuilder(args)
             logger.Info($"GraphQL Schema Stitched: {id} -> {url}");
         }
     })
+    .UseGraphQLPlayground("/ui")
     .AddCors("AllowAll", new CorsPolicyBuilder()
         .AllowAnyOrigin()
         .AllowAnyHeader()
