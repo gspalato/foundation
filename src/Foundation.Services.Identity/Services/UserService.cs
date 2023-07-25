@@ -4,69 +4,69 @@ using Foundation.Common.Roles;
 using Foundation.Common.Entities;
 using Foundation.Core.SDK.Database.Mongo;
 
-namespace Foundation.Services.Identity.Services
+namespace Foundation.Services.Identity.Services;
+
+public interface IUserService
 {
-    public interface IUserService
+    Task<FullUser?> GetUserAsync(string username);
+
+    Task<FullUser?> GetUserByIdAsync(string id);
+
+    Task<FullUser?> CreateUserAsync(string username, string password);
+
+    Task DeleteUserAsync(string username);
+}
+
+public class UserService : IUserService
+{
+    private readonly IPasswordHasher<string> Hasher;
+
+    private readonly IMongoCollection<FullUser> Users;
+
+    public UserService(IDatabaseContext databaseContext, IPasswordHasher<string> hasher)
     {
-        Task<FullUser?> GetUserAsync(string username);
+        Hasher = hasher;
 
-        Task<FullUser?> GetUserByIdAsync(string id);
-
-        Task<FullUser?> CreateUserAsync(string username, string password);
-
-        Task DeleteUserAsync(string username);
+        Users = databaseContext.GetCollection<FullUser>(nameof(Users));
     }
 
-    public class UserService : IUserService
+    public async Task<FullUser?> CreateUserAsync(string username, string password)
     {
-        private readonly IPasswordHasher<string> Hasher;
+        if (await GetUserAsync(username) is not null)
+            return null;
 
-        private readonly IMongoCollection<FullUser> Users;
+        var hashedPassword = Hasher.HashPassword(username, password);
 
-        public UserService(IDatabaseContext databaseContext, IPasswordHasher<string> hasher)
+        var user = new FullUser()
         {
-            Hasher = hasher;
+            Username = username,
+            PasswordHash = hashedPassword,
+            Roles = Array.Empty<Role>()
+        };
 
-            Users = databaseContext.GetCollection<FullUser>(nameof(Users));
-        }
+        await Users.InsertOneAsync(user);
 
-        public async Task<FullUser?> CreateUserAsync(string username, string password)
-        {
-            if (await GetUserAsync(username) is not null)
-                return null;
+        return user;
+    }
 
-            var hashedPassword = Hasher.HashPassword(username, password);
+    public async Task DeleteUserAsync(string username)
+    {
+        var filter = Builders<FullUser>.Filter.Where(x => x.Username == username);
+        await Users.FindOneAndDeleteAsync(filter);
+    }
 
-            var user = new FullUser()
-            {
-                Username = username,
-                PasswordHash = hashedPassword,
-                Roles = Array.Empty<Role>()
-            };
+    public async Task<FullUser?> GetUserAsync(string username)
+    {
+        var filter = Builders<FullUser>.Filter.Where(x => x.Username == username);
+        var found = await Users.FindAsync(filter);
+        return found.FirstOrDefault();
+    }
 
-            await Users.InsertOneAsync(user);
-
-            return user;
-        }
-
-        public async Task DeleteUserAsync(string username)
-        {
-            var filter = Builders<FullUser>.Filter.Where(x => x.Username == username);
-            await Users.FindOneAndDeleteAsync(filter);
-        }
-
-        public async Task<FullUser?> GetUserAsync(string username)
-        {
-            var filter = Builders<FullUser>.Filter.Where(x => x.Username == username);
-            var found = await Users.FindAsync(filter);
-            return found.FirstOrDefault();
-        }
-
-        public async Task<FullUser?> GetUserByIdAsync(string id)
-        {
-            var filter = Builders<FullUser>.Filter.Where(x => x.Id == id);
-            var found = await Users.FindAsync(filter);
-            return found.FirstOrDefault();
-        }
+    public async Task<FullUser?> GetUserByIdAsync(string id)
+    {
+        var filter = Builders<FullUser>.Filter.Where(x => x.Id == id);
+        var found = await Users.FindAsync(filter);
+        return found.FirstOrDefault();
     }
 }
+

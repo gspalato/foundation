@@ -1,12 +1,12 @@
 ﻿using Foundation.Common.Entities;
 
-namespace Foundation.Services.Identity.Types.Payloads
+namespace Foundation.Services.Identity.Types.Payloads;
+
+public class AuthenticationPayload
 {
-    public class AuthenticationPayload
-    {
-        public bool Successful { get; set; } = false;
-        public string? Token { get; set; } = null;
-        public User? User { get; set; } = null;
-        public string? Error { get; set; } = "User was not found.";
-    }
+    public bool Successful { get; set; } = false;
+    public string? Token { get; set; } = null;
+    public User? User { get; set; } = null;
+    public string? Error { get; set; } = "User was not found.";
 }
+
