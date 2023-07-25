@@ -3,7 +3,7 @@ using HotChocolate.Execution;
 using HotChocolate.Execution.Instrumentation;
 using Microsoft.Extensions.Logging;
 
-namespace Foundation.SDK.API.GraphQL
+namespace Foundation.Core.SDK.API.GraphQL
 {
     public class DiagnosticEventListener : ExecutionDiagnosticEventListener
     {

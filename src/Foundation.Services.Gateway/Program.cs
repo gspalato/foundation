@@ -2,9 +2,9 @@ using HotChocolate.Stitching;
 using Microsoft.AspNetCore.Cors.Infrastructure;
 using NLog;
 using NLog.Config;
-using Foundation.SDK;
-using Foundation.SDK.API.GraphQL;
-using Foundation.SDK.Database.Mongo;
+using Foundation.Core.SDK;
+using Foundation.Core.SDK.API.GraphQL;
+using Foundation.Core.SDK.Database.Mongo;
 
 new ServiceBuilder(args)
     .UseMongo()

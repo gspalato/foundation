@@ -18,6 +18,6 @@
 
 	<ItemGroup>
 		<ProjectReference Include="..\Foundation.Common\Foundation.Common.csproj" />
-		<ProjectReference Include="..\Foundation.SDK\Foundation.SDK.csproj" />
+		<ProjectReference Include="..\Foundation.Core.SDK\Foundation.Core.SDK.csproj" />
 	</ItemGroup>
 </Project>

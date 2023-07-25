@@ -1,7 +1,7 @@
 ﻿using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 
-namespace Foundation.SDK.Database.Mongo
+namespace Foundation.Core.SDK.Database.Mongo
 {
     public class BaseEntity
     {

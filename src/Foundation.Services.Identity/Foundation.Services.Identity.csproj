@@ -5,7 +5,7 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
-    <UserSecretsId>ef86645c-acf2-4a2e-a816-478ea2cf9f22</UserSecretsId>
+    <EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
   </PropertyGroup>
 
   <ItemGroup>
@@ -20,7 +20,13 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Foundation.Common\Foundation.Common.csproj" />
-    <ProjectReference Include="..\Foundation.SDK\Foundation.SDK.csproj" />
+    <ProjectReference Include="..\Foundation.Core.SDK\Foundation.Core.SDK.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Foundation.Core.Codegen\Foundation.Core.Codegen.csproj"
+                      OutputItemType="Analyzer"
+                      ReferenceOutputAssembly="false" />
   </ItemGroup>
 
 </Project>

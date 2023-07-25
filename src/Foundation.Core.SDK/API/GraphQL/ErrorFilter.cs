@@ -1,6 +1,7 @@
+using HotChocolate;
 using Microsoft.Extensions.Logging;
 
-namespace Foundation.SDK.API.GraphQL
+namespace Foundation.Core.SDK.API.GraphQL
 {
     public class ErrorFilter : IErrorFilter
     {

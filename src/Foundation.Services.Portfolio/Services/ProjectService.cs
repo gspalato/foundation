@@ -1,6 +1,6 @@
 ﻿using MongoDB.Driver;
 using Octokit;
-using Foundation.SDK.Database.Mongo;
+using Foundation.Core.SDK.Database.Mongo;
 using Foundation.Services.Portfolio.Configurations;
 using YamlDotNet.Serialization;
 using YamlDotNet.Serialization.NamingConventions;

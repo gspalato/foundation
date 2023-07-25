@@ -1,6 +1,6 @@
 ﻿using Foundation.Common.Entities;
 using Foundation.Common.Services;
-using Foundation.SDK.Database.Mongo;
+using Foundation.Core.SDK.Database.Mongo;
 using Foundation.Services.UPx.Types.Payloads;
 
 namespace Foundation.Services.UPx.Types

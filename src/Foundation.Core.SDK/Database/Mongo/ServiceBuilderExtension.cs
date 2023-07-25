@@ -1,6 +1,6 @@
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Foundation.SDK.Database.Mongo
+namespace Foundation.Core.SDK.Database.Mongo
 {
     public static class ServiceBuilderExtension
     {

@@ -1,9 +1,11 @@
 ﻿using Foundation.Common.Services;
+using Foundation.Core.SDK.API.GraphQL;
 using Foundation.Services.Identity.Services;
 using Foundation.Services.Identity.Types.Payloads;
 
 namespace Foundation.Services.Identity.Types
 {
+    [GenerateQuery]
     public class Query
     {
         public async Task<CheckAuthenticationPayload> CheckAuthenticationAsync(string token, [Service] IAuthorizationService authService, [Service] IUserService userService)

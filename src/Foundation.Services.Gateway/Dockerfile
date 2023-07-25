@@ -10,7 +10,7 @@ WORKDIR /src
 
 ADD ./Foundation.Services.Gateway ./Foundation.Services.Gateway
 ADD ./Foundation.Common ./Foundation.Common
-ADD ./Foundation.SDK ./Foundation.SDK
+ADD ./Foundation.Core.SDK ./Foundation.Core.SDK
 
 RUN dotnet restore "Foundation.Services.Gateway/Foundation.Services.Gateway.csproj"
 

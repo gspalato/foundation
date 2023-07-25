@@ -2,7 +2,7 @@
 using MongoDB.Driver;
 using Foundation.Common.Roles;
 using Foundation.Common.Entities;
-using Foundation.SDK.Database.Mongo;
+using Foundation.Core.SDK.Database.Mongo;
 
 namespace Foundation.Services.Identity.Services
 {

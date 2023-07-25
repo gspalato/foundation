@@ -5,7 +5,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using NLog.Extensions.Logging;
 
-namespace Foundation.SDK
+namespace Foundation.Core.SDK
 {
     public class ServiceBuilder
     {

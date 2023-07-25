@@ -1,7 +1,7 @@
 ﻿using MongoDB.Driver;
 using Foundation.Common.Configurations;
 
-namespace Foundation.SDK.Database.Mongo
+namespace Foundation.Core.SDK.Database.Mongo
 {
     public interface IDatabaseContext
     {

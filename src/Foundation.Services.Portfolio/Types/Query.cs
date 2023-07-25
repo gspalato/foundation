@@ -1,6 +1,6 @@
 ﻿using HotChocolate;
 using Foundation.Common.Entities;
-using Foundation.SDK.Database.Mongo;
+using Foundation.Core.SDK.Database.Mongo;
 
 namespace Foundation.Services.Portfolio.Types
 {
