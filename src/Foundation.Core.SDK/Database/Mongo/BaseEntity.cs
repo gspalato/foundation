@@ -1,12 +1,11 @@
 ﻿using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 
-namespace Foundation.Core.SDK.Database.Mongo
+namespace Foundation.Core.SDK.Database.Mongo;
+
+public class BaseEntity
 {
-    public class BaseEntity
-    {
-        [BsonId]
-        [BsonRepresentation(BsonType.ObjectId)]
-        public string Id { get; set; } = default!;
-    }
+    [BsonId]
+    [BsonRepresentation(BsonType.ObjectId)]
+    public string Id { get; set; } = default!;
 }

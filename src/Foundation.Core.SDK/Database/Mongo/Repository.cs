@@ -1,53 +1,52 @@
 ﻿using MongoDB.Driver;
 
-namespace Foundation.Core.SDK.Database.Mongo
-{
-    public interface IRepository<T> where T : Foundation.Common.Entities.BaseEntity
-    {
-        IMongoCollection<T> Collection { get; }
+namespace Foundation.Core.SDK.Database.Mongo;
 
-        Task<List<T>> GetAllAsync();
-        Task<T> GetByIdAsync(string id);
-        Task<T> InsertAsync(T entity);
-        Task<bool> RemoveAsync(string id);
+public interface IRepository<T> where T : Foundation.Common.Entities.BaseEntity
+{
+    IMongoCollection<T> Collection { get; }
+
+    Task<List<T>> GetAllAsync();
+    Task<T> GetByIdAsync(string id);
+    Task<T> InsertAsync(T entity);
+    Task<bool> RemoveAsync(string id);
+}
+
+public class Repository<T> : IRepository<T> where T : Foundation.Common.Entities.BaseEntity
+{
+    public IMongoCollection<T> Collection { get; private set; }
+
+    public Repository(IDatabaseContext dataContext)
+    {
+        if (dataContext == null)
+            throw new ArgumentNullException(nameof(dataContext));
+
+        Collection = dataContext.GetCollection<T>(typeof(T).Name);
     }
 
-    public class Repository<T> : IRepository<T> where T : Foundation.Common.Entities.BaseEntity
+    public async Task<List<T>> GetAllAsync()
     {
-        public IMongoCollection<T> Collection { get; private set; }
+        return await Collection.Find(_ => true).ToListAsync();
+    }
 
-        public Repository(IDatabaseContext dataContext)
-        {
-            if (dataContext == null)
-                throw new ArgumentNullException(nameof(dataContext));
+    public async Task<T> GetByIdAsync(string id)
+    {
+        var filter = Builders<T>.Filter.Eq(_ => _.Id, id);
 
-            Collection = dataContext.GetCollection<T>(typeof(T).Name);
-        }
+        return await Collection.Find(filter).FirstOrDefaultAsync();
+    }
 
-        public async Task<List<T>> GetAllAsync()
-        {
-            return await Collection.Find(_ => true).ToListAsync();
-        }
+    public async Task<T> InsertAsync(T entity)
+    {
+        await Collection.InsertOneAsync(entity);
 
-        public async Task<T> GetByIdAsync(string id)
-        {
-            var filter = Builders<T>.Filter.Eq(_ => _.Id, id);
+        return entity;
+    }
 
-            return await Collection.Find(filter).FirstOrDefaultAsync();
-        }
+    public async Task<bool> RemoveAsync(string id)
+    {
+        var result = await Collection.DeleteOneAsync(Builders<T>.Filter.Eq(_ => _.Id, id));
 
-        public async Task<T> InsertAsync(T entity)
-        {
-            await Collection.InsertOneAsync(entity);
-
-            return entity;
-        }
-
-        public async Task<bool> RemoveAsync(string id)
-        {
-            var result = await Collection.DeleteOneAsync(Builders<T>.Filter.Eq(_ => _.Id, id));
-
-            return result.DeletedCount is 1;
-        }
+        return result.DeletedCount is 1;
     }
 }
