@@ -2,13 +2,12 @@
 using Foundation.Common.Entities;
 using Foundation.Core.SDK.Database.Mongo;
 
-namespace Foundation.Services.Portfolio.Types
+namespace Foundation.Services.Portfolio.Types;
+
+public class Query
 {
-    public class Query
+    public async Task<List<Project>> GetProjectsAsync([Service] IRepository<Project> projectRepository)
     {
-        public async Task<List<Project>> GetProjectsAsync([Service] IRepository<Project> projectRepository)
-        {
-            return await projectRepository.GetAllAsync();
-        }
+        return await projectRepository.GetAllAsync();
     }
 }
