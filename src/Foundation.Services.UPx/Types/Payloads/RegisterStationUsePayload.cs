@@ -1,9 +1,8 @@
-namespace Foundation.Services.UPx.Types.Payloads
-{
-    public class RegisterStationUsePayload
-    {
-        public bool Successful { get; set; }
+namespace Foundation.Services.UPx.Types.Payloads;
 
-        public string? Error { get; set; }
-    }
+public class RegisterStationUsePayload
+{
+    public bool Successful { get; set; }
+
+    public string? Error { get; set; }
 }
