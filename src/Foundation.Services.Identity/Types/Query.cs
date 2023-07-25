@@ -5,7 +5,7 @@ using Foundation.Services.Identity.Types.Payloads;
 
 namespace Foundation.Services.Identity.Types;
 
-[GenerateQuery]
+[Query]
 public class Query
 {
     public async Task<CheckAuthenticationPayload> CheckAuthenticationAsync(string token, [Service] IAuthorizationService authService, [Service] IUserService userService)
