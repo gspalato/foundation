@@ -19,12 +19,16 @@ namespace Foundation.Core.Codegen.API.GraphQL;
 [Generator]
 public class QueryTypeSourceGenerator : ISourceGenerator
 {
+    public string ClassName { get; } = "QueryType";
+
     public void Initialize(GeneratorInitializationContext context)
     {
         context.RegisterForSyntaxNotifications(() => new QueryTypeSyntaxReceiver());
 
+#if DEBUG
         if (!Debugger.IsAttached)
             Debugger.Launch();
+#endif
     }
 
     public void Execute(GeneratorExecutionContext context)
@@ -58,6 +62,19 @@ public class QueryTypeSourceGenerator : ISourceGenerator
                     .AddModifiers(foundMethod.Modifiers.ToArray())
                     .AddParameterListParameters(foundMethod.ParameterList.Parameters.ToArray());
 
+                // Adds a logger parameter to the method. This logger is to be used internally by generated code.
+                // TODO: Create a Source or Incremental Generator that adds logging separately.
+                var loggerType = SyntaxFactory.ParseTypeName($"ILogger<{foundQueryClass.Identifier}>");
+                var serviceAttribute = SyntaxFactory.Attribute(SyntaxFactory.IdentifierName("Service"));
+
+                var loggerParameter = SyntaxFactory
+                    .Parameter(SyntaxFactory.Identifier("__foundationCodegen_logger"))
+                    .WithType(loggerType)
+                    .AddAttributeLists(SyntaxFactory.AttributeList().AddAttributes(serviceAttribute));
+
+                method = method.AddParameterListParameters(loggerParameter);
+
+                // Add initial execution time and database call variables.
                 var initialStatements = new[]
                 {
                     SyntaxFactory.ParseStatement("float __foundationCodegen_time = 0;"),
@@ -76,16 +93,17 @@ public class QueryTypeSourceGenerator : ISourceGenerator
                 var statements = foundMethod.Body.Statements;
 
                 // Finish by appending stopwatch stop and debug output before return or end of block.
-                // Note: For some reason this has to be in inverted order. Oh well.
                 // TODO: Finish the concept by adding a service that receives the data.
                 var finishingStatements = new[]
                 {
-                    SyntaxFactory.ParseStatement("System.Diagnostics.Debug.WriteLine($\"{__foundationCodegen_time}ms, {__foundationCodegen_dbCalls} db calls\");"),
                     SyntaxFactory.ParseStatement("__foundationCodegen_sw.Stop();"),
                     SyntaxFactory.ParseStatement("__foundationCodegen_time = __foundationCodegen_sw.ElapsedMilliseconds;"),
+                    SyntaxFactory.ParseStatement("__foundationCodegen_logger.LogDebug($\"{__foundationCodegen_time}ms, {__foundationCodegen_dbCalls} db calls\");"),
+
                 };
 
-                foreach (var statement in finishingStatements)
+                // Note: For some reason this has to be in reverse order. Oh well.
+                foreach (var statement in finishingStatements.Reverse())
                     statements = statements.Insert(lastNodeIndex, statement);
 
                 method = method.AddBodyStatements(statements.ToArray());
@@ -142,7 +160,7 @@ public class QueryTypeSourceGenerator : ISourceGenerator
 
         sourceBuilder.AppendLine($"namespace {namespaceIdentifier};");
 
-        sourceBuilder.AppendLine("public class QueryType\n{");
+        sourceBuilder.AppendLine($"public class {ClassName}\n{{");
 
         foreach (var method in queryMethods)
             sourceBuilder.AppendLine(method.ToFullString());
@@ -151,7 +169,7 @@ public class QueryTypeSourceGenerator : ISourceGenerator
 
         // Add the source code to the compilation
         var source = SourceText.From(FormatCode(sourceBuilder.ToString()), Encoding.UTF8);
-        context.AddSource($"QueryType.g.cs", source);
+        context.AddSource($"{ClassName}.g.cs", source);
     }
 
     /// <summary>
