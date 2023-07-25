@@ -14,7 +14,7 @@ new ServiceBuilder(args)
     .UseMongo()
     .UseGraphQL("/gql", (server, services, builder) =>
     {
-        server.AddQueryType<Query>();
+        server.AddQueryType<QueryType>();
         server.AddMutationType<Mutation>();
 
         server
