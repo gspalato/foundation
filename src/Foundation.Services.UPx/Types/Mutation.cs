@@ -1,7 +1,8 @@
 ﻿using Foundation.Common.Entities;
-using Foundation.Common.Services;
+using Foundation.Core.SDK.Auth.JWT;
 using Foundation.Core.SDK.Database.Mongo;
 using Foundation.Services.UPx.Types.Payloads;
+using HotChocolate;
 
 namespace Foundation.Services.UPx.Types;
 

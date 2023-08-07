@@ -1,5 +1,6 @@
 ﻿using Foundation.Common.Entities;
 using Foundation.Core.SDK.Database.Mongo;
+using HotChocolate;
 
 namespace Foundation.Services.UPx.Types;
 
@@ -12,7 +13,7 @@ public class Query
     {
         var uses = await useRepository.GetAllAsync();
 
-        long GetDayTimestamp(int timestamp)
+        static long GetDayTimestamp(int timestamp)
         {
             var date = new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified).AddSeconds(timestamp).Date;
             var offset = new DateTimeOffset(date);
@@ -44,7 +45,7 @@ public class Query
 
         return new Resume()
         {
-            TotalUses = uses.Count(),
+            TotalUses = uses.Count,
             TotalDuration = uses.Sum(_ => _.Duration),
             EconomizedPlastic = uses.Sum(_ => _.EconomizedPlastic),
             DistributedWater = uses.Sum(_ => _.DistributedWater),

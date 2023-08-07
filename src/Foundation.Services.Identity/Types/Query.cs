@@ -1,7 +1,8 @@
-﻿using Foundation.Common.Services;
-using Foundation.Core.SDK.API.GraphQL;
+﻿using Foundation.Core.SDK.API.GraphQL;
+using Foundation.Core.SDK.Auth.JWT;
 using Foundation.Services.Identity.Services;
 using Foundation.Services.Identity.Types.Payloads;
+using HotChocolate;
 
 namespace Foundation.Services.Identity.Types;
 

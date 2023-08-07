@@ -4,7 +4,7 @@ using Foundation.Common.Roles;
 using System.IdentityModel.Tokens.Jwt;
 using System.Text.Json;
 
-namespace Foundation.Common.Services;
+namespace Foundation.Core.SDK.Auth.JWT;
 
 public interface IAuthorizationService
 {
@@ -31,7 +31,7 @@ public class AuthorizationService : IAuthorizationService
         TokenValidationResult result;
         try
         {
-            result = await TokenHandler.ValidateTokenAsync(jwt, Foundation.Common.Configurations.TokenConfiguration.ValidationParameters);
+            result = await TokenHandler.ValidateTokenAsync(jwt, Foundation.Core.SDK.Auth.JWT.TokenConfiguration.ValidationParameters);
         }
         catch (Exception e)
         {

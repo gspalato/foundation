@@ -1,8 +1,9 @@
 ﻿using Foundation.Common.Roles;
-using Foundation.Common.Services;
 using Foundation.Common.Entities;
 using Foundation.Services.Identity.Types.Payloads;
 using Foundation.Services.Identity.Services;
+using Foundation.Core.SDK.Auth.JWT;
+using HotChocolate;
 
 namespace Foundation.Services.Identity.Types;
 

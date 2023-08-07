@@ -1,13 +1,13 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
 using MongoDB.Driver;
-using Foundation.Common.Configurations;
 using Foundation.Common.Roles;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text.Json;
 using Foundation.Common.Entities;
 using Foundation.Services.Identity.Types.Payloads;
+using Foundation.Core.SDK.Auth.JWT;
 
 namespace Foundation.Services.Identity.Services;
 
