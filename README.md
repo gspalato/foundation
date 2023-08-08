@@ -99,29 +99,36 @@ Foundation is a microservice GraphQL back-end and platform for my projects, allo
 
 ### Installation
 
-To get a local copy up and running with:
-
-#### Docker Compose
-
+#### First Steps
 1. Clone the repository
 
 ```sh
 git clone https://github.com/gspalato/foundation.git
 ```
 
-2. Alias `fctl` (Optional)
+2. Alias `fctl` and `fgen` (Optional)
 
 ```sh
 alias fctl="python3 tools/fctl"
+alias fgen="dotnet run ./tools/fgen"
 ```
 
-3. Build docker images
+3. Run `fgen` to generate boilerplate code.
+```sh
+fgen
+```
+
+To get a local copy up and running with:
+
+#### Docker Compose
+
+4. Build docker images
 
 ```sh
 fctl compose build
 ```
 
-3. Configure environment variables in a `.env` file:
+5. Configure environment variables in a `.env` file:
 
 ```env
 FOUNDATION_JWT_SECURITY_KEY=insert_your_256_byte_key_here
@@ -133,7 +140,7 @@ DatabaseUser=example
 DatabasePassword=example
 ```
 
-4. Start it
+6. Start it
 
 ```sh
 fctl compose up
@@ -146,13 +153,13 @@ fctl compose up
 
 ##### Using a private registry
 
-1. Clone the repo
+4. Clone the repo
 
 ```sh
 git clone https://github.com/gspalato/foundation.git
 ```
 
-2. Create a secrets.yml file:
+5. Create a secrets.yml file:
 
 ```yml
 apiVersion: v1
@@ -170,34 +177,34 @@ stringData:
   DatabasePassword: example
 ```
 
-2. Run `docker login` to login to your registry.
+6. Run `docker login` to login to your registry.
 
-3. Configure the Foundation Control Tool (`fctl`) to use your registry.
+7. Configure the Foundation Control Tool (`fctl`) to use your registry.
 
-4. Configure the `kubernetes.yml` files to use your registry for the images.
+8. Configure the `kubernetes.yml` files to use your registry for the images.
 
-5. Clone the docker registry's login to Kubernetes
+9. Clone the docker registry's login to Kubernetes
 
 ```sh
 kubectl create secret generic foundation-registry --from-file=.dockerconfigjson=/path/to/.docker/config.json --type=kubernetes.io/dockerconfigjson
 ```
 
-5. Build the services.
+10. Build the services.
 
 ```sh
-python3 tools/fctl build
+fctl k8s build
 ```
 
-6. Run MongoDB locally.
+11. Run MongoDB locally.
 
 ```sh
 mongod --dbpath /data/db --port 27017 --logpath mongodb/log --logappend --fork --bind_ip_all
 ```
 
-6. Run the services.
+12. Run the services.
 
 ```sh
-python3 tools/fctl up
+fctl k8s up
 ```
 
 <p align="right">(<a href="#top">back to top</a>)</p>
