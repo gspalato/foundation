@@ -1,4 +1,5 @@
 using ByteDev.DotNet;
+using ByteDev.DotNet.Project;
 using ByteDev.DotNet.Solution;
 using CliFx;
 using CliFx.Attributes;
@@ -8,6 +9,7 @@ using Foundation.Tools.Codegen.Structures;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace Foundation.Tools.Codegen.Commands;
@@ -30,16 +32,19 @@ public class RunCommand : ICommand
         }
 
         List<Project> projects = new();
-        foreach (var projectDefinition in solution.Projects)
+        foreach (var solutionProjectDefinition in solution.Projects)
         {
-            var fullPath = Path.Join(Directory.GetCurrentDirectory(), projectDefinition.Path).Replace('\\', '/');
+            var projectDefinition = DotNetProject.Load(solutionProjectDefinition.Path.Replace('\\', '/'));
+
+            var fullPath = Path.Join(Directory.GetCurrentDirectory(), solutionProjectDefinition.Path).Replace('\\', '/');
             var projectFolder = new FileInfo(fullPath).Directory.FullName;
-            console.Output.WriteLine($"Loading files for {projectDefinition.Name} at {projectFolder}...");
+            console.Output.WriteLine($"Loading files for {solutionProjectDefinition.Name} at {projectFolder}...");
 
             Project project = new()
             {
-                Name = projectDefinition.Name,
-                Path = projectFolder
+                Name = solutionProjectDefinition.Name,
+                Path = projectFolder,
+                Frameworks = projectDefinition.ProjectTargets
             };
             
             // Get files in project folder root.

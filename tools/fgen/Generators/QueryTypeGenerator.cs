@@ -9,11 +9,19 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace Foundation.Tools.Codegen.Generators;
 
-public class QueryType : Generator
+public class QueryTypeGenerator : Generator
 {
     public List<SyntaxNode> CandidateNamespaces { get; } = new();
     public List<ClassDeclarationSyntax> CandidateClasses { get; } = new();
 
+    /// <summary>
+    /// Generates a QueryType class that contains all methods from classes with the [Query] attribute.
+    /// This class is used by the GraphQL API to execute queries.
+    /// </summary>
+    /// <param name="syntaxTree"></param>
+    /// <param name="sourceFile"></param>
+    /// <param name="project"></param>
+    /// <returns></returns>
     public override GenerationResult Generate(SyntaxTree syntaxTree, SourceFile sourceFile, Project project)
     {
         const string ClassName = "QueryType";

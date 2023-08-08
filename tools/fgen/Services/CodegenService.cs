@@ -11,7 +11,7 @@ namespace Foundation.Tools.Codegen.Services;
 
 public class CodegenService
 {
-    private const string GeneratedRelativePath = "obj/Debug/fgen_generated";
+    private const string GeneratedFolderName = "fgen_generated";
 
     private List<Type> GeneratorTypes { get; } = new();
 
@@ -66,10 +66,20 @@ public class CodegenService
                 if (!result.Success)
                     continue;
                 
-                var generatedPath = Path.Combine(project.Path, GeneratedRelativePath);
-                Console.WriteLine($"Generated code for {file.Path}:\n{result.Source}\n@ {generatedPath}\n\n\n");
+                var generatedPath = Path.Combine(project.Path, "obj", "[TargetFramework]", GeneratedFolderName);
+                Console.WriteLine($"Generated code for {file.Path} at {generatedPath}.");
 
-                SaveFile($"{result.ExpectedFilename ?? Path.GetFileNameWithoutExtension(file.Name)}.g.cs", generatedPath, result.Source);
+                var filename = $"{result.ExpectedFilename ?? Path.GetFileNameWithoutExtension(file.Name)}.g.cs";
+
+                // Create a new file in the obj/Debug and obj/Release folders for each target framework.
+                foreach (var target in project.Frameworks)
+                {
+                    var debugPath = Path.Combine(project.Path, "obj", "Debug", target.Moniker, GeneratedFolderName);
+                    var releasePath = Path.Combine(project.Path, "obj", "Release", target.Moniker, GeneratedFolderName);
+
+                    SaveFile(filename, debugPath, result.Source);
+                    SaveFile(filename, releasePath, result.Source);
+                }
             }
         }
     }

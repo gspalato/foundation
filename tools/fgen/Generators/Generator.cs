@@ -1,8 +1,5 @@
-using System;
-using System.Collections.Generic;
 using Foundation.Tools.Codegen.Structures;
 using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace Foundation.Tools.Codegen.Generators;
 
