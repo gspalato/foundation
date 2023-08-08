@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Foundation.Tools.Codegen.Generators;
+using Foundation.Tools.Codegen.Structures;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 
@@ -10,7 +11,7 @@ namespace Foundation.Tools.Codegen.Services;
 
 public class CodegenService
 {
-    private const string GeneratedRelativePath = "obj/foundation_generated";
+    private const string GeneratedRelativePath = "obj/Debug/fgen_generated";
 
     private List<Type> GeneratorTypes { get; } = new();
 
@@ -30,6 +31,18 @@ public class CodegenService
             GeneratorTypes.Add(t);
     }
 
+    public static Dictionary<Guid, SyntaxTree> GetAllSyntaxTreesFromProject(Project project)
+    {
+        var trees = new Dictionary<Guid, SyntaxTree>();
+        foreach (var file in project.Files)
+        {
+            var tree = CSharpSyntaxTree.ParseText(file.Value.Content);
+            trees.Add(file.Key, tree);
+        }
+
+        return trees;
+    }
+
     /// <summary>
     ///   Generates code for a project.
     ///   Runs all generators on all files in the project.
@@ -38,13 +51,7 @@ public class CodegenService
     /// <param name="project"></param>
     public void GenerateForProject(Project project)
     {
-        Dictionary<Guid, SyntaxTree> trees = new();
-        
-        foreach (var file in project.Files)
-        {
-            var tree = CSharpSyntaxTree.ParseText(file.Value.Content);
-            trees.Add(file.Key, tree);
-        }
+        Dictionary<Guid, SyntaxTree> trees = GetAllSyntaxTreesFromProject(project);
 
         foreach (var tree in trees)
         {
@@ -55,13 +62,37 @@ public class CodegenService
                 foreach (var node in tree.Value.GetRoot().DescendantNodes())
                     generator.OnVisitSyntaxNode(node);
                 
-                var result = generator.Generate(tree.Value, project);
+                var result = generator.Generate(tree.Value, file, project);
                 if (!result.Success)
                     continue;
-                    
+                
                 var generatedPath = Path.Combine(project.Path, GeneratedRelativePath);
                 Console.WriteLine($"Generated code for {file.Path}:\n{result.Source}\n@ {generatedPath}\n\n\n");
+
+                SaveFile($"{result.ExpectedFilename ?? Path.GetFileNameWithoutExtension(file.Name)}.g.cs", generatedPath, result.Source);
             }
+        }
+    }
+
+    private static bool SaveFile(string filename, string path, string content)
+    {
+        if (!Directory.Exists(path))
+            Directory.CreateDirectory(path);
+
+        var fullPath = Path.Combine(path, filename);
+
+        if (File.Exists(fullPath))
+            File.Delete(fullPath);
+
+        try
+        {
+            File.WriteAllText(fullPath, content);
+            return true;
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine($"Failed to save file {path}:\n{e.Message}");
+            return false;
         }
     }
 }

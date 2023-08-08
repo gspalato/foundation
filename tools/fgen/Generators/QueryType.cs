@@ -14,7 +14,7 @@ public class QueryType : Generator
     public List<SyntaxNode> CandidateNamespaces { get; } = new();
     public List<ClassDeclarationSyntax> CandidateClasses { get; } = new();
 
-    public override GenerationResult Generate(SyntaxTree syntaxTree, Project project)
+    public override GenerationResult Generate(SyntaxTree syntaxTree, SourceFile sourceFile, Project project)
     {
         const string ClassName = "QueryType";
 
@@ -157,6 +157,7 @@ public class QueryType : Generator
         {
             Success = true,
             Source = FormatCode(sourceBuilder.ToString()),
+            ExpectedFilename = ClassName,
             SyntaxTree = syntaxTree
         };
     }

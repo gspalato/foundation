@@ -8,5 +8,7 @@ public class GenerationResult
     
     public string Source { get; set; }
 
+    public string ExpectedFilename { get; set; }
+
     public SyntaxTree SyntaxTree { get; set; }
 }

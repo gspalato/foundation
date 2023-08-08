@@ -17,8 +17,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Foundation.Services.Gateway
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Foundation.Services.Portfolio", "src\Foundation.Services.Portfolio\Foundation.Services.Portfolio.csproj", "{04337DF6-1B5E-4639-A07C-BD360F6509BA}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tools", "tools", "{AA1ECA0B-9701-4545-8DE2-6F8D9904DD91}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Foundation.Tools.Codegen", "tools\fgen\Foundation.Tools.Codegen.csproj", "{75DD54D7-B4E6-477F-992A-E2ACC1387436}"
 EndProject
 Global

@@ -4,6 +4,7 @@ using CliFx;
 using CliFx.Attributes;
 using CliFx.Infrastructure;
 using Foundation.Tools.Codegen.Services;
+using Foundation.Tools.Codegen.Structures;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -32,9 +33,8 @@ public class RunCommand : ICommand
         foreach (var projectDefinition in solution.Projects)
         {
             var fullPath = Path.Join(Directory.GetCurrentDirectory(), projectDefinition.Path).Replace('\\', '/');
-            console.Output.WriteLine($"Generating code for {projectDefinition.Name} at {fullPath}...");
             var projectFolder = new FileInfo(fullPath).Directory.FullName;
-            console.Output.WriteLine(projectFolder);
+            console.Output.WriteLine($"Loading files for {projectDefinition.Name} at {projectFolder}...");
 
             Project project = new()
             {
@@ -64,7 +64,6 @@ public class RunCommand : ICommand
             var subfolders = Directory.GetDirectories(projectFolder);
             foreach (var subfolder in subfolders)
             {
-                console.Output.WriteLine($"D: {subfolder}");
                 if (subfolder.EndsWith("/bin") || subfolder.EndsWith("/obj"))
                     continue;
 
@@ -91,10 +90,8 @@ public class RunCommand : ICommand
 
         CodegenService codegenService = new();
         foreach (var project in projects)
-        {
             // Generate code for each project.
             codegenService.GenerateForProject(project);
-        }
 
         return ValueTask.CompletedTask;
     }
