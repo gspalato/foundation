@@ -1,4 +1,5 @@
 using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp;
 
 namespace Foundation.Tools.Codegen.Structures;
 
@@ -10,5 +11,5 @@ public class GenerationResult
 
     public string ExpectedFilename { get; set; }
 
-    public SyntaxTree SyntaxTree { get; set; }
+    public SyntaxTree SyntaxTree => CSharpSyntaxTree.ParseText(Source);
 }

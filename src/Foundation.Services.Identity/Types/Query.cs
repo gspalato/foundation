@@ -1,4 +1,5 @@
-﻿using Foundation.Core.SDK.API.GraphQL;
+﻿using Foundation.Common;
+using Foundation.Core.SDK.API.GraphQL;
 using Foundation.Core.SDK.Auth.JWT;
 using Foundation.Services.Identity.Services;
 using Foundation.Services.Identity.Types.Payloads;
@@ -6,6 +7,7 @@ using HotChocolate;
 
 namespace Foundation.Services.Identity.Types;
 
+[Generate]
 [Query]
 public class Query
 {

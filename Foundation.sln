@@ -11,8 +11,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Foundation.Services.Identit
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Foundation.Services.UPx", "src\Foundation.Services.UPx\Foundation.Services.UPx.csproj", "{5D267EB2-521A-408F-8A3C-B2C47DB00A4A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Foundation.Core.Codegen", "src\Foundation.Core.Codegen\Foundation.Core.Codegen.csproj", "{22F1AF82-7EAB-4DDD-BD6C-B47A3F7F539B}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Foundation.Services.Gateway", "src\Foundation.Services.Gateway\Foundation.Services.Gateway.csproj", "{AA7C75DC-C69A-499C-AA63-8B0F4DB0419D}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Foundation.Services.Portfolio", "src\Foundation.Services.Portfolio\Foundation.Services.Portfolio.csproj", "{04337DF6-1B5E-4639-A07C-BD360F6509BA}"
@@ -91,8 +89,5 @@ Global
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {1EA8A8C9-7C9A-419A-9F38-4C5EB4D21094}
-	EndGlobalSection
-	GlobalSection(NestedProjects) = preSolution
-		{75DD54D7-B4E6-477F-992A-E2ACC1387436} = {AA1ECA0B-9701-4545-8DE2-6F8D9904DD91}
 	EndGlobalSection
 EndGlobal

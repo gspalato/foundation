@@ -1,11 +1,12 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading;
 using Foundation.Tools.Codegen.Structures;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Microsoft.Extensions.Caching.Memory;
 
 namespace Foundation.Tools.Codegen.Generators;
 
@@ -13,6 +14,15 @@ public class QueryTypeGenerator : Generator
 {
     public List<SyntaxNode> CandidateNamespaces { get; } = new();
     public List<ClassDeclarationSyntax> CandidateClasses { get; } = new();
+
+    public QueryTypeGenerator(IMemoryCache cache, CSharpCompilation compilation, Project project, SourceFile sourceFile, SyntaxTree syntaxTree)
+    {
+        Cache = cache;
+        Compilation = compilation;
+        Project = project;
+        SourceFile = sourceFile;
+        SyntaxTree = syntaxTree;
+    }
 
     /// <summary>
     /// Generates a QueryType class that contains all methods from classes with the [Query] attribute.
@@ -22,7 +32,7 @@ public class QueryTypeGenerator : Generator
     /// <param name="sourceFile"></param>
     /// <param name="project"></param>
     /// <returns></returns>
-    public override GenerationResult Generate(SyntaxTree syntaxTree, SourceFile sourceFile, Project project)
+    public override GenerationResult Generate()
     {
         const string ClassName = "QueryType";
 
@@ -34,75 +44,74 @@ public class QueryTypeGenerator : Generator
             return new GenerationResult()
             {
                 Success = false,
-                Source = "",
-                SyntaxTree = syntaxTree
+                Source = ""
             };
 
+        Console.WriteLine($"Running QueryTypeGenerator. Received source:\n{SyntaxTree.GetRoot().NormalizeWhitespace().ToFullString()}\n");
+
         // Get all classes with the [Query] attribute.
-        foreach (var foundQueryClass in CandidateClasses)
+        var @class = CandidateClasses.First();
+
+        // Get all the using statements.
+        var foundUsings = SyntaxTree.GetRoot().DescendantNodes().OfType<UsingDirectiveSyntax>();
+        usingDirectives.AddRange(foundUsings);
+
+        // Get all methods.
+        var foundMethods = @class.ChildNodes().OfType<MethodDeclarationSyntax>();
+
+        // Create a new edited method with the same name and return type.
+        foreach (var foundMethod in foundMethods)
         {
-            // Get all the using statements.
-            var foundUsings = foundQueryClass.SyntaxTree.GetRoot().DescendantNodes().OfType<UsingDirectiveSyntax>();
-            usingDirectives.AddRange(foundUsings);
+            var method = SyntaxFactory
+                .MethodDeclaration(foundMethod.ReturnType, foundMethod.Identifier)
+                .AddModifiers(foundMethod.Modifiers.ToArray())
+                .AddParameterListParameters(foundMethod.ParameterList.Parameters.ToArray());
 
-            // Get all methods.
-            var foundMethods = foundQueryClass.ChildNodes().OfType<MethodDeclarationSyntax>();
+            // Adds a logger parameter to the method. This logger is to be used internally by generated code.
+            // TODO: Create a Source or Incremental Generator that adds logging separately.
+            var loggerType = SyntaxFactory.ParseTypeName($"ILogger<{@class.Identifier}>");
+            var serviceAttribute = SyntaxFactory.Attribute(SyntaxFactory.IdentifierName("Service"));
 
-            // Create a new edited method with the same name and return type.
-            foreach (var foundMethod in foundMethods)
+            var loggerParameter = SyntaxFactory
+                .Parameter(SyntaxFactory.Identifier("__foundationCodegen_logger"))
+                .WithType(loggerType)
+                .AddAttributeLists(SyntaxFactory.AttributeList().AddAttributes(serviceAttribute));
+
+            method = method.AddParameterListParameters(loggerParameter);
+
+            // Add initial execution time and database call variables.
+            var initialStatements = new[]
             {
-                var method = SyntaxFactory
-                    .MethodDeclaration(foundMethod.ReturnType, foundMethod.Identifier)
-                    .AddModifiers(foundMethod.Modifiers.ToArray())
-                    .AddParameterListParameters(foundMethod.ParameterList.Parameters.ToArray());
+                SyntaxFactory.ParseStatement("float __foundationCodegen_time = 0;"),
+                SyntaxFactory.ParseStatement("int __foundationCodegen_dbCalls = 0;"),
+                SyntaxFactory.ParseStatement("var __foundationCodegen_sw = new System.Diagnostics.Stopwatch();"),
+                SyntaxFactory.ParseStatement("__foundationCodegen_sw.Start();")
+            };
 
-                // Adds a logger parameter to the method. This logger is to be used internally by generated code.
-                // TODO: Create a Source or Incremental Generator that adds logging separately.
-                var loggerType = SyntaxFactory.ParseTypeName($"ILogger<{foundQueryClass.Identifier}>");
-                var serviceAttribute = SyntaxFactory.Attribute(SyntaxFactory.IdentifierName("Service"));
+            method = method.AddBodyStatements(initialStatements);
 
-                var loggerParameter = SyntaxFactory
-                    .Parameter(SyntaxFactory.Identifier("__foundationCodegen_logger"))
-                    .WithType(loggerType)
-                    .AddAttributeLists(SyntaxFactory.AttributeList().AddAttributes(serviceAttribute));
+            // Add actual logic.
+            var lastNodeIndex = foundMethod.Body.Statements.Last() is ReturnStatementSyntax returnStatement
+                ? foundMethod.Body.Statements.Count - 1
+                : foundMethod.Body.Statements.Count;
 
-                method = method.AddParameterListParameters(loggerParameter);
+            var statements = foundMethod.Body.Statements;
 
-                // Add initial execution time and database call variables.
-                var initialStatements = new[]
-                {
-                    SyntaxFactory.ParseStatement("float __foundationCodegen_time = 0;"),
-                    SyntaxFactory.ParseStatement("int __foundationCodegen_dbCalls = 0;"),
-                    SyntaxFactory.ParseStatement("var __foundationCodegen_sw = new System.Diagnostics.Stopwatch();"),
-                    SyntaxFactory.ParseStatement("__foundationCodegen_sw.Start();")
-                };
+            // Finish by appending stopwatch stop and debug output before return or end of block.
+            // TODO: Finish the concept by adding a service that receives the data.
+            var finishingStatements = new[]
+            {
+                SyntaxFactory.ParseStatement("__foundationCodegen_sw.Stop();"),
+                SyntaxFactory.ParseStatement("__foundationCodegen_time = __foundationCodegen_sw.ElapsedMilliseconds;"),
+                SyntaxFactory.ParseStatement("__foundationCodegen_logger.LogDebug($\"{__foundationCodegen_time}ms, {__foundationCodegen_dbCalls} db calls\");"),
+            };
 
-                method = method.AddBodyStatements(initialStatements);
+            // Note: For some reason this has to be in reverse order. Oh well.
+            foreach (var statement in finishingStatements.Reverse())
+                statements = statements.Insert(lastNodeIndex, statement);
 
-                // Add actual logic.
-                var lastNodeIndex = foundMethod.Body.Statements.Last() is ReturnStatementSyntax returnStatement
-                    ? foundMethod.Body.Statements.Count - 1
-                    : foundMethod.Body.Statements.Count;
-
-                var statements = foundMethod.Body.Statements;
-
-                // Finish by appending stopwatch stop and debug output before return or end of block.
-                // TODO: Finish the concept by adding a service that receives the data.
-                var finishingStatements = new[]
-                {
-                    SyntaxFactory.ParseStatement("__foundationCodegen_sw.Stop();"),
-                    SyntaxFactory.ParseStatement("__foundationCodegen_time = __foundationCodegen_sw.ElapsedMilliseconds;"),
-                    SyntaxFactory.ParseStatement("__foundationCodegen_logger.LogDebug($\"{__foundationCodegen_time}ms, {__foundationCodegen_dbCalls} db calls\");"),
-
-                };
-
-                // Note: For some reason this has to be in reverse order. Oh well.
-                foreach (var statement in finishingStatements.Reverse())
-                    statements = statements.Insert(lastNodeIndex, statement);
-
-                method = method.AddBodyStatements(statements.ToArray());
-                queryMethods.Add(method);
-            }
+            method = method.AddBodyStatements(statements.ToArray());
+            queryMethods.Add(method);
         }
 
         // Find namespace node so it can be used to generate the source code in the same namespace.
@@ -144,12 +153,6 @@ public class QueryTypeGenerator : Generator
         //       It didn't add spaces between keywords properly.
         var sourceBuilder = new StringBuilder();
 
-        sourceBuilder.AppendLine("// This file was automatically generated by Foundation.");
-        sourceBuilder.AppendLine("// It is a compilation of all [Query] classes, related to GraphQL APIs.");
-        sourceBuilder.AppendLine("// All methods were modified to include a execution time and database call tracking.");
-        sourceBuilder.AppendLine("// [Do not modify this file directly, as it will be overwritten.]");
-        sourceBuilder.AppendLine("// [Do not check this file into source control.]");
-
         usingDirectives.ForEach(d => sourceBuilder.Append(d.ToFullString()));
 
         sourceBuilder.AppendLine($"namespace {namespaceIdentifier};");
@@ -157,23 +160,27 @@ public class QueryTypeGenerator : Generator
         sourceBuilder.AppendLine($"public class {ClassName}\n{{");
 
         foreach (var method in queryMethods)
+        {
+            Console.WriteLine($"QTG WRITING METHOD {method.Identifier}!");
             sourceBuilder.AppendLine(method.ToFullString());
+        }
 
         sourceBuilder.AppendLine("}");
 
         return new GenerationResult()
         {
             Success = true,
-            Source = FormatCode(sourceBuilder.ToString()),
+            Source = sourceBuilder.ToString(),
             ExpectedFilename = ClassName,
-            SyntaxTree = syntaxTree
         };
     }
 
     public override void OnVisitSyntaxNode(SyntaxNode syntaxNode)
     {
         if (syntaxNode is ClassDeclarationSyntax classDeclarationSyntax
-            && IsQueryClass(classDeclarationSyntax))
+            && HasGenerateAttribute(classDeclarationSyntax)
+            && IsQueryClass(classDeclarationSyntax)
+        )
         {
             CandidateClasses.Add(classDeclarationSyntax);
         }
@@ -185,29 +192,16 @@ public class QueryTypeGenerator : Generator
             CandidateNamespaces.Add(baseNamespaceDeclarationSyntax);
     }
 
-    /// <summary>
-    /// Formats the code to be more human readable.
-    /// </summary>
-    /// <param name="code">The code to format.</param>
-    /// <param name="cancelToken">The cancellation token.</param>
-    /// <returns>The formatted code.</returns>
-    /// <remarks>
-    /// Even though is code is autogenerated and will only be ran by the compiler,
-    /// it's still nice to have it formatted properly. This is especially useful for debugging.
-    /// </remarks>
-    private static string FormatCode(string code, CancellationToken cancelToken = default)
+    private static bool HasGenerateAttribute(ClassDeclarationSyntax classDeclarationSyntax)
     {
-        return CSharpSyntaxTree.ParseText(code, cancellationToken: cancelToken)
-            .GetRoot(cancelToken)
-            .NormalizeWhitespace()
-            .SyntaxTree
-            .GetText(cancelToken)
-            .ToString();
+        return classDeclarationSyntax.AttributeLists
+            .SelectMany(attributeList => attributeList.Attributes)
+            .Any(attribute => attribute.Name.ToString() is "Generate");
     }
 
     private static bool IsQueryClass(ClassDeclarationSyntax classDeclarationSyntax)
     {
-        return classDeclarationSyntax.AttributeLists.SelectMany(l => l.Attributes).Any(a => a.Name.ToString() is "Query");
+        return classDeclarationSyntax.Identifier.Text is "Query";
     }
 
     private static bool ContainsQueryClass(SyntaxNode node)
