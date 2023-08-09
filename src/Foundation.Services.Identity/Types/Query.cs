@@ -7,8 +7,7 @@ using HotChocolate;
 
 namespace Foundation.Services.Identity.Types;
 
-[Generate]
-[Query]
+// foundation generate query
 public class Query
 {
     public async Task<CheckAuthenticationPayload> CheckAuthenticationAsync(string token, [Service] IAuthorizationService authService, [Service] IUserService userService)

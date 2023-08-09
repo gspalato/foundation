@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using Foundation.Tools.Codegen.Structures;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
@@ -17,6 +18,8 @@ public abstract class Generator : IGenerator
 
     protected CSharpCompilation Compilation { get; set; }
 
+    protected Dictionary<SyntaxNode, string[]> GenerationOptions { get; set; }
+
     protected Project Project { get; set; }
 
     protected SemanticModel SemanticModel => Compilation.GetSemanticModel(SyntaxTree);
@@ -24,6 +27,23 @@ public abstract class Generator : IGenerator
     protected SourceFile SourceFile { get; set; }
 
     protected SyntaxTree SyntaxTree { get; set; }
+
+    public void Setup(
+        IMemoryCache cache,
+        CSharpCompilation compilation,
+        Dictionary<SyntaxNode, string[]> generationOptions,
+        Project project,
+        SourceFile sourceFile,
+        SyntaxTree syntaxTree
+    )
+    {
+        Cache = cache;
+        Compilation = compilation;
+        GenerationOptions = generationOptions;
+        Project = project;
+        SourceFile = sourceFile;
+        SyntaxTree = syntaxTree;
+    }
 
     public abstract GenerationResult Generate();
 

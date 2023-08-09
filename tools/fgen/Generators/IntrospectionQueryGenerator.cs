@@ -14,15 +14,6 @@ namespace Foundation.Tools.Codegen.Generators;
 
 public class IntrospectionQueryGenerator : Generator
 {
-    public IntrospectionQueryGenerator(IMemoryCache cache, CSharpCompilation compilation, Project project, SourceFile sourceFile, SyntaxTree syntaxTree)
-    {
-        Cache = cache;
-        Compilation = compilation;
-        Project = project;
-        SourceFile = sourceFile;
-        SyntaxTree = syntaxTree;
-    }
-
     public List<SyntaxNode> CandidateNamespaces { get; } = new();
     public List<ClassDeclarationSyntax> CandidateClasses { get; } = new();
 
@@ -70,9 +61,6 @@ public class IntrospectionQueryGenerator : Generator
         var modifiedClass = @class.AddMembers(method);
 
         // Generate source code.
-        // Note: This was the best working solution yet.
-        //       Directly using the SyntaxFactory to create the source code was not working.
-        //       It didn't add spaces between keywords properly.
         var source = SyntaxTree.GetRoot().ReplaceNode(@class, modifiedClass).NormalizeWhitespace().ToFullString();
 
         return new GenerationResult()
@@ -85,22 +73,13 @@ public class IntrospectionQueryGenerator : Generator
 
     public override void OnVisitSyntaxNode(SyntaxNode syntaxNode)
     {
-        if (syntaxNode is ClassDeclarationSyntax classDeclarationSyntax
-            && HasGenerateAttribute(classDeclarationSyntax)
-            && IsQueryClass(classDeclarationSyntax)
-        )
+        if (syntaxNode is ClassDeclarationSyntax classDeclarationSyntax && ShouldGenerateQueryClass(classDeclarationSyntax))
             CandidateClasses.Add(classDeclarationSyntax);
     }
 
-    private static bool HasGenerateAttribute(ClassDeclarationSyntax classDeclarationSyntax)
+    private bool ShouldGenerateQueryClass(ClassDeclarationSyntax classDeclarationSyntax)
     {
-        return classDeclarationSyntax.AttributeLists
-            .SelectMany(attributeList => attributeList.Attributes)
-            .Any(attribute => attribute.Name.ToString() is "Generate");
-    }
-
-    private static bool IsQueryClass(ClassDeclarationSyntax classDeclarationSyntax)
-    {
-        return classDeclarationSyntax.Identifier.Text is "Query";
+        return GenerationOptions.ContainsKey(classDeclarationSyntax)
+               && GenerationOptions[classDeclarationSyntax].Contains("query");
     }
 }

@@ -15,15 +15,6 @@ public class QueryTypeGenerator : Generator
     public List<SyntaxNode> CandidateNamespaces { get; } = new();
     public List<ClassDeclarationSyntax> CandidateClasses { get; } = new();
 
-    public QueryTypeGenerator(IMemoryCache cache, CSharpCompilation compilation, Project project, SourceFile sourceFile, SyntaxTree syntaxTree)
-    {
-        Cache = cache;
-        Compilation = compilation;
-        Project = project;
-        SourceFile = sourceFile;
-        SyntaxTree = syntaxTree;
-    }
-
     /// <summary>
     /// Generates a QueryType class that contains all methods from classes with the [Query] attribute.
     /// This class is used by the GraphQL API to execute queries.
@@ -46,8 +37,6 @@ public class QueryTypeGenerator : Generator
                 Success = false,
                 Source = ""
             };
-
-        Console.WriteLine($"Running QueryTypeGenerator. Received source:\n{SyntaxTree.GetRoot().NormalizeWhitespace().ToFullString()}\n");
 
         // Get all classes with the [Query] attribute.
         var @class = CandidateClasses.First();
@@ -161,7 +150,6 @@ public class QueryTypeGenerator : Generator
 
         foreach (var method in queryMethods)
         {
-            Console.WriteLine($"QTG WRITING METHOD {method.Identifier}!");
             sourceBuilder.AppendLine(method.ToFullString());
         }
 
@@ -177,13 +165,8 @@ public class QueryTypeGenerator : Generator
 
     public override void OnVisitSyntaxNode(SyntaxNode syntaxNode)
     {
-        if (syntaxNode is ClassDeclarationSyntax classDeclarationSyntax
-            && HasGenerateAttribute(classDeclarationSyntax)
-            && IsQueryClass(classDeclarationSyntax)
-        )
-        {
+        if (syntaxNode is ClassDeclarationSyntax classDeclarationSyntax && ShouldGenerateQueryClass(classDeclarationSyntax))
             CandidateClasses.Add(classDeclarationSyntax);
-        }
 
         if (syntaxNode is NamespaceDeclarationSyntax namespaceDeclarationSyntax && ContainsQueryClass(syntaxNode))
             CandidateNamespaces.Add(namespaceDeclarationSyntax);
@@ -192,23 +175,17 @@ public class QueryTypeGenerator : Generator
             CandidateNamespaces.Add(baseNamespaceDeclarationSyntax);
     }
 
-    private static bool HasGenerateAttribute(ClassDeclarationSyntax classDeclarationSyntax)
+    private bool ShouldGenerateQueryClass(ClassDeclarationSyntax classDeclarationSyntax)
     {
-        return classDeclarationSyntax.AttributeLists
-            .SelectMany(attributeList => attributeList.Attributes)
-            .Any(attribute => attribute.Name.ToString() is "Generate");
+        return GenerationOptions.ContainsKey(classDeclarationSyntax)
+               && GenerationOptions[classDeclarationSyntax].Contains("query");
     }
 
-    private static bool IsQueryClass(ClassDeclarationSyntax classDeclarationSyntax)
-    {
-        return classDeclarationSyntax.Identifier.Text is "Query";
-    }
-
-    private static bool ContainsQueryClass(SyntaxNode node)
+    private bool ContainsQueryClass(SyntaxNode node)
     {
         return node
             .DescendantNodes()
             .OfType<ClassDeclarationSyntax>()
-            .Any(c => IsQueryClass(c));
+            .Any(c => ShouldGenerateQueryClass(c));
     }
 }
