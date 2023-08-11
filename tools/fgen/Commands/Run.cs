@@ -1,21 +1,9 @@
-using ByteDev.DotNet;
-using ByteDev.DotNet.Project;
-using ByteDev.DotNet.Solution;
-using CliFx;
-using CliFx.Attributes;
-using CliFx.Infrastructure;
 using Foundation.Tools.Codegen.Services;
-using Foundation.Tools.Codegen.Structures;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
+using Spectre.Console.Cli;
 
 namespace Foundation.Tools.Codegen.Commands;
 
-[Command(Description = "Generates boilerplate code for all Foundation microservices.")]
-public class RunCommand : ICommand
+public class RunCommand : Command
 {
     private CodegenService CodegenService { get; }
 
@@ -27,16 +15,15 @@ public class RunCommand : ICommand
         IOService = ioService;
     }
 
-    public ValueTask ExecuteAsync(IConsole console)
+    public override int Execute(CommandContext context)
     {
-        List<Project> projects = IOService.GetProjectsFromSolution()!;
+        var projects = IOService.GetProjectsFromSolution()!;
         if (projects is null)
-            return ValueTask.CompletedTask;
+            return default;
 
         foreach (var project in projects)
-            // Generate code for each project.
             CodegenService.GenerateForProject(project);
 
-        return ValueTask.CompletedTask;
+        return default;
     }
 }

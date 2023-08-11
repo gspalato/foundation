@@ -10,6 +10,7 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.Extensions.Caching.Memory;
+using Spectre.Console;
 
 namespace Foundation.Tools.Codegen.Services;
 
@@ -120,7 +121,10 @@ public class CodegenService
 
                 foreach (var pipeline in attributed)
                 {
-                    Console.WriteLine($"Running pipeline {pipeline.Name}.");
+                    AnsiConsole.MarkupLineInterpolated(
+                        $"{Emoji.Known.Gear} [bold blue]Running pipeline [aqua]{pipeline.Name}[/] on [aqua]{@class.Identifier}[/]...[/]"
+                    );
+
                     var pipelineExecutionId = Guid.NewGuid().ToString();
 
                     foreach (var generatorType in pipeline.GeneratorTypes)
@@ -130,8 +134,6 @@ public class CodegenService
 
                         foreach (var visitNode in tree.Value.GetRoot().DescendantNodes())
                             generator.OnVisitSyntaxNode(visitNode);
-
-                        Console.WriteLine($"Running generator {generatorType.Name} on {@class.Identifier} in pipeline {pipeline.Name}");
 
                         var result = generator.Generate();
                         if (!result.Success)
@@ -170,7 +172,9 @@ public class CodegenService
                 IOService.WriteFile(filename, releasePath, resultSource);
             }
 
-            Console.WriteLine($"Created file {filename} in {generatedPath}.");
+            AnsiConsole.MarkupLineInterpolated(
+                $"{Emoji.Known.CheckMarkButton} [bold green]Generated [aqua]{filename}[/] [green]from[/][/] [dim]{file.Path}.[/]"
+            );
         }
     }
 

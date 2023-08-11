@@ -23,35 +23,36 @@
 ///   kubernetes down    Stops Foundation on Kubernetes mode and deletes all services, deployments and pods.
 /// ======================================================================================================================
 
-using CliFx;
+using Foundation.Tools.Codegen.Commands;
 using Foundation.Tools.Codegen.Services;
+using Foundation.Tools.Codegen.Structures.Injection;
 using Microsoft.Extensions.DependencyInjection;
-using System;
-using System.Threading.Tasks;
+using Spectre.Console;
+using Spectre.Console.Cli;
 
 namespace Foundation.Tools.Codegen;
 
 public static class Program
 {
-    public static async Task<int> Main()
+    public static int Main(string[] args)
     {
-        return await new CliApplicationBuilder()
-            .AddCommandsFromThisAssembly()
-            .UseTypeActivator(commandTypes =>
-            {
-                var services = new ServiceCollection();
+        AnsiConsole.MarkupLine($"\n{Emoji.Known.PartyPopper} [bold aqua]Welcome to the Foundation Codegen Tool![/]");
 
-                // Register services
-                services.AddSingleton<CodegenService>();
-                services.AddSingleton<IOService>();
+        // Register services
+        var services = new ServiceCollection();
+        services.AddSingleton<CodegenService>();
+        services.AddSingleton<IOService>();
 
-                // Register commands
-                foreach (var commandType in commandTypes)
-                    services.AddTransient(commandType);
+        var registrar = new TypeRegistrar(services);
 
-                return services.BuildServiceProvider();
-            })
-            .Build()
-            .RunAsync();
+        var app = new CommandApp<RunCommand>(registrar);
+
+        app.Configure(config =>
+        {
+            config.SetApplicationName("fgen");
+            config.AddCommand<RunCommand>("run");
+        });
+
+        return app.Run(args);
     }
 }

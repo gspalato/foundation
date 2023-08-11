@@ -4,6 +4,7 @@ using System.IO;
 using ByteDev.DotNet.Project;
 using ByteDev.DotNet.Solution;
 using Foundation.Tools.Codegen.Structures;
+using Spectre.Console;
 
 namespace Foundation.Tools.Codegen.Services;
 
@@ -19,18 +20,27 @@ public class IOService
         }
         catch
         {
-            Console.WriteLine("Couldn't find Foundation.sln file. Make sure this tool is being ran from the root of the repository.");
+            AnsiConsole.MarkupLine($"{Emoji.Known.CrossMark} [bold red]Couldn't find Foundation.sln file. Make sure this tool is being ran from the root of the repository.[/]");
             return null;
         }
 
         List<Project> projects = new();
+
+        var table = new Table()
+            .Border(TableBorder.Rounded)
+            .AddColumn("Name")
+            .AddColumn("Path")
+            .AddColumn("Files");
+
+        AnsiConsole.MarkupLine($"{Emoji.Known.HourglassNotDone} [bold blue]Loading Foundation projects...[/]");
+
+        // Load all projects in solution.
         foreach (var solutionProjectDefinition in solution.Projects)
         {
             var projectDefinition = DotNetProject.Load(solutionProjectDefinition.Path.Replace('\\', '/'));
 
             var fullPath = Path.Join(Directory.GetCurrentDirectory(), solutionProjectDefinition.Path).Replace('\\', '/');
             var projectFolder = new FileInfo(fullPath).Directory!.FullName;
-            Console.WriteLine($"Loading files for {solutionProjectDefinition.Name} at {projectFolder}...");
 
             Project project = new()
             {
@@ -38,7 +48,7 @@ public class IOService
                 Path = projectFolder,
                 Frameworks = projectDefinition.ProjectTargets
             };
-            
+
             // Get files in project folder root.
             var rootFiles = Directory.GetFiles(projectFolder, "*.cs");
             foreach (var file in rootFiles)
@@ -66,7 +76,7 @@ public class IOService
                 foreach (var file in files)
                 {
                     if (file is null || file is "")
-                    continue;
+                        continue;
 
                     var sourceFile = new SourceFile
                     {
@@ -79,7 +89,11 @@ public class IOService
             }
 
             projects.Add(project);
+            table.AddRow($"[bold blue]{project.Name}[/]", $"[dim]{projectFolder}[/]", $"[green]{project.Files.Count}[/]");
         }
+
+        AnsiConsole.Write(table);
+        AnsiConsole.WriteLine();
 
         return projects;
     }

@@ -40,8 +40,6 @@ public class QueryTypeGenerator : Generator
         // Create a new edited method with the same name and return type.
         foreach (var foundMethod in foundMethods)
         {
-            Console.WriteLine($"Found method: {foundMethod.Identifier}");
-
             var method = SyntaxFactory
                 .MethodDeclaration(foundMethod.ReturnType, foundMethod.Identifier)
                 .AddModifiers(foundMethod.Modifiers.ToArray())
@@ -91,8 +89,6 @@ public class QueryTypeGenerator : Generator
                 statements = statements.Insert(lastNodeIndex, statement);
 
             method = method.AddBodyStatements(statements.ToArray());
-
-            Console.WriteLine($"New method body:\n{method.NormalizeWhitespace().GetText()}\n\n");
 
             replacements.Add(new Tuple<SyntaxNode, SyntaxNode>(foundMethod, method));
         }
