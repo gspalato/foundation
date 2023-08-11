@@ -1,15 +1,14 @@
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace Foundation.Tools.Codegen.Structures;
 
 public class GenerationResult
 {
     public bool Success { get; set; }
-    
-    public string Source { get; set; }
 
-    public string ExpectedFilename { get; set; }
+    public string ExpectedFilename { get; set; } = default!;
 
-    public SyntaxTree SyntaxTree => CSharpSyntaxTree.ParseText(Source);
+    public SyntaxNode Node = default!;
 }

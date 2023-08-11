@@ -6,11 +6,11 @@ namespace Foundation.Tools.Codegen.Structures;
 
 public class Project
 {
-    public string Name { get; set; }
+    public required string Name { get; set; }
 
-    public string Path { get; set; }
+    public required string Path { get; set; }
 
-    public IEnumerable<TargetFramework> Frameworks { get; set; }
+    public required IEnumerable<TargetFramework> Frameworks { get; set; }
 
     public Dictionary<Guid, SourceFile> Files { get; set; } = new();
 }

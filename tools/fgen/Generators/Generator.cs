@@ -1,7 +1,10 @@
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using Foundation.Tools.Codegen.Structures;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.Extensions.Caching.Memory;
 
 namespace Foundation.Tools.Codegen.Generators;
@@ -9,40 +12,55 @@ namespace Foundation.Tools.Codegen.Generators;
 public interface IGenerator
 {
     GenerationResult Generate();
+
     void OnVisitSyntaxNode(SyntaxNode node);
+
+    void Setup(
+        IMemoryCache cache,
+        CSharpCompilation compilation,
+        string pipelineExecutionId,
+        Project project,
+        SourceFile sourceFile,
+        SyntaxTree syntaxTree,
+        ClassDeclarationSyntax target
+    );
 }
 
 public abstract class Generator : IGenerator
 {
-    protected IMemoryCache Cache { get; set; }
+    protected IMemoryCache Cache { get; set; } = default!;
 
-    protected CSharpCompilation Compilation { get; set; }
+    protected CSharpCompilation Compilation { get; set; } = default!;
 
-    protected Dictionary<SyntaxNode, string[]> GenerationOptions { get; set; }
+    protected string PipelineExecutionId { get; set; } = default!;
 
-    protected Project Project { get; set; }
+    protected Project Project { get; set; } = default!;
 
     protected SemanticModel SemanticModel => Compilation.GetSemanticModel(SyntaxTree);
 
-    protected SourceFile SourceFile { get; set; }
+    protected SourceFile SourceFile { get; set; } = default!;
 
-    protected SyntaxTree SyntaxTree { get; set; }
+    protected SyntaxTree SyntaxTree { get; set; } = default!;
+
+    protected ClassDeclarationSyntax Target { get; set; } = default!;
 
     public void Setup(
         IMemoryCache cache,
         CSharpCompilation compilation,
-        Dictionary<SyntaxNode, string[]> generationOptions,
+        string pipelineExecutionId,
         Project project,
         SourceFile sourceFile,
-        SyntaxTree syntaxTree
+        SyntaxTree syntaxTree,
+        ClassDeclarationSyntax target
     )
     {
         Cache = cache;
         Compilation = compilation;
-        GenerationOptions = generationOptions;
+        PipelineExecutionId = pipelineExecutionId;
         Project = project;
         SourceFile = sourceFile;
         SyntaxTree = syntaxTree;
+        Target = target;
     }
 
     public abstract GenerationResult Generate();

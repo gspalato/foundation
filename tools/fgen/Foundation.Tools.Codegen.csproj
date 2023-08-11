@@ -4,6 +4,7 @@
     <TargetFramework>net7.0</TargetFramework>
     <LangVersion>preview</LangVersion>
     <OutputType>Exe</OutputType>
+    <Nullable>enable</Nullable>
   </PropertyGroup>
 
   <ItemGroup>
@@ -18,15 +19,4 @@
   <ItemGroup>
     <None Include="$(OutputPath)\$(AssemblyName).dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="true" />
   </ItemGroup>
-
-  <!--
-  <Target Name="CleanSourceGeneratedFiles" BeforeTargets="BeforeBuild" DependsOnTargets="$(BeforeBuildDependsOn)">
-    <RemoveDir Directories="$(CompilerGeneratedFilesOutputPath)" />
-  </Target>
-
-  <ItemGroup>
-    <Compile Remove="$(CompilerGeneratedFilesOutputPath)\**" />
-    <Content Include="$(CompilerGeneratedFilesOutputPath)\**" />
-  </ItemGroup>
-  -->
 </Project>

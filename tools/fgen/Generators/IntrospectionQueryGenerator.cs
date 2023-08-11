@@ -14,9 +14,6 @@ namespace Foundation.Tools.Codegen.Generators;
 
 public class IntrospectionQueryGenerator : Generator
 {
-    public List<SyntaxNode> CandidateNamespaces { get; } = new();
-    public List<ClassDeclarationSyntax> CandidateClasses { get; } = new();
-
     /// <summary>
     /// Modifies a Query class to include a new method that allows for introspection.
     /// </summary>
@@ -26,25 +23,13 @@ public class IntrospectionQueryGenerator : Generator
     /// <returns></returns>
     public override GenerationResult Generate()
     {
-        // If there are no classes with the [Query] attribute, then return an empty result.
-        if (CandidateClasses.Count == 0)
+        if (Target is null)
             return new GenerationResult()
             {
-                Success = false,
-                Source = ""
+                Success = false
             };
 
-        // Select only one class, as they will be merged in a later generation step.
-        Cache.TryGetValue("Query_InjectedInstrospection", out bool alreadyInjected);
-        if (alreadyInjected)
-            return new GenerationResult()
-            {
-                Success = false,
-                Source = ""
-            };
-
-        var @class = CandidateClasses.First();
-        Cache.CreateEntry("Query_InjectedInstrospection").SetValue(true);
+        var @class = Target;
 
         // Create new method called "GetIntrospectionInfoAsync" using SyntaxFactory.
         StatementSyntax[] statements = new[]
@@ -58,28 +43,15 @@ public class IntrospectionQueryGenerator : Generator
             .AddParameterListParameters()
             .AddBodyStatements(statements);
 
-        var modifiedClass = @class.AddMembers(method);
-
-        // Generate source code.
-        var source = SyntaxTree.GetRoot().ReplaceNode(@class, modifiedClass).NormalizeWhitespace().ToFullString();
+        @class = @class.AddMembers(method);
 
         return new GenerationResult()
         {
             Success = true,
-            Source = source,
+            Node = @class,
             ExpectedFilename = Path.GetFileNameWithoutExtension(SourceFile.Name),
         };
     }
 
-    public override void OnVisitSyntaxNode(SyntaxNode syntaxNode)
-    {
-        if (syntaxNode is ClassDeclarationSyntax classDeclarationSyntax && ShouldGenerateQueryClass(classDeclarationSyntax))
-            CandidateClasses.Add(classDeclarationSyntax);
-    }
-
-    private bool ShouldGenerateQueryClass(ClassDeclarationSyntax classDeclarationSyntax)
-    {
-        return GenerationOptions.ContainsKey(classDeclarationSyntax)
-               && GenerationOptions[classDeclarationSyntax].Contains("query");
-    }
+    public override void OnVisitSyntaxNode(SyntaxNode syntaxNode) { }
 }

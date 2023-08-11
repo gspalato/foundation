@@ -43,6 +43,7 @@ public static class Program
 
                 // Register services
                 services.AddSingleton<CodegenService>();
+                services.AddSingleton<IOService>();
 
                 // Register commands
                 foreach (var commandType in commandTypes)
