@@ -10,13 +10,13 @@ namespace Foundation.Tools.Codegen.Services;
 
 public class IOService
 {
-    public List<Project>? GetProjectsFromSolution()
+    public List<Project>? GetProjectsFromSolution(string path)
     {
         // Parse solution file containing all microservices.
         DotNetSolution solution;
         try
         {
-            solution = DotNetSolution.Load(@"./Foundation.sln");
+            solution = DotNetSolution.Load(path);
         }
         catch
         {
@@ -35,12 +35,13 @@ public class IOService
         AnsiConsole.MarkupLine($"{Emoji.Known.HourglassNotDone} [bold blue]Loading Foundation projects...[/]");
 
         // Load all projects in solution.
+        var rootFolder = Path.GetFullPath(Path.Combine(path, "..")).Replace('\\', '/');
         foreach (var solutionProjectDefinition in solution.Projects)
         {
-            var projectDefinition = DotNetProject.Load(solutionProjectDefinition.Path.Replace('\\', '/'));
+            var projectPath = Path.Combine(rootFolder, solutionProjectDefinition.Path).Replace('\\', '/');
+            var projectDefinition = DotNetProject.Load(projectPath);
 
-            var fullPath = Path.Join(Directory.GetCurrentDirectory(), solutionProjectDefinition.Path).Replace('\\', '/');
-            var projectFolder = new FileInfo(fullPath).Directory!.FullName;
+            var projectFolder = new FileInfo(projectPath).Directory!.FullName;
 
             Project project = new()
             {
@@ -89,7 +90,9 @@ public class IOService
             }
 
             projects.Add(project);
-            table.AddRow($"[bold blue]{project.Name}[/]", $"[dim]{projectFolder}[/]", $"[green]{project.Files.Count}[/]");
+
+            var folder = Utilities.CollapsePath(projectFolder);
+            table.AddRow($"[bold blue]{project.Name}[/]", $"[dim]{folder}[/]", $"[green]{project.Files.Count}[/]");
         }
 
         AnsiConsole.Write(table);
@@ -99,14 +102,14 @@ public class IOService
     }
 
     /// <summary>
-    /// Writes a file to disk.
+    ///   Writes a file to disk.
     /// </summary>
     /// <param name="filename">The name of the file to save.</param>
     /// <param name="path">The path to save the file to.</param>
     /// <param name="content">The content of the file.</param>
     /// <returns>True if the file was saved successfully, false otherwise.</returns>
     /// <remarks>
-    /// If the file already exists, it will be overwritten.
+    ///   If the file already exists, it will be overwritten.
     /// </remarks>
     public bool WriteFile(string filename, string path, string content)
     {

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading;
 using Foundation.Tools.Codegen.Generators;
 using Foundation.Tools.Codegen.Structures;
@@ -16,12 +17,18 @@ namespace Foundation.Tools.Codegen.Services;
 
 public class CodegenService
 {
+
+    private const string GeneratedFolderName = "generated";
+
+
     private IOService IOService { get; }
 
-
-    private const string GeneratedFolderName = "fgenerated";
+    
+    private CSharpCompilation GlobalCompilation = CSharpCompilation.Create("Foundation");
 
     private List<IGenerationPipeline> Pipelines { get; } = new();
+
+    private List<Project> Projects { get; } = new();
 
     public CodegenService(IOService ioService)
     {
@@ -45,13 +52,38 @@ public class CodegenService
             .WithName("Query")
             .AddGenerator<IntrospectionQueryGenerator>()
             .AddGenerator<QueryTypeGenerator>()
+            .AddGenerator<InjectDatabaseMetricsGenerator>()
             .Build();
 
         Pipelines.Add(queryPipeline);
     }
 
     /// <summary>
-    ///  Gets all syntax trees from a project.
+    ///   Loads a project into the service.
+    /// </summary>
+    /// <param name="project"></param>
+    public void LoadProject(Project project)
+    {
+        Projects.Add(project);
+
+        var trees = GetAllSyntaxTreesFromProject(project);
+        GlobalCompilation = GlobalCompilation.AddSyntaxTrees(trees.Select(t => t.Value));
+    }
+
+    /// <summary>
+    ///   Loads multiple projects into the service.
+    /// </summary>
+    /// <param name="projects"></param>
+    public void LoadProjects(IEnumerable<Project> projects)
+    {
+        Projects.AddRange(projects);
+
+        var trees = projects.Select(p => GetAllSyntaxTreesFromProject(p).Select(t => t.Value));
+        GlobalCompilation = GlobalCompilation.AddSyntaxTrees(trees.SelectMany(t => t));
+    }
+
+    /// <summary>
+    ///   Gets all syntax trees from a project.
     /// </summary>
     /// <param name="project">The project to get syntax trees from.</param>
     /// <returns>A dictionary of syntax trees, where the key is the file's GUID.</returns>
@@ -75,14 +107,8 @@ public class CodegenService
     /// <param name="project"></param>
     public void GenerateForProject(Project project)
     {
-        var compilation = CSharpCompilation.Create(project.Name)
-            .WithOptions(new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary));
-
         IMemoryCache cache = new MemoryCache(new MemoryCacheOptions());
         Dictionary<Guid, SyntaxTree> trees = GetAllSyntaxTreesFromProject(project);
-
-        foreach (var tree in trees)
-            compilation = compilation.AddSyntaxTrees(tree.Value);
 
         // Each tree is a parsed file in the project.
         foreach (var tree in trees)
@@ -90,6 +116,7 @@ public class CodegenService
             // Get the file that corresponds to the tree.
             var file = project.Files[tree.Key];
             var expectedFilename = Path.GetFileNameWithoutExtension(file.Name);
+            var originalSyntaxTree = tree.Value;
 
             // Set initial values.
             var syntaxTree = tree.Value;
@@ -122,15 +149,29 @@ public class CodegenService
                 foreach (var pipeline in attributed)
                 {
                     AnsiConsole.MarkupLineInterpolated(
-                        $"{Emoji.Known.Gear} [bold blue]Running pipeline [aqua]{pipeline.Name}[/] on [aqua]{@class.Identifier}[/]...[/]"
+                        $"{Emoji.Known.Gear}  [bold blue]Running pipeline [aqua]{pipeline.Name}[/] on [aqua]{@class.Identifier}[/]...[/]"
                     );
 
                     var pipelineExecutionId = Guid.NewGuid().ToString();
 
+                    // Add a SyntaxAnnotation to the class node with the pipeline execution ID.
+                    // This is used to identify the node later, after it's been modified.
+                    var currentPipelineAnnotation = new SyntaxAnnotation(pipelineExecutionId);
+                    var annotatedClass = @class.WithAdditionalAnnotations(currentPipelineAnnotation);
+                    syntaxTree = syntaxTree.GetCompilationUnitRoot().ReplaceNode(@class, annotatedClass).NormalizeWhitespace().SyntaxTree;
+                    @class = annotatedClass;
+
                     foreach (var generatorType in pipeline.GeneratorTypes)
                     {
                         var generator = (IGenerator)Activator.CreateInstance(generatorType)!;
-                        generator.Setup(cache, compilation, pipelineExecutionId, project, file, syntaxTree, @class);
+
+                        // Import projects that this generator depends on.
+                        //var dependencies = generator.Import(Projects);
+                        //foreach (var dep in dependencies)
+                        //    GlobalCompilation = GlobalCompilation.AddSyntaxTrees(GetAllSyntaxTreesFromProject(dep).Values);
+
+                        // Setup generator with variables and compilation with the latest syntax tree.
+                        generator.Setup(cache, GlobalCompilation, currentPipelineAnnotation, project, file, syntaxTree, @class);
 
                         foreach (var visitNode in tree.Value.GetRoot().DescendantNodes())
                             generator.OnVisitSyntaxNode(visitNode);
@@ -141,28 +182,36 @@ public class CodegenService
 
                         wasModified = true;
 
-                        syntaxTree = result.Node.SyntaxTree;
-                        expectedFilename = result.ExpectedFilename ?? expectedFilename;
+                        syntaxTree = generator.GetSyntaxTree();
 
-                        // Redefine class as the result from the last generator.
-                        @class = result.Node as ClassDeclarationSyntax ?? @class;
+                        @class = (ClassDeclarationSyntax)syntaxTree
+                            .GetCompilationUnitRoot()
+                            .DescendantNodes()
+                            .FirstOrDefault(c => c.HasAnnotation(currentPipelineAnnotation))!;
+
+                        expectedFilename = result.ExpectedFilename ?? expectedFilename;
                     }
                 }
             }
 
             if (!wasModified)
                 continue;
-            
+
             source = syntaxTree.GetRoot().NormalizeWhitespace().ToFullString();
 
-            var resultSource = AddAutogeneratedComments(FormatCode(source), allTreePipelines);
+            var resultSource = AddAutogeneratedComments(source, allTreePipelines);
+
+            var filename = $"{expectedFilename}.fndtn.g.cs";
+
+            AnsiConsole.MarkupLineInterpolated(
+                $"{Emoji.Known.CheckMarkButton} [bold green]Generated [aqua]{filename}[/] [green]from project[/] [aqua]{project.Name}[/] [green]at[/][/] [dim]{Utilities.CollapsePath(file.Path)}.[/]"
+            );
 
             // Create a new file in the obj/Debug and obj/Release folders for each target framework.
             static string GetPathForTarget(string path, string type, string target)
                 => Path.Combine(path, "obj", type, target, GeneratedFolderName);
 
-            var filename = $"{expectedFilename}.g.cs";
-            var generatedPath = GetPathForTarget(project.Path, "[Type]", "[TargetFramework]");
+            var generatedPath = GetPathForTarget(project.Path, "[Debug/Release]", "[Framework]");
             foreach (var target in project.Frameworks)
             {
                 var debugPath = GetPathForTarget(project.Path, "Debug", target.Moniker);
@@ -173,13 +222,13 @@ public class CodegenService
             }
 
             AnsiConsole.MarkupLineInterpolated(
-                $"{Emoji.Known.CheckMarkButton} [bold green]Generated [aqua]{filename}[/] [green]from[/][/] [dim]{file.Path}.[/]"
+                $"{Emoji.Known.FloppyDisk} [bold green]Saved [aqua]{filename}[/] [green]at[/][/] [dim]{Utilities.CollapsePath(generatedPath)}.[/]"
             );
         }
     }
 
     /// <summary>
-    ///  Adds autogenerated comments to the top of the source code.
+    ///   Adds autogenerated comments to the top of the source code.
     /// </summary>
     /// <param name="source">The source code to add comments to.</param>
     /// <param name="pipelines">The pipelines that were executed.</param>
@@ -196,9 +245,9 @@ public class CodegenService
         sourceBuilder.AppendLine($"// Generation pipelines applied: {pipelineList}.                                 ");
         sourceBuilder.AppendLine($"//                                                                               ");
         sourceBuilder.AppendLine($"// Instructions:                                                                 ");
-        sourceBuilder.AppendLine($"// * Do not modify this file directly, as it will be overwritten.                ");
-        sourceBuilder.AppendLine($"// * Do not check this file into source control.                                 ");
-        sourceBuilder.AppendLine($"// * To regenerate this file, run the *fgen* tool.                               ");
+        sourceBuilder.AppendLine($"// • Do not modify this file directly, as it will be overwritten.                ");
+        sourceBuilder.AppendLine($"// • Do not check this file into source control.                                 ");
+        sourceBuilder.AppendLine($"// • To regenerate this file, run the *fgen* tool.                               ");
         sourceBuilder.AppendLine($"// ==============================================================================");
         sourceBuilder.AppendLine($"// </auto-generated>                                                             ");
         sourceBuilder.AppendLine();
@@ -208,37 +257,41 @@ public class CodegenService
     }
 
     /// <summary>
-    ///  Parses the node for generation comments.
+    ///   Parses the node for generation comments.
     /// </summary>
     /// <param name="tree">The syntax tree to parse.</param>
     /// <returns>A GenerationDefinition including the pipelines that should be executed, in order.</returns>
     /// <remarks>
-    ///  Generation comments are comments that start with <c>// foundation generate </c>.
-    ///  They are used to specify which generators should run on a class.
+    ///   Generation comments are comments that start with <c>// foundation generate </c>.
+    ///   They are used to specify which generators should run on a class.
     /// </remarks>
     private GenerationDefinition? ParseGenerationComment(SyntaxNode node)
     {
-        const string generateComment = "// foundation generate ";
+        /* Example:
+         *
+         * // foundation generate query
+         * public class MyClass { }
+         *
+         */
+        Regex commentRegex = new(@"(?<=\/{2,}\s*foundation generate )(.*)+");
 
         var trivia = node.GetLeadingTrivia();
         var comments = trivia.Where(t => t.IsKind(SyntaxKind.SingleLineCommentTrivia));
 
-        string foundGenerateComment = default!;
+        IEnumerable<string> pipelineNames;
         try
         {
-            foundGenerateComment = comments
-                .Select(c => c.ToFullString())
-                .First(c => c.StartsWith(generateComment));
+            pipelineNames =
+                from comment in comments
+                where commentRegex.IsMatch(comment.ToFullString())
+                from match in commentRegex.Matches(comment.ToFullString())
+                from name in match.Value.Split(',')
+                select name.Trim();
         }
         catch
         {
             return null;
         }
-
-        var pipelineNames = foundGenerateComment[generateComment.Length..]
-            .Split(',')
-            .Select(s => s.Trim())
-            .ToArray();
 
         var pipelines = Pipelines.Where(p => pipelineNames.Contains(p.Name.ToLowerInvariant())).ToList();
 
@@ -251,25 +304,5 @@ public class CodegenService
             TargetNode = node,
             AttributedPipelines = pipelines
         };
-    }
-
-    /// <summary>
-    ///  Formats the code to be more human readable.
-    /// </summary>
-    /// <param name="code">The code to format.</param>
-    /// <param name="cancelToken">The cancellation token.</param>
-    /// <returns>The formatted code.</returns>
-    /// <remarks>
-    ///  Even though is code is autogenerated and will only be ran by the compiler,
-    ///  it's still nice to have it formatted properly. This is especially useful for debugging.
-    /// </remarks>
-    private static string FormatCode(string code, CancellationToken cancelToken = default)
-    {
-        return CSharpSyntaxTree.ParseText(code, cancellationToken: cancelToken)
-            .GetRoot(cancelToken)
-            .NormalizeWhitespace()
-            .SyntaxTree
-            .GetText(cancelToken)
-            .ToString();
     }
 }

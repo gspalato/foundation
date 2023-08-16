@@ -29,7 +29,7 @@ public class IntrospectionQueryGenerator : Generator
                 Success = false
             };
 
-        var @class = Target;
+        var @class = (ClassDeclarationSyntax)GetTarget();
 
         // Create new method called "GetIntrospectionInfoAsync" using SyntaxFactory.
         StatementSyntax[] statements = new[]
@@ -44,6 +44,8 @@ public class IntrospectionQueryGenerator : Generator
             .AddBodyStatements(statements);
 
         @class = @class.AddMembers(method);
+
+        SyntaxTree = SyntaxTree.GetCompilationUnitRoot().ReplaceNode(GetTarget(), @class).SyntaxTree;
 
         return new GenerationResult()
         {

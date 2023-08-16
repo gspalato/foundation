@@ -30,7 +30,7 @@ public class QueryTypeGenerator : Generator
             };
 
         // Get the target class marked with the generate comment.
-        var @class = Target;
+        var @class = (ClassDeclarationSyntax)GetTarget();
 
         // Get all methods.
         var foundMethods = @class.ChildNodes().OfType<MethodDeclarationSyntax>();
@@ -103,12 +103,19 @@ public class QueryTypeGenerator : Generator
             }
         );
 
+        SyntaxTree = SyntaxTree.GetCompilationUnitRoot().ReplaceNode(GetTarget(), @class).SyntaxTree;
+
         return new GenerationResult()
         {
             Success = true,
             Node = @class,
             ExpectedFilename = ClassName,
         };
+    }
+
+    public override IEnumerable<Project> Import(IEnumerable<Project> projects)
+    {
+        return projects.Where(p => p.Name == "Foundation.Core.SDK");
     }
 
     public override void OnVisitSyntaxNode(SyntaxNode syntaxNode)

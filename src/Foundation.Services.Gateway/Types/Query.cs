@@ -5,6 +5,7 @@ using HotChocolate;
 
 namespace Foundation.Services.Identity.Types;
 
+// foundation generate query
 public class Query
 {
     

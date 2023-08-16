@@ -1,8 +1,12 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using Foundation.Tools.Codegen.Structures;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.Extensions.Caching.Memory;
+using Spectre.Console;
 
 namespace Foundation.Tools.Codegen.Generators;
 
@@ -10,12 +14,16 @@ public interface IGenerator
 {
     GenerationResult Generate();
 
+    IEnumerable<Project> Import(IEnumerable<Project> projects);
+
     void OnVisitSyntaxNode(SyntaxNode node);
+
+    SyntaxTree GetSyntaxTree();
 
     void Setup(
         IMemoryCache cache,
         CSharpCompilation compilation,
-        string pipelineExecutionId,
+        SyntaxAnnotation pipelineExecutionId,
         Project project,
         SourceFile sourceFile,
         SyntaxTree syntaxTree,
@@ -29,11 +37,11 @@ public abstract class Generator : IGenerator
 
     protected CSharpCompilation Compilation { get; set; } = default!;
 
-    protected string PipelineExecutionId { get; set; } = default!;
+    protected List<string> ImportedProjects { get; set; } = new();
+
+    protected SyntaxAnnotation PipelineExecutionId { get; set; } = default!;
 
     protected Project Project { get; set; } = default!;
-
-    protected SemanticModel SemanticModel => Compilation.GetSemanticModel(SyntaxTree);
 
     protected SourceFile SourceFile { get; set; } = default!;
 
@@ -44,7 +52,7 @@ public abstract class Generator : IGenerator
     public void Setup(
         IMemoryCache cache,
         CSharpCompilation compilation,
-        string pipelineExecutionId,
+        SyntaxAnnotation pipelineExecutionId,
         Project project,
         SourceFile sourceFile,
         SyntaxTree syntaxTree,
@@ -63,4 +71,25 @@ public abstract class Generator : IGenerator
     public abstract GenerationResult Generate();
 
     public abstract void OnVisitSyntaxNode(SyntaxNode syntaxNode);
+
+    public SyntaxTree GetSyntaxTree() => SyntaxTree;
+
+    /// <summary>
+    ///   Defines the projects that this generator depends on.
+    /// </summary>
+    /// <param name="projects"></param>
+    public virtual IEnumerable<Project> Import(IEnumerable<Project> projects) => projects;
+
+    protected SyntaxNode GetTarget() => SyntaxTree.
+        GetCompilationUnitRoot()
+        .GetAnnotatedNodes(PipelineExecutionId)
+        .First();
+
+    protected SemanticModel SemanticModel() => SemanticModel(SyntaxTree);
+
+    protected SemanticModel SemanticModel(SyntaxTree syntaxTree)
+    {
+        var temporaryCompilation = Compilation.AddSyntaxTrees(SyntaxTree);
+        return temporaryCompilation.GetSemanticModel(SyntaxTree);
+    }
 }

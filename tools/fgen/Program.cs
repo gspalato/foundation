@@ -51,6 +51,8 @@ public static class Program
         {
             config.SetApplicationName("fgen");
             config.AddCommand<RunCommand>("run");
+
+            config.PropagateExceptions();
         });
 
         return app.Run(args);
