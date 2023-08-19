@@ -1,3 +1,4 @@
+using System.Reflection;
 using HotChocolate.AspNetCore;
 using HotChocolate.Execution.Configuration;
 using Microsoft.AspNetCore.Builder;
@@ -11,15 +12,10 @@ public static class ServiceBuilderExtension
     {
         builder.Configure((WebApplicationBuilder b) =>
         {
-            using (var provider = b.Services.BuildServiceProvider())
-            {
-                var gql = provider.GetRequiredService<IRequestExecutorBuilder>();
+            using var provider = b.Services.BuildServiceProvider();
+            var gql = provider.GetRequiredService<IRequestExecutorBuilder>();
 
-                // Generate a proxy type for the query type that tracks the method's execution time
-                // as well as database calls.
-
-                gql.AddQueryType<T>();
-            }
+            gql.AddQueryType<T>();
         });
 
         return builder;
@@ -32,9 +28,6 @@ public static class ServiceBuilderExtension
             using (var provider = b.Services.BuildServiceProvider())
             {
                 var gql = provider.GetRequiredService<IRequestExecutorBuilder>();
-
-                // Generate a proxy type for the mutation type that tracks the method's execution time
-                // as well as database calls.
 
                 gql.AddMutationType<T>();
             }
