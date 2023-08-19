@@ -50,7 +50,7 @@ public class InjectDatabaseMetricsGenerator : Generator
             foreach (var invocation in invocations)
             {
                 var symbol = SemanticModel().GetDeclaredSymbol(invocation);
-                Console.WriteLine($"Symbol for \"{invocation.ToFullString()}\" :: {symbol?.Name}");
+                //Console.WriteLine($"Symbol for \"{invocation.ToFullString()}\" :: {symbol?.Name}");
 
                 if (symbol is not IMethodSymbol methodSymbol)
                     continue;
