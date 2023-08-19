@@ -146,6 +146,7 @@ public class CodegenService
 
                 allTreePipelines.AddRange(attributed);
 
+
                 foreach (var pipeline in attributed)
                 {
                     AnsiConsole.MarkupLineInterpolated(
@@ -192,6 +193,28 @@ public class CodegenService
                         expectedFilename = result.ExpectedFilename ?? expectedFilename;
                     }
                 }
+
+                // Add Generated attribute to class (from Foundation.Common).
+                var pipelineArguments = attributed.Select(p => SyntaxFactory
+                    .AttributeArgument(
+                        SyntaxFactory.LiteralExpression(
+                            SyntaxKind.StringLiteralExpression,
+                            SyntaxFactory.Literal(p.Name)
+                        )
+                    )
+                );
+
+                var generatedAttribute = SyntaxFactory
+                    .Attribute(SyntaxFactory.IdentifierName("Generated"))
+                    .AddArgumentListArguments(pipelineArguments.ToArray());
+
+                var generatedAttributeList = SyntaxFactory.AttributeList().AddAttributes(generatedAttribute);
+
+                syntaxTree = syntaxTree
+                    .GetCompilationUnitRoot()
+                    .ReplaceNode(@class, @class.AddAttributeLists(generatedAttributeList))
+                    .NormalizeWhitespace()
+                    .SyntaxTree;
             }
 
             if (!wasModified)
@@ -207,22 +230,12 @@ public class CodegenService
                 $"{Emoji.Known.CheckMarkButton} [bold green]Generated [aqua]{filename}[/] [green]from project[/] [aqua]{project.Name}[/] [green]at[/][/] [dim]{Utilities.CollapsePath(file.Path)}.[/]"
             );
 
-            // Create a new file in the obj/Debug and obj/Release folders for each target framework.
-            static string GetPathForTarget(string path, string type, string target)
-                => Path.Combine(path, "obj", type, target, GeneratedFolderName);
-
-            var generatedPath = GetPathForTarget(project.Path, "[Debug/Release]", "[Framework]");
-            foreach (var target in project.Frameworks)
-            {
-                var debugPath = GetPathForTarget(project.Path, "Debug", target.Moniker);
-                var releasePath = GetPathForTarget(project.Path, "Release", target.Moniker);
-
-                IOService.WriteFile(filename, debugPath, resultSource);
-                IOService.WriteFile(filename, releasePath, resultSource);
-            }
+            // Create a new file in the project's Generated folder.
+            var path = Path.Combine(project.Path, "Generated");
+            IOService.WriteFile(filename, path, resultSource);
 
             AnsiConsole.MarkupLineInterpolated(
-                $"{Emoji.Known.FloppyDisk} [bold green]Saved [aqua]{filename}[/] [green]at[/][/] [dim]{Utilities.CollapsePath(generatedPath)}.[/]"
+                $"{Emoji.Known.FloppyDisk} [bold green]Saved [aqua]{filename}[/] [green]at[/][/] [dim]{Utilities.CollapsePath(path)}.[/]"
             );
         }
     }
