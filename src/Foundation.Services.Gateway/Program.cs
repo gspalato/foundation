@@ -15,6 +15,12 @@ new ServiceBuilder(args)
             .LoadConfiguration(new LoggingConfiguration())
             .GetCurrentClassLogger();
 
+        server.AddErrorFilter(error =>
+        {
+            logger.Error(error.Exception, error.Exception!.Message);
+            return error;
+        });
+
         // GraphQL HTTP Schema Stitching
         // TODO: Implement proper service discovery.
         var urls = builder.Configuration.GetValue<string>("ServiceUrls");
