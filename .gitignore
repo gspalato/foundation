@@ -3,6 +3,10 @@
 ##
 ## Get latest from https://github.com/github/gitignore/blob/master/VisualStudio.gitignore
 
+# Foundation Generated folder and files
+Generated/
+*.g.cs
+
 # User-specific files
 *.rsuser
 *.suo
