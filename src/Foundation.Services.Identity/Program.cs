@@ -6,7 +6,6 @@ using Foundation.Core.SDK.Auth.JWT;
 using Foundation.Core.SDK.Database.Mongo;
 using Foundation.Services.Identity.Services;
 using Foundation.Services.Identity.Types;
-using System.Reflection;
 
 new ServiceBuilder(args)
     .BindConfiguration<IBaseConfiguration, BaseConfiguration>()
