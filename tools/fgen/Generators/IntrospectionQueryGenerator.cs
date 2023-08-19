@@ -34,7 +34,7 @@ public class IntrospectionQueryGenerator : Generator
         // Create new method called "GetIntrospectionInfoAsync" using SyntaxFactory.
         StatementSyntax[] statements = new[]
         {
-            SyntaxFactory.ParseStatement("return Task.FromResult(\"Introspection info\");")
+            SyntaxFactory.ParseStatement("return \"Introspection info\";")
         };
 
         var method = SyntaxFactory
