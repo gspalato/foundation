@@ -20,7 +20,7 @@ public class QueryTypeGenerator : Generator
     /// <returns></returns>
     public override GenerationResult Generate()
     {
-        const string ClassName = "QueryType";
+        const string ClassName = "__foundationCodegen_QueryType";
 
         // If there is no target class, then return a failed generation result.
         if (Target is null)
@@ -103,6 +103,8 @@ public class QueryTypeGenerator : Generator
             }
         );
 
+        @class = @class.WithIdentifier(SyntaxFactory.Identifier(ClassName));
+
         SyntaxTree = SyntaxTree.GetCompilationUnitRoot().ReplaceNode(GetTarget(), @class).SyntaxTree;
 
         return new GenerationResult()
@@ -111,11 +113,6 @@ public class QueryTypeGenerator : Generator
             Node = @class,
             ExpectedFilename = ClassName,
         };
-    }
-
-    public override IEnumerable<Project> Import(IEnumerable<Project> projects)
-    {
-        return projects.Where(p => p.Name == "Foundation.Core.SDK");
     }
 
     public override void OnVisitSyntaxNode(SyntaxNode syntaxNode)
