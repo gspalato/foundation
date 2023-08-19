@@ -14,8 +14,6 @@ public interface IGenerator
 {
     GenerationResult Generate();
 
-    IEnumerable<Project> Import(IEnumerable<Project> projects);
-
     void OnVisitSyntaxNode(SyntaxNode node);
 
     SyntaxTree GetSyntaxTree();
@@ -73,12 +71,6 @@ public abstract class Generator : IGenerator
     public abstract void OnVisitSyntaxNode(SyntaxNode syntaxNode);
 
     public SyntaxTree GetSyntaxTree() => SyntaxTree;
-
-    /// <summary>
-    ///   Defines the projects that this generator depends on.
-    /// </summary>
-    /// <param name="projects"></param>
-    public virtual IEnumerable<Project> Import(IEnumerable<Project> projects) => projects;
 
     protected SyntaxNode GetTarget() => SyntaxTree.
         GetCompilationUnitRoot()
