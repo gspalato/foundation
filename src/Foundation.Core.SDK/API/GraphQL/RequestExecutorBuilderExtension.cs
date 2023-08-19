@@ -21,7 +21,7 @@ public static class RequestExecutorBuilderExtension
         var queryType = Assembly
             .GetCallingAssembly()
             .GetTypes()
-            .FirstOrDefault(t => t.Name == "__foundationCodegen_QueryType" && t.IsClass && t.GetCustomAttributes<GeneratedAttribute>().Any());
+            .FirstOrDefault(t => t.Name == "QueryType__foundationCodegen" && t.IsClass && t.GetCustomAttributes<GeneratedAttribute>().Any());
             
         if (queryType is null)
             throw new Exception("Could not find generated query type. Did you run the fgen tool?");

@@ -20,7 +20,7 @@ public class QueryTypeGenerator : Generator
     /// <returns></returns>
     public override GenerationResult Generate()
     {
-        const string ClassName = "__foundationCodegen_QueryType";
+        const string ClassName = "QueryType__foundationCodegen";
 
         // If there is no target class, then return a failed generation result.
         if (Target is null)
