@@ -7,6 +7,7 @@ using Foundation.Core.SDK.Database.Mongo;
 using Foundation.Services.UPx.Types;
 
 new ServiceBuilder(args)
+    .WithName("UPx")
     .BindConfiguration<IBaseConfiguration, BaseConfiguration>()
     .UseMongo()
     .UseGraphQL("/gql", (server, services, builder) =>

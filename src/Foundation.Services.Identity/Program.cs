@@ -8,6 +8,7 @@ using Foundation.Services.Identity.Services;
 using Foundation.Services.Identity.Types;
 
 new ServiceBuilder(args)
+    .WithName("Identity")
     .BindConfiguration<IBaseConfiguration, BaseConfiguration>()
     .UseMongo()
     .UseGraphQL("/gql", (server, services, builder) =>

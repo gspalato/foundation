@@ -11,6 +11,7 @@ public class ServiceBuilder
 {
     public IConfiguration Configuration { get; set; }
 
+    private ServiceInfo ServiceInfo { get; set; } = new();
     private WebApplicationBuilder WebApplicationBuilder { get; set; }
     private WebApplication? WebApplication { get; set; }
 
@@ -71,6 +72,13 @@ public class ServiceBuilder
         return this;
     }
 
+    public ServiceBuilder WithName(string name)
+    {
+        ServiceInfo.Name = name;
+
+        return this;
+    }
+
     public ServiceBuilder AddCors(string policyName, CorsPolicy policy)
     {
 
@@ -105,6 +113,8 @@ public class ServiceBuilder
             loggingBuilder.SetMinimumLevel(LogLevel.Trace);
             loggingBuilder.AddNLog(new Foundation.Common.Configurations.LoggingConfiguration());
         });
+
+        WebApplicationBuilder.Services.AddSingleton(ServiceInfo);
 
         WebApplication = WebApplicationBuilder.Build();
 

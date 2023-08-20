@@ -10,6 +10,7 @@ using Foundation.Services.Portfolio.Services;
 using Foundation.Services.Portfolio.Types;
 
 new ServiceBuilder(args)
+    .WithName("Portfolio")
     .BindConfiguration<IBaseConfiguration, Configuration>()
     .BindConfiguration<Configuration>()
     .UseMongo()

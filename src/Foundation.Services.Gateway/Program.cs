@@ -7,6 +7,7 @@ using Foundation.Core.SDK.API.GraphQL;
 using Foundation.Core.SDK.Database.Mongo;
 
 new ServiceBuilder(args)
+    .WithName("Gateway")
     .UseMongo()
     .UseGraphQL("/gql", (server, services, builder) =>
     {
