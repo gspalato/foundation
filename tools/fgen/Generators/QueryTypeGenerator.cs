@@ -40,10 +40,7 @@ public class QueryTypeGenerator : Generator
         // Create a new edited method with the same name and return type.
         foreach (var foundMethod in foundMethods)
         {
-            var method = SyntaxFactory
-                .MethodDeclaration(foundMethod.ReturnType, foundMethod.Identifier)
-                .AddModifiers(foundMethod.Modifiers.ToArray())
-                .AddParameterListParameters(foundMethod.ParameterList.Parameters.ToArray());
+            var method = foundMethod.WithBody(null);
 
             // Adds a logger parameter to the method. This logger is to be used internally by generated code.
             // TODO: Create a Source or Incremental Generator that adds logging separately.

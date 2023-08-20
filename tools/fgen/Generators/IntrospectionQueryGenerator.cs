@@ -31,6 +31,19 @@ public class IntrospectionQueryGenerator : Generator
 
         var @class = (ClassDeclarationSyntax)GetTarget();
 
+        // Add custom GraphQL schema name instead of the method name using the HotChocolate.GraphQLName attribute.
+        var nameAttribute = SyntaxFactory.Attribute(SyntaxFactory.IdentifierName("HotChocolate.GraphQLName"));
+        var nameArgument = SyntaxFactory.AttributeArgument(
+            SyntaxFactory.LiteralExpression(
+                SyntaxKind.StringLiteralExpression,
+                SyntaxFactory.Literal("__foundation_introspectionInfo")
+            )
+        );
+
+        nameAttribute = nameAttribute.AddArgumentListArguments(nameArgument);
+
+        var methodAttributeList = SyntaxFactory.AttributeList().AddAttributes(nameAttribute);
+
         // Create new method called "GetIntrospectionInfoAsync" using SyntaxFactory.
         StatementSyntax[] statements = new[]
         {
@@ -41,7 +54,8 @@ public class IntrospectionQueryGenerator : Generator
             .MethodDeclaration(SyntaxFactory.ParseTypeName("Task<string>"), "GetIntrospectionInfoAsync")
             .AddModifiers(SyntaxFactory.Token(SyntaxKind.PublicKeyword), SyntaxFactory.Token(SyntaxKind.AsyncKeyword))
             .AddParameterListParameters()
-            .AddBodyStatements(statements);
+            .AddBodyStatements(statements)
+            .AddAttributeLists(methodAttributeList);
 
         @class = @class.AddMembers(method);
 
