@@ -60,18 +60,36 @@ public class ServiceBuilder
         return this;
     }
 
+    /// <summary>
+    ///   Configures the application using the specified delegate.
+    ///   This method enables access to the underlying <see cref="WebApplicationBuilder"/> instance.
+    /// </summary>
+    /// <param name="configure"></param>
+    /// <returns>The current instance of the <see cref="ServiceBuilder"/> class.</returns>
     public ServiceBuilder Configure(Action<WebApplicationBuilder> configure)
     {
         configure(WebApplicationBuilder);
         return this;
     }
 
+    /// <summary>
+    ///   Configures the application using the specified delegate.
+    ///   This method enables access to the underlying <see cref="WebApplication"/> instance.
+    ///   This method is called after all other configuration methods, when the WebApplication instance is built.
+    /// </summary>
+    /// <param name="configure"></param>
+    /// <returns>The current instance of the <see cref="ServiceBuilder"/> class.</returns>
     public ServiceBuilder Configure(Action<WebApplication> configure)
     {
         Actions.Add(configure);
         return this;
     }
 
+    /// <summary>
+    ///   Sets the service's name.
+    /// </summary>
+    /// <param name="name">The name of the service.</param>
+    /// <returns>The current instance of the <see cref="ServiceBuilder"/> class.</returns>
     public ServiceBuilder WithName(string name)
     {
         ServiceInfo.Name = name;
@@ -79,6 +97,11 @@ public class ServiceBuilder
         return this;
     }
 
+    /// <summary>
+    ///   Adds the supplied CorsPolicy object to the WebApplication.
+    /// </summary>
+    /// <param name="policy">The CorsPolicy object to add.</param>
+    /// <returns>The current instance of the <see cref="ServiceBuilder"/> class.</returns>
     public ServiceBuilder AddCors(string policyName, CorsPolicy policy)
     {
 
@@ -98,6 +121,10 @@ public class ServiceBuilder
         return this;
     }
 
+    /// <summary>
+    ///   Creates the WebApplication instance and executes all configuration actions.
+    /// </summary>
+    /// <returns>The current instance of the <see cref="ServiceBuilder"/> class.</returns>
     public ServiceBuilder Build()
     {
         var baseConfigurationBuilder = new ConfigurationBuilder()
@@ -128,5 +155,9 @@ public class ServiceBuilder
         return this;
     }
 
+    /// <summary>
+    ///   Runs the WebApplication instance.
+    ///   This method should only be called after the <see cref="Build"/> method.
+    /// </summary>
     public void Run() => WebApplication?.Run();
 }
