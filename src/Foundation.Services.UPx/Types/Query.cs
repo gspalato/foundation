@@ -4,6 +4,7 @@ using HotChocolate;
 
 namespace Foundation.Services.UPx.Types;
 
+// foundation generate query
 public class Query
 {
     public Task<List<Use>> GetUsesAsync([Service] IRepository<Use> useRepository) =>

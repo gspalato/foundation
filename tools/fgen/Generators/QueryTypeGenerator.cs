@@ -43,7 +43,8 @@ public class QueryTypeGenerator : Generator
             var method = foundMethod.WithBody(null);
 
             // Adds a logger parameter to the method. This logger is to be used internally by generated code.
-            // TODO: Create a Source or Incremental Generator that adds logging separately.
+            // TODO: Create a generator that adds logging separately.
+            // TODO: Check if the logger is already present.
             var loggerType = SyntaxFactory.ParseTypeName($"ILogger<{@class.Identifier}>");
             var serviceAttribute = SyntaxFactory.Attribute(SyntaxFactory.IdentifierName("Service"));
 
@@ -53,6 +54,11 @@ public class QueryTypeGenerator : Generator
                 .AddAttributeLists(SyntaxFactory.AttributeList().AddAttributes(serviceAttribute));
 
             method = method.AddParameterListParameters(loggerParameter);
+
+            // Check if the method has a body. If not, skip it.
+            // TODO: Generate a block syntax body for the method.
+            if (foundMethod.Body is null)
+                continue;
 
             // Add initial execution time and database call variables.
             var initialStatements = new[]
@@ -110,10 +116,5 @@ public class QueryTypeGenerator : Generator
             Node = @class,
             ExpectedFilename = ClassName,
         };
-    }
-
-    public override void OnVisitSyntaxNode(SyntaxNode syntaxNode)
-    {
-        return;
     }
 }

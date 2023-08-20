@@ -98,6 +98,4 @@ public class IntrospectionQueryGenerator : Generator
             ExpectedFilename = Path.GetFileNameWithoutExtension(SourceFile.Name),
         };
     }
-
-    public override void OnVisitSyntaxNode(SyntaxNode syntaxNode) { }
 }

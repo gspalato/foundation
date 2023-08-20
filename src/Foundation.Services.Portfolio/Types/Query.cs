@@ -4,6 +4,7 @@ using Foundation.Core.SDK.Database.Mongo;
 
 namespace Foundation.Services.Portfolio.Types;
 
+// foundation generate query
 public class Query
 {
     public async Task<List<Project>> GetProjectsAsync([Service] IRepository<Project> projectRepository)

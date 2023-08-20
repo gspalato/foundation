@@ -95,6 +95,4 @@ public class InjectDatabaseMetricsGenerator : Generator
             Node = @class,
         };
     }
-
-    public override void OnVisitSyntaxNode(SyntaxNode syntaxNode) { }
 }

@@ -68,12 +68,12 @@ public abstract class Generator : IGenerator
 
     public abstract GenerationResult Generate();
 
-    public abstract void OnVisitSyntaxNode(SyntaxNode syntaxNode);
+    public virtual void OnVisitSyntaxNode(SyntaxNode syntaxNode) { }
 
     public SyntaxTree GetSyntaxTree() => SyntaxTree;
 
-    protected SyntaxNode GetTarget() => SyntaxTree.
-        GetCompilationUnitRoot()
+    protected SyntaxNode GetTarget() => SyntaxTree
+        .GetCompilationUnitRoot()
         .GetAnnotatedNodes(PipelineExecutionId)
         .First();
 

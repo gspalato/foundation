@@ -16,7 +16,7 @@ new ServiceBuilder(args)
     .UseGraphQL("/gql", (server, services, builder) =>
     {
         server
-            .AddQueryType<Query>();
+            .AddGeneratedQueryType();
 
         server
             .AddMongoDbFiltering()
@@ -44,23 +44,3 @@ new ServiceBuilder(args)
     })
     .Build()
     .Run();
-
-/*
-namespace Foundation.Services.Portfolio
-{
-    public static class Program
-    {
-        public static void Main(string[] args)
-        {
-            BuildWebHost(args).Run();
-        }
-
-        public static IWebHost BuildWebHost(string[] args)
-        {
-            return WebHost.CreateDefaultBuilder(args)
-                .UseStartup<Startup>()
-                .Build();
-        }
-    }
-}
-*/

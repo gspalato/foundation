@@ -12,7 +12,7 @@ new ServiceBuilder(args)
     .UseGraphQL("/gql", (server, services, builder) =>
     {
         server
-            .AddQueryType<Query>()
+            .AddGeneratedQueryType()
             .AddMutationType<Mutation>()
             .AddSubscriptionType<Subscription>();
 
