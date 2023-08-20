@@ -23,6 +23,9 @@ public class IntrospectionQueryGenerator : Generator
     /// <returns></returns>
     public override GenerationResult Generate()
     {
+        const string MethodName = "GetIntrospectionInfoAsync";
+        const string GraphQLName = "_foundation_introspectionInfo";
+
         if (Target is null)
             return new GenerationResult()
             {
@@ -31,12 +34,39 @@ public class IntrospectionQueryGenerator : Generator
 
         var @class = (ClassDeclarationSyntax)GetTarget();
 
+        // Check if class already has a method called "GetIntrospectionInfoAsync".
+        var hasIntrospectionMethod = @class.ChildNodes().OfType<MethodDeclarationSyntax>().Any(m =>
+        {
+            // Check if method is called "GetIntrospectionInfoAsync" or "__foundation_introspectionInfo".
+            if (m.Identifier.ValueText == MethodName
+                || m.Identifier.ValueText == GraphQLName)
+                return true;
+            
+            // Check if method has a GraphQLName attribute with the value "__foundation_introspectionInfo".
+            if (m.AttributeLists.Any(
+                a => a.Attributes.Any(a =>
+                    a.Name.ToString() == "HotChocolate.GraphQLName"
+                    && a.ArgumentList is not null
+                    && a.ArgumentList.Arguments.Any(a => a.Expression.ToFullString() == GraphQLName)
+                )
+            ))
+                return true;
+
+            return false;
+        });
+
+        if (hasIntrospectionMethod)
+            return new GenerationResult()
+            {
+                Success = true
+            };
+
         // Add custom GraphQL schema name instead of the method name using the HotChocolate.GraphQLName attribute.
         var nameAttribute = SyntaxFactory.Attribute(SyntaxFactory.IdentifierName("HotChocolate.GraphQLName"));
         var nameArgument = SyntaxFactory.AttributeArgument(
             SyntaxFactory.LiteralExpression(
                 SyntaxKind.StringLiteralExpression,
-                SyntaxFactory.Literal("__foundation_introspectionInfo")
+                SyntaxFactory.Literal(GraphQLName)
             )
         );
 
@@ -51,8 +81,8 @@ public class IntrospectionQueryGenerator : Generator
         };
 
         var method = SyntaxFactory
-            .MethodDeclaration(SyntaxFactory.ParseTypeName("Task<string>"), "GetIntrospectionInfoAsync")
-            .AddModifiers(SyntaxFactory.Token(SyntaxKind.PublicKeyword), SyntaxFactory.Token(SyntaxKind.AsyncKeyword))
+            .MethodDeclaration(SyntaxFactory.ParseTypeName("string"), MethodName)
+            .AddModifiers(SyntaxFactory.Token(SyntaxKind.PublicKeyword))
             .AddParameterListParameters()
             .AddBodyStatements(statements)
             .AddAttributeLists(methodAttributeList);
