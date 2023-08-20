@@ -40,11 +40,14 @@ new ServiceBuilder(args)
                 client.Uri = new Uri(new Uri(url), "/gql");
             });
 
-            server.AddRemoteSchema(id, capabilities: new EndpointCapabilities
-            {
-                Batching = BatchingSupport.RequestBatching,
-                Subscriptions = SubscriptionSupport.WebSocket
-            });
+            // Stitch schema but ignoring the introspection info field.
+            server
+                .AddRemoteSchema(id, capabilities: new EndpointCapabilities
+                {
+                    Batching = BatchingSupport.RequestBatching,
+                    Subscriptions = SubscriptionSupport.WebSocket
+                })
+                .IgnoreField("Query", "_foundation_introspectionInfo", id);
 
             logger.Info($"GraphQL Schema Stitched: {id} -> {url}");
         }
