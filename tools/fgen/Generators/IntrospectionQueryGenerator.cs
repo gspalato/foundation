@@ -77,13 +77,21 @@ public class IntrospectionQueryGenerator : Generator
         // Create new method called "GetIntrospectionInfoAsync" using SyntaxFactory.
         StatementSyntax[] statements = new[]
         {
-            SyntaxFactory.ParseStatement("return \"Introspection info\";")
+            SyntaxFactory.ParseStatement("return __foundationCodegen_serviceInfo;")
         };
 
+        var serviceInfoType = SyntaxFactory.ParseTypeName($"Foundation.Core.SDK.ServiceInfo");
+        var serviceAttribute = SyntaxFactory.Attribute(SyntaxFactory.IdentifierName("Service"));
+
+        var serviceInfoParameter = SyntaxFactory
+            .Parameter(SyntaxFactory.Identifier("__foundationCodegen_serviceInfo"))
+            .WithType(serviceInfoType)
+            .AddAttributeLists(SyntaxFactory.AttributeList().AddAttributes(serviceAttribute));
+
         var method = SyntaxFactory
-            .MethodDeclaration(SyntaxFactory.ParseTypeName("string"), MethodName)
+            .MethodDeclaration(SyntaxFactory.ParseTypeName("Foundation.Core.SDK.ServiceInfo"), MethodName)
             .AddModifiers(SyntaxFactory.Token(SyntaxKind.PublicKeyword))
-            .AddParameterListParameters()
+            .AddParameterListParameters(serviceInfoParameter)
             .AddBodyStatements(statements)
             .AddAttributeLists(methodAttributeList);
 
