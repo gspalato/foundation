@@ -35,28 +35,30 @@ new ServiceBuilder(args)
             {
                 client.BaseAddress = new Uri(new Uri(url), "/gql");
             });
-            services.AddWebSocketClient(id, (_, client) =>
-            {
-                client.Uri = new Uri(new Uri(url), "/gql");
-            });
 
-            // Stitch schema but ignoring the introspection info field.
+            // Stitch schema but ignoring the service info field.
             server
-                .AddRemoteSchema(id, capabilities: new EndpointCapabilities
-                {
-                    Batching = BatchingSupport.RequestBatching,
-                    Subscriptions = SubscriptionSupport.WebSocket
-                })
-                .IgnoreField("Query", "_foundation_introspectionInfo", id);
+                .AddRemoteSchema(id)
+                .IgnoreField("Query", "serviceInfo")
+                .IgnoreField("Query", $"{id}_serviceInfo");
+
+            Console.WriteLine($"Stitched schema {id} from {url}.");
+            Console.WriteLine($"Ignoring field serviceInfo and {id}_serviceInfo.");
 
             logger.Info($"GraphQL Schema Stitched: {id} -> {url}");
         }
+
+        server
+            .IgnoreField("Query", "serviceInfo");
     })
     .UseGraphQLPlayground("/ui")
-    .AddCors("AllowAll", new CorsPolicyBuilder()
-        .AllowAnyOrigin()
-        .AllowAnyHeader()
-        .AllowAnyMethod()
-        .Build())
+    .AddCors(
+        "AllowAll",
+        new CorsPolicyBuilder()
+            .AllowAnyOrigin()
+            .AllowAnyHeader()
+            .AllowAnyMethod()
+            .Build()
+    )
     .Build()
     .Run();
