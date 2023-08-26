@@ -1,10 +1,10 @@
-using HotChocolate.Stitching;
 using Microsoft.AspNetCore.Cors.Infrastructure;
 using NLog;
 using NLog.Config;
 using Foundation.Core.SDK;
 using Foundation.Core.SDK.API.GraphQL;
 using Foundation.Core.SDK.Database.Mongo;
+using HotChocolate.Language;
 
 new ServiceBuilder(args)
     .WithName("Gateway")
@@ -39,8 +39,8 @@ new ServiceBuilder(args)
             // Stitch schema but ignoring the service info field.
             server
                 .AddRemoteSchema(id)
-                .IgnoreField("Query", "serviceInfo")
-                .IgnoreField("Query", $"{id}_serviceInfo");
+                .IgnoreField("Query", "serviceInfo", id)
+                .IgnoreField("Query", $"{id}_serviceInfo", id);
 
             Console.WriteLine($"Stitched schema {id} from {url}.");
             Console.WriteLine($"Ignoring field serviceInfo and {id}_serviceInfo.");

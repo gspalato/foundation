@@ -3,17 +3,17 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.0.31912.275
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Foundation.Common", "src\Foundation.Common\Foundation.Common.csproj", "{0272ADBE-8C1F-4031-A5CD-78311865CB81}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Foundation.Common", "lib/common/Foundation.Common.csproj", "{0272ADBE-8C1F-4031-A5CD-78311865CB81}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Foundation.Core.SDK", "src\Foundation.Core.SDK\Foundation.Core.SDK.csproj", "{C340EA72-1D70-484A-9A05-32915E5BC0AA}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Foundation.Core.SDK", "lib/sdk/Foundation.Core.SDK.csproj", "{C340EA72-1D70-484A-9A05-32915E5BC0AA}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Foundation.Services.Identity", "src\Foundation.Services.Identity\Foundation.Services.Identity.csproj", "{E1056567-7F43-475B-8373-46CE6EE5C8E4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Foundation.Services.Identity", "services/identity/Foundation.Services.Identity.csproj", "{E1056567-7F43-475B-8373-46CE6EE5C8E4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Foundation.Services.UPx", "src\Foundation.Services.UPx\Foundation.Services.UPx.csproj", "{5D267EB2-521A-408F-8A3C-B2C47DB00A4A}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Foundation.Services.UPx", "services/upx/Foundation.Services.UPx.csproj", "{5D267EB2-521A-408F-8A3C-B2C47DB00A4A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Foundation.Services.Gateway", "src\Foundation.Services.Gateway\Foundation.Services.Gateway.csproj", "{AA7C75DC-C69A-499C-AA63-8B0F4DB0419D}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Foundation.Services.Gateway", "services/gateway/Foundation.Services.Gateway.csproj", "{AA7C75DC-C69A-499C-AA63-8B0F4DB0419D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Foundation.Services.Portfolio", "src\Foundation.Services.Portfolio\Foundation.Services.Portfolio.csproj", "{04337DF6-1B5E-4639-A07C-BD360F6509BA}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Foundation.Services.Portfolio", "services/portfolio/Foundation.Services.Portfolio.csproj", "{04337DF6-1B5E-4639-A07C-BD360F6509BA}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Foundation.Tools.Codegen", "tools\fgen\Foundation.Tools.Codegen.csproj", "{75DD54D7-B4E6-477F-992A-E2ACC1387436}"
 EndProject

@@ -21,8 +21,8 @@ services:
     expose:
       - "8080"
     build:
-      context: ./src
-      dockerfile: ./Portfolio/Dockerfile
+      context: ./apps
+      dockerfile: ./portfolio/Dockerfile
     depends_on:
       - gateway-service
 
@@ -30,8 +30,8 @@ services:
   gateway-service:
     hostname: "gateway-service"
     build:
-      context: ./src
-      dockerfile: ./Foundation.Services.Gateway/Dockerfile
+      context: ./services
+      dockerfile: ./gateway/Dockerfile
     ports:
       - "4000:80"
     expose:
@@ -49,8 +49,8 @@ services:
   identity-service:
     hostname: "identity-service"
     build:
-      context: ./src
-      dockerfile: ./Foundation.Services.Identity/Dockerfile
+      context: ./services
+      dockerfile: ./identity/Dockerfile
     env_file:
       - .env
     environment:
@@ -61,8 +61,8 @@ services:
   upx-service:
     hostname: "upx-service"
     build:
-      context: ./src
-      dockerfile: ./Foundation.Services.UPx/Dockerfile
+      context: ./services
+      dockerfile: ./upx/Dockerfile
     env_file:
       - .env
     environment:
@@ -73,8 +73,8 @@ services:
   portfolio-service:
     hostname: "portfolio-service"
     build:
-      context: ./src
-      dockerfile: ./Foundation.Services.Portfolio/Dockerfile
+      context: ./services
+      dockerfile: ./portfolio/Dockerfile
     env_file:
       - .env
     environment:
@@ -93,6 +93,3 @@ services:
       - "27017:27017"
     volumes:
       - /data/db:/data/db
-
-volumes:
-  static:

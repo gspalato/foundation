@@ -26,7 +26,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Foundation.Common\Foundation.Common.csproj" />
+    <ProjectReference Include="../common/Foundation.Common.csproj" />
   </ItemGroup>
 
 </Project>

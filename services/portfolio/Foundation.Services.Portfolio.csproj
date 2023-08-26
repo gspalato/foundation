@@ -21,8 +21,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Foundation.Common\Foundation.Common.csproj" />
-    <ProjectReference Include="..\Foundation.Core.SDK\Foundation.Core.SDK.csproj" />
+    <ProjectReference Include="../../lib/common/Foundation.Common.csproj" />
+    <ProjectReference Include="../../lib/sdk/Foundation.Core.SDK.csproj" />
   </ItemGroup>
 
 </Project>
