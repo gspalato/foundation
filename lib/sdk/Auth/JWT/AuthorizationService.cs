@@ -9,6 +9,9 @@ namespace Foundation.Core.SDK.Auth.JWT;
 public interface IAuthorizationService
 {
     Task<TokenValidationResult> CheckAuthorizationAsync(string jwt);
+
+    User? ExtractUser(TokenValidationResult validationResult);
+
     List<Role> ExtractRoles(TokenValidationResult validationResult);
 }
 
@@ -28,6 +31,12 @@ public class AuthorizationService : IAuthorizationService
     /// <returns>A TokenValidationResult object.</returns>
     public async Task<TokenValidationResult> CheckAuthorizationAsync(string jwt)
     {
+        if (jwt.Length is 0)
+            return new TokenValidationResult()
+            {
+                IsValid = false
+            };
+
         TokenValidationResult result;
         try
         {

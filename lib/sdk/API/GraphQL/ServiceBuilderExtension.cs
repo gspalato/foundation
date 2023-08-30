@@ -16,6 +16,7 @@ public static class ServiceBuilderExtension
             var gql = provider.GetRequiredService<IRequestExecutorBuilder>();
 
             gql.AddQueryType<T>();
+            gql.AddDiagnosticEventListener<DiagnosticEventListener>();
         });
 
         return builder;

@@ -25,13 +25,14 @@ order:
 
   - name: portfolio
     type: application
+
 components:
   - name: database
     type: microservice
-    path: src/Foundation.Database
+    path: infra/kubernetes/database.fndtn_service.yml
     build:
-      context: src
-      dockerfile: Foundation.Database/Dockerfile
+      context: services
+      dockerfile: database/Dockerfile
       platforms:
         compose:
           build: false
@@ -46,10 +47,10 @@ components:
 
   - name: identity
     type: microservice
-    path: src/Foundation.Services.Identity
+    path: infra/kubernetes/identity.fndtn_service.yml
     build:
-      context: src
-      dockerfile: Foundation.Services.Identity/Dockerfile
+      context: services
+      dockerfile: identity/Dockerfile
       platforms:
         compose:
           build: true
@@ -64,10 +65,10 @@ components:
 
   - name: upx
     type: microservice
-    path: src/Foundation.Services.UPx
+    path: infra/kubernetes/upx.fndtn_service.yml
     build:
-      context: src
-      dockerfile: Foundation.Services.UPx/Dockerfile
+      context: services
+      dockerfile: upx/Dockerfile
       platforms:
         compose:
           build: true
@@ -82,10 +83,10 @@ components:
 
   - name: portfolio
     type: microservice
-    path: src/Foundation.Services.Portfolio
+    path: infra/kubernetes/portfolio.fndtn_service.yml
     build:
-      context: src
-      dockerfile: Foundation.Services.Portfolio/Dockerfile
+      context: services
+      dockerfile: portfolio/Dockerfile
       platforms:
         compose:
           build: true
@@ -100,10 +101,10 @@ components:
 
   - name: gateway
     type: microservice
-    path: src/Foundation.Services.Gateway
+    path: infra/kubernetes/gateway.fndtn_service.yml
     build:
-      context: src
-      dockerfile: Foundation.Services.Gateway/Dockerfile
+      context: services
+      dockerfile: gateway/Dockerfile
       platforms:
         compose:
           build: true
@@ -118,10 +119,10 @@ components:
 
   - name: proxy
     type: microservice
-    path: src/Foundation.Services.Proxy
+    path: infra/kubernetes/proxy.fndtn_service.yml
     build:
-      context: src
-      dockerfile: Foundation.Services.Proxy/Dockerfile
+      context: services
+      dockerfile: proxy/Dockerfile
       platforms:
         compose:
           build: true
@@ -136,10 +137,10 @@ components:
 
   - name: portfolio
     type: application
-    path: src/Portfolio
+    path: infra/kubernetes/portfolio.fndtn_app.yml
     build:
-      context: src
-      dockerfile: Portfolio/Dockerfile
+      context: apps
+      dockerfile: portfolio/Dockerfile
       platforms:
         compose:
           build: true

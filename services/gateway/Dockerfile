@@ -8,13 +8,13 @@ EXPOSE 443
 FROM mcr.microsoft.com/dotnet/sdk:7.0 AS build
 WORKDIR /src
 
-ADD ./Foundation.Services.Gateway ./Foundation.Services.Gateway
-ADD ./Foundation.Common ./Foundation.Common
-ADD ./Foundation.Core.SDK ./Foundation.Core.SDK
+ADD ./services/gateway ./services/gateway
+ADD ../lib/common ./lib/common
+ADD ../lib/sdk ./lib/sdk
 
-RUN dotnet restore "Foundation.Services.Gateway/Foundation.Services.Gateway.csproj"
+RUN dotnet restore "/src/services/gateway/Foundation.Services.Gateway.csproj"
 
-RUN dotnet publish "/src/Foundation.Services.Gateway/Foundation.Services.Gateway.csproj" -c Release -o /app/publish
+RUN dotnet publish "/src/services/gateway/Foundation.Services.Gateway.csproj" -c Release -o /app/publish
 
 FROM base AS final
 WORKDIR /app

@@ -14,12 +14,19 @@ new ServiceBuilder(args)
     {
         server
             .AddGeneratedQueryType()
-            .AddMutationType<Mutation>()
-            .AddSubscriptionType<Subscription>();
+            .AddMutationType<Mutation>();
 
         server
             .AddType<Use>()
             .AddType<Resume>();
+
+        server
+            .ModifyRequestOptions(o =>
+            {
+                o.IncludeExceptionDetails = true;
+                o.Complexity.Enable = true;
+                o.Complexity.MaximumAllowed = 250;
+            });
     })
     .UseJWT()
     .Build()

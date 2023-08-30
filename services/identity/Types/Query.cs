@@ -21,14 +21,14 @@ public class Query
             throw new GraphQLException(invalidTokenError);
 
         var result = await authService.CheckAuthorizationAsync(token);
+        if (!result.IsValid)
+            throw new GraphQLException(invalidTokenError);
+            
         var id = result.Claims.FirstOrDefault(c => c.Key == "id").Value.ToString();
         if (id is null || id.Length is 0)
             throw new GraphQLException(invalidTokenError);
 
         var user = await userService.GetUserByIdAsync(id);
-
-        if (!result.IsValid)
-            throw new GraphQLException(invalidTokenError);
 
         return new()
         {

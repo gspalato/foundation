@@ -18,6 +18,7 @@ public static class ServiceBuilderExtension
         builder.Configure((b) =>
         {
             b.Services.AddSingleton<IAuthorizationService, AuthorizationService>();
+            b.Services.AddSingleton<AuthorizationService>();
             b.Services.AddSingleton<JwtSecurityTokenHandler>();
             b.Services
                 .AddAuthorization()

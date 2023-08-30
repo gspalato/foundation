@@ -1,6 +1,6 @@
 namespace Foundation.Services.UPx.Types.Payloads;
 
-public class RegisterStationUsePayload
+public class ClaimDisposalAndCreditsPayload
 {
     public required bool Successful { get; set; }
 

@@ -17,7 +17,7 @@ public class DiagnosticEventListener : ExecutionDiagnosticEventListener
     {
         context.Result = QueryResultBuilder.CreateError(
             ErrorBuilder.New()
-                .SetMessage("[Foundation DEL] Unexpected execution error.")
+                .SetMessage("[Foundation Diagnostics] Unexpected execution error.")
                 .SetException(exception)
                 .Build());
 

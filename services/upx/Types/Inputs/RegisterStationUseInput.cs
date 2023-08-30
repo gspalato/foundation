@@ -2,17 +2,17 @@ namespace Foundation.Services.UPx.Types.Payloads;
 
 public class RegisterStationUseInput
 {
-    public int StartTimestamp { get; set; }
+    public required int StartTimestamp { get; set; }
 
-    public int EndTimestamp { get; set; }
+    public required int EndTimestamp { get; set; }
 
-    public int Duration { get; set; }
+    public required int Duration { get; set; }
 
-    public double DistributedWater { get; set; }
+    public required double DistributedWater { get; set; }
 
-    public double EconomizedPlastic { get; set; }
+    public required double EconomizedPlastic { get; set; }
 
-    public double BottleQuantityEquivalent { get; set; }
+    public required double BottleQuantityEquivalent { get; set; }
 
     public required string Token { get; set; }
 }

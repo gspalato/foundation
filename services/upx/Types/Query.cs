@@ -1,6 +1,8 @@
 ﻿using Foundation.Common.Entities;
+using Foundation.Core.SDK.Auth.JWT;
 using Foundation.Core.SDK.Database.Mongo;
 using HotChocolate;
+using MongoDB.Driver;
 
 namespace Foundation.Services.UPx.Types;
 
@@ -52,5 +54,74 @@ public class Query
             DistributedWater = uses.Sum(_ => _.DistributedWater),
             BottleQuantityEquivalent = uses.Sum(_ => _.BottleQuantityEquivalent)
         };
+    }
+
+    // Ecobucks
+    public async Task<EcobucksProfile?> GetEcobucksProfileAsync(string token,
+    [Service] IAuthorizationService authorizationService, [Service] IRepository<DisposalClaim> disposalRepository,
+    [Service] IRepository<EcobucksProfile> profileRepository)
+    {
+        var invalidTokenError = ErrorBuilder.New()
+            .SetMessage("Invalid token. Try regenerating your token.")
+            .SetCode("401")
+            .Build();
+
+        var validationResult = await authorizationService.CheckAuthorizationAsync(token);
+        if (!validationResult.IsValid)
+            throw new GraphQLException(invalidTokenError);
+
+        var user = authorizationService.ExtractUser(validationResult);
+        if (user == null)
+            throw new GraphQLException(invalidTokenError);
+
+        EcobucksProfile profile;
+        try
+        {
+            profile = await profileRepository.GetByIdAsync(user.Id);
+            if (profile == null)
+            {
+                // Initialize a Ecobucks profile.
+                profile = new EcobucksProfile()
+                {
+                    Id = user.Id,
+                    Name = user.Username,
+                    Username = user.Username,
+                    Credits = 0,
+                    IsOperator = false
+                };
+
+                await profileRepository.InsertAsync(profile);
+
+                Console.WriteLine("Created a new Ecobucks profile. ({0})", user.Username);
+            }
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            return null!;
+        }
+
+        return profile;
+    }
+
+    public async Task<List<DisposalClaim>> GetUserDisposalsAsync(string token,
+    [Service] IAuthorizationService authorizationService, [Service] IRepository<DisposalClaim> disposalRepository)
+    {
+        var invalidTokenError = ErrorBuilder.New()
+            .SetMessage("Invalid token. Try regenerating your token.")
+            .SetCode("401")
+            .Build();
+
+        var validationResult = await authorizationService.CheckAuthorizationAsync(token);
+        if (!validationResult.IsValid)
+            throw new GraphQLException(invalidTokenError);
+
+        var user = authorizationService.ExtractUser(validationResult);
+        if (user == null)
+            throw new GraphQLException(invalidTokenError);
+
+        var disposals = await disposalRepository.Collection.Find(_ => _.Id == user.Id).ToListAsync();
+
+        return disposals;
     }
 }
