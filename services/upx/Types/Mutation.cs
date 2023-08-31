@@ -77,37 +77,39 @@ public class Mutation
     [Service] IAuthorizationService authorizationService, [Service] IRepository<EcobucksProfile> profileRepository,
     [Service] IRepository<DisposalClaim> disposalRepository, [Service] ILogger<Mutation> logger)
     {
-        var invalidTokenError = ErrorBuilder.New()
-            .SetMessage("Invalid token. Try regenerating your token.")
-            .SetCode("401")
-            .Build();
-
-        var notOperatorError = ErrorBuilder.New()
-            .SetMessage("User is not an operator. Only operators can register disposals.")
-            .SetCode("401")
-            .Build();
-
-        var registerFailError = ErrorBuilder.New()
-            .SetMessage("Failed to register disposal.")
-            .SetCode("500")
-            .Build();
-
         Console.WriteLine("=======> BEFORE VALIDATION <=======");
         var validationResult = await authorizationService.CheckAuthorizationAsync(input.OperatorToken);
         if (!validationResult.IsValid)
-            throw new GraphQLException(invalidTokenError);
-        Console.WriteLine("=======> AFTER VALIDATION <=======");
+        {
+            return new RegisterDisposalPayload
+            {
+                Successful = false,
+                Error = "Invalid token."
+            };
+        }
 
         Console.WriteLine("=======> BEFORE USER EXTRACTION <=======");
         var op = authorizationService.ExtractUser(validationResult);
         if (op == null)
-            throw new GraphQLException(invalidTokenError);
+        {
+            return new RegisterDisposalPayload
+            {
+                Successful = false,
+                Error = "Invalid token."
+            };
+        }
         Console.WriteLine("=======> AFTER USER EXTRACTION <=======");
 
         Console.WriteLine("=======> BEFORE ECOBUCKS PROFILE FETCH <=======");
         var profile = await profileRepository.GetByIdAsync(op.Id);
         if (!profile.IsOperator)
-            throw new GraphQLException(notOperatorError);
+        {
+            return new RegisterDisposalPayload
+            {
+                Successful = false,
+                Error = "User is not an operator."
+            };
+        }
         Console.WriteLine("=======> AFTER ECOBUCKS PROFILE FETCH <=======");
 
         DisposalClaim disposal = new()
@@ -128,7 +130,11 @@ public class Mutation
         {
             Console.WriteLine("=======> ERROR ON DISPOSAL DATABASE INSERTION <=======");
             logger.LogError(e.Message);
-            throw new GraphQLException(registerFailError);
+            return new RegisterDisposalPayload
+            {
+                Successful = false,
+                Error = $"Failed to register disposal on database.\n{e.Message}"
+            };
         }
 
         return new RegisterDisposalPayload
@@ -142,31 +148,6 @@ public class Mutation
     [Service] IAuthorizationService authorizationService, [Service] IRepository<EcobucksProfile> profileRepository,
     [Service] IRepository<DisposalClaim> disposalRepository)
     {
-        var invalidTokenError = ErrorBuilder.New()
-            .SetMessage("Invalid token. Try regenerating your token.")
-            .SetCode("401")
-            .Build();
-
-        var notUserError = ErrorBuilder.New()
-            .SetMessage("User is an operator. Only users can claim disposals.")
-            .SetCode("401")
-            .Build();
-
-        var invalidDisposalError = ErrorBuilder.New()
-            .SetMessage("Invalid disposal token.")
-            .SetCode("400")
-            .Build();
-
-        var alreadyClaimedError = ErrorBuilder.New()
-            .SetMessage("Disposal already claimed.")
-            .SetCode("400")
-            .Build();
-
-        var claimFailedError = ErrorBuilder.New()
-            .SetMessage("Failed to claim disposal.")
-            .SetCode("500")
-            .Build();
-
         var validationResult = await authorizationService.CheckAuthorizationAsync(input.UserToken);
         if (!validationResult.IsValid)
         {
@@ -228,7 +209,11 @@ public class Mutation
         catch (Exception e)
         {
             Console.WriteLine(e);
-            throw new GraphQLException(claimFailedError);
+            return new ClaimDisposalAndCreditsPayload
+            {
+                Successful = false,
+                Error = $"Failed to claim disposal.\n{e.Message}"
+            };
         }
 
         return new ClaimDisposalAndCreditsPayload
