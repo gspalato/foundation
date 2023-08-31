@@ -169,26 +169,50 @@ public class Mutation
 
         var validationResult = await authorizationService.CheckAuthorizationAsync(input.UserToken);
         if (!validationResult.IsValid)
-            throw new GraphQLException(invalidTokenError);
+        {
+            return new ClaimDisposalAndCreditsPayload
+            {
+                Successful = false,
+                Error = "Invalid token."
+            };
+        }
 
         var user = authorizationService.ExtractUser(validationResult);
         if (user == null)
-            throw new GraphQLException(invalidTokenError);
+        {
+            Console.WriteLine("Invalid token. Failed to extract user.");
+            return new ClaimDisposalAndCreditsPayload
+            {
+                Successful = false,
+                Error = "Invalid token."
+            };
+        }
 
         var profile = await profileRepository.GetByIdAsync(user.Id);
-        if (profile.IsOperator)
-            throw new GraphQLException(notUserError);
 
+        DisposalClaim disposal;
         try
         {
             var disposalFilter = Builders<DisposalClaim>.Filter.Eq("Token", input.DisposalToken);
 
-            var disposal = await disposalRepository.Collection.Find(disposalFilter).FirstOrDefaultAsync();
+            disposal = await disposalRepository.Collection.Find(disposalFilter).FirstOrDefaultAsync();
             if (disposal is null)
-                throw new GraphQLException(invalidDisposalError);
+            {
+                return new ClaimDisposalAndCreditsPayload
+                {
+                    Successful = false,
+                    Error = "Invalid disposal token."
+                };
+            }
 
             if (disposal.IsClaimed || disposal.UserId is not null)
-                throw new GraphQLException(alreadyClaimedError);
+            {
+                return new ClaimDisposalAndCreditsPayload
+                {
+                    Successful = false,
+                    Error = "Disposal already claimed."
+                };
+            }
 
             var disposalUpdate = Builders<DisposalClaim>.Update
                 .Set("IsClaimed", true)
@@ -207,6 +231,10 @@ public class Mutation
             throw new GraphQLException(claimFailedError);
         }
 
-        return new ClaimDisposalAndCreditsPayload { Successful = true };
+        return new ClaimDisposalAndCreditsPayload
+        {
+            Successful = true,
+            Disposal = disposal
+        };
     }
 }

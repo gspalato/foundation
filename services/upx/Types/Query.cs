@@ -61,6 +61,8 @@ public class Query
     [Service] IAuthorizationService authorizationService, [Service] IRepository<DisposalClaim> disposalRepository,
     [Service] IRepository<EcobucksProfile> profileRepository)
     {
+        Console.WriteLine("============= GET ECOBUCKS WAS CALLED ==================");
+
         var invalidTokenError = ErrorBuilder.New()
             .SetMessage("Invalid token. Try regenerating your token.")
             .SetCode("401")
@@ -68,18 +70,30 @@ public class Query
 
         var validationResult = await authorizationService.CheckAuthorizationAsync(token);
         if (!validationResult.IsValid)
+        {
+            Console.WriteLine("============== INVALID TOKEN ==================");
             throw new GraphQLException(invalidTokenError);
+        }
 
         var user = authorizationService.ExtractUser(validationResult);
         if (user == null)
+        {
+            Console.WriteLine("============== USER IS NULL ==================");
             throw new GraphQLException(invalidTokenError);
+        }
+
+        Console.WriteLine("============== AFTER USER VALIDATION ================");
 
         EcobucksProfile profile;
         try
         {
+            Console.WriteLine("======> BEFORE GETTING PROFILE <======");
             profile = await profileRepository.GetByIdAsync(user.Id);
+            Console.WriteLine("======> AFTER GETTING PROFILE <======");
+
             if (profile == null)
             {
+                Console.WriteLine("======> PROFILE IS NULL <======");
                 // Initialize a Ecobucks profile.
                 profile = new EcobucksProfile()
                 {
@@ -90,7 +104,9 @@ public class Query
                     IsOperator = false
                 };
 
+                Console.WriteLine("======> BEFORE CREATING PROFILE <======");
                 await profileRepository.InsertAsync(profile);
+                Console.WriteLine("======> AFTER CREATING PROFILE <======");
 
                 Console.WriteLine("Created a new Ecobucks profile. ({0})", user.Username);
             }
@@ -98,9 +114,11 @@ public class Query
         catch (Exception e)
         {
             Console.WriteLine(e);
+            Console.WriteLine("======> ERROR RETURN NULL <======");
             return null!;
         }
 
+        Console.WriteLine("======> BEFORE RETURNING PROFILE <======");
         return profile;
     }
 

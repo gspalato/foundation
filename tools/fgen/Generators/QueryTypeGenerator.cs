@@ -108,6 +108,10 @@ public class QueryTypeGenerator : Generator
 
         @class = @class.WithIdentifier(SyntaxFactory.Identifier(ClassName));
 
+        // Enable nullable types.
+        var nullableTrivia = SyntaxFactory.ParseLeadingTrivia("#nullable enable");
+        @class = @class.WithLeadingTrivia(nullableTrivia);
+
         SyntaxTree = SyntaxTree.GetCompilationUnitRoot().ReplaceNode(GetTarget(), @class).SyntaxTree;
 
         return new GenerationResult()
