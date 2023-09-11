@@ -8,7 +8,7 @@ namespace Foundation.Common.Configurations
         public LoggingConfiguration()
         {
             var console = new NLog.Targets.ColoredConsoleTarget("console");
-            console.Layout = @"[${date:format=dd-MM-yyyy HH\:mm\:ss}] ${level:format=Name}: ${message} ${onexception:inner=\n${exception:format=tostring}}";
+            console.Layout = @"[${date:format=dd-MM-yyyy HH\:mm\:ss}] [${callsite:className=True:fileName=False:includeSourcePath=False:methodName=True}] ${level:format=Name}: ${message} ${onexception:inner=\n${exception:format=tostring}}";
 
             this.AddRule(LogLevel.Trace, LogLevel.Fatal, console);
         }
