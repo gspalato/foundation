@@ -11,4 +11,6 @@ public class EcobucksProfile : BaseEntity
     public required double Credits { get; set; }
 
     public required bool IsOperator { get; set; }
+
+    public required Transaction[] Transactions { get; set; } = default!;
 }

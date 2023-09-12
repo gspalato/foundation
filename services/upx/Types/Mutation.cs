@@ -1,4 +1,5 @@
-﻿using Foundation.Common.Entities;
+﻿using System.Text;
+using Foundation.Common.Entities;
 using Foundation.Core.SDK.Auth.JWT;
 using Foundation.Core.SDK.Database.Mongo;
 using Foundation.Services.UPx.Types.Payloads;
@@ -75,7 +76,8 @@ public class Mutation
 
     public async Task<RegisterDisposalPayload> RegisterDisposalAsync(RegisterDisposalInput input,
     [Service] IAuthorizationService authorizationService, [Service] IRepository<EcobucksProfile> profileRepository,
-    [Service] IRepository<DisposalClaim> disposalRepository, [Service] ILogger<Mutation> logger)
+    [Service] IRepository<DisposalClaim> disposalRepository, [Service] IRepository<Transaction> transactionRepository,
+    [Service] ILogger<Mutation> logger)
     {
         Console.WriteLine("=======> BEFORE VALIDATION <=======");
         var validationResult = await authorizationService.CheckAuthorizationAsync(input.OperatorToken);
@@ -146,7 +148,7 @@ public class Mutation
 
     public async Task<ClaimDisposalAndCreditsPayload> ClaimDisposalAndCreditsAsync(ClaimDisposalAndCreditsInput input,
     [Service] IAuthorizationService authorizationService, [Service] IRepository<EcobucksProfile> profileRepository,
-    [Service] IRepository<DisposalClaim> disposalRepository)
+    [Service] IRepository<DisposalClaim> disposalRepository, [Service] IRepository<Transaction> transactionRepository)
     {
         var validationResult = await authorizationService.CheckAuthorizationAsync(input.UserToken);
         if (!validationResult.IsValid)
@@ -201,10 +203,41 @@ public class Mutation
 
             await disposalRepository.Collection.UpdateOneAsync(disposalFilter, disposalUpdate);
 
+
+            static (double, string) GetLargestUnit(double grams)
+            {
+                if (grams < 1000)
+                    return (grams, "g");
+                else if (grams < 1000000)
+                    return (grams / 1000, "kg");
+                else
+                    return (grams / 1000000, "t");
+            }
+
+            (var weight, var unit) = GetLargestUnit(disposal.Weight);
+
+            var transactionDescription =
+                $"Disposed {weight}{unit} of {Enum.GetName(disposal.Disposals.FirstOrDefault()!.DisposalType)}"
+                + (disposal.Disposals.Length > 1 ? $" and more." : ".");
+
+            Transaction transaction = new()
+            {
+                TransactionType = TransactionType.Claim,
+                UserId = user.Id,
+                ClaimId = disposal.Id,
+                Credits = disposal.Credits,
+                Timestamp = DateTimeOffset.UtcNow.ToUnixTimeSeconds(),
+                Description = transactionDescription
+            };
+
+
             var profileFilter = Builders<EcobucksProfile>.Filter.Eq(_ => _.Id, user.Id);
-            var profileUpdate = Builders<EcobucksProfile>.Update.Inc("Credits", disposal.Credits);
+            var profileUpdate = Builders<EcobucksProfile>.Update
+                .Inc(_ => _.Credits, disposal.Credits)
+                .Push(_ => _.Transactions, transaction);
 
             await profileRepository.Collection.UpdateOneAsync(profileFilter, profileUpdate);
+
         }
         catch (Exception e)
         {
