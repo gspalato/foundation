@@ -101,7 +101,8 @@ public class Query
                     Name = user.Username,
                     Username = user.Username,
                     Credits = 0,
-                    IsOperator = false
+                    IsOperator = false,
+                    Transactions = new Transaction[] { }
                 };
 
                 Console.WriteLine("======> BEFORE CREATING PROFILE <======");
