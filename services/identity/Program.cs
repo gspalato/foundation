@@ -18,6 +18,7 @@ new ServiceBuilder(args)
     {
         server.AddGeneratedQueryType();
         server.AddMutationType<Mutation>();
+        server.AddType<UploadType>();
 
         server
             .AddMongoDbFiltering()
