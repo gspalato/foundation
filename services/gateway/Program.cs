@@ -16,6 +16,8 @@ new ServiceBuilder(args)
             .LoadConfiguration(new LoggingConfiguration())
             .GetCurrentClassLogger();
 
+        server.AddType<UploadType>();
+
         server.AddErrorFilter(error =>
         {
             logger.Error(error.Exception, error.Exception!.Message);
