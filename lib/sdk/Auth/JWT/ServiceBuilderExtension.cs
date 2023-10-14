@@ -1,6 +1,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using System.IdentityModel.Tokens.Jwt;
+using Microsoft.AspNetCore.Builder;
 
 
 namespace Foundation.Core.SDK.Auth.JWT;
@@ -24,6 +25,12 @@ public static class ServiceBuilderExtension
                 .AddAuthorization()
                 .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(options => options.TokenValidationParameters = TokenConfiguration.ValidationParameters);
+        });
+
+        builder.Configure((WebApplication app) =>
+        {
+            app.UseAuthentication();
+            app.UseAuthorization();
         });
 
         return builder;
