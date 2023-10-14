@@ -64,8 +64,7 @@ public static class ServiceBuilderExtension
 
             b.Services.AddErrorFilter<ErrorFilter>();
 
-            if (configure != null)
-                configure(server, b.Services, builder);
+            configure?.Invoke(server, b.Services, builder);
         });
 
         builder.Configure((WebApplication app) =>

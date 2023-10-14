@@ -1,19 +1,21 @@
 using Microsoft.AspNetCore.Identity;
+using Foundation.Common.Configurations;
 using Foundation.Core.SDK;
 using Foundation.Core.SDK.API.GraphQL;
+using Foundation.Core.SDK.API.REST;
 using Foundation.Core.SDK.Auth.JWT;
 using Foundation.Core.SDK.Database.Mongo;
 using Foundation.Services.Identity.Services;
 using Foundation.Services.Identity.Types;
 using Foundation.Services.Identity.Configurations;
 using Amazon.S3;
-using Foundation.Common.Configurations;
 
 new ServiceBuilder(args)
     .WithName("Identity")
     .BindConfiguration<IBaseConfiguration, BaseConfiguration>()
     .BindConfiguration<IIdentityConfiguration, IdentityConfiguration>()
     .UseMongo()
+    .UseREST(enableSwagger: true)
     .UseGraphQL("/gql", (server, services, builder) =>
     {
         server.AddGeneratedQueryType();
