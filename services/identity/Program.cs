@@ -38,6 +38,11 @@ new ServiceBuilder(args)
             .AddSingleton<IAmazonS3>((provider) =>
             {
                 var config = provider.GetRequiredService<IIdentityConfiguration>();
+
+                Console.WriteLine("AWS Access Key: " + config.AwsAccessKey);
+                Console.WriteLine("AWS Secret Access Key: " + config.AwsSecretAccessKey);
+                Console.WriteLine("Profile Picture URL Format: " + config.AwsFoundationIdentityProfilePictureUrlFormat);
+
                 return new AmazonS3Client(config.AwsAccessKey, config.AwsSecretAccessKey, Amazon.RegionEndpoint.USEast1);
             });
     })
