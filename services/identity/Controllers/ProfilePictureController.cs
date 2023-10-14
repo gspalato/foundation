@@ -40,9 +40,9 @@ public class ProfilePictureController : Controller
     [HttpPost]
     [Authorize]
     [Route("profile_picture/upload")]
-    public async Task<ProfilePictureUploadPayload> UploadProfilePicture(HttpContext context, IFormFile file)
+    public async Task<ProfilePictureUploadPayload> UploadProfilePicture(IFormFile file)
     {
-        string? token = await context.GetTokenAsync("access_token");
+        string? token = await HttpContext.GetTokenAsync("access_token");
         if (token is null)
             return new ProfilePictureUploadPayload
             {
