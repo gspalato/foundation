@@ -50,6 +50,13 @@ public class ProfilePictureController : Controller
                 Error = "Invalid token."
             };
 
+        if (file is null || file.Length is 0)
+            return new ProfilePictureUploadPayload
+            {
+                Successful = false,
+                Error = "No file was uploaded."
+            };
+
         Console.WriteLine($"RECEIVED AUTH HEADER TOKEN: {token}");
 
         // Only allow <= 5MB files.
