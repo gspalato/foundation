@@ -4,16 +4,16 @@ namespace Foundation.Services.Identity.Configurations;
 
 public interface IIdentityConfiguration : IBaseConfiguration
 {
-    public string AwsAccessKey { get; }
-    public string AwsSecretAccessKey { get; }
-    public string AwsFoundationIdentityProfilePictureBucket { get; }
-    public string AwsFoundationIdentityProfilePictureUrlFormat { get; }
+    public string AwsAccessKey { get; set; }
+    public string AwsSecretAccessKey { get; set; }
+    public string AwsFoundationIdentityProfilePictureBucket { get; set; }
+    public string AwsFoundationIdentityProfilePictureUrlFormat { get; set; }
 }
 
 public class IdentityConfiguration : BaseConfiguration, IIdentityConfiguration
 {
-    public string AwsAccessKey { get; } = default!;
-    public string AwsSecretAccessKey { get; } = default!;
-    public string AwsFoundationIdentityProfilePictureBucket { get; } = default!;
-    public string AwsFoundationIdentityProfilePictureUrlFormat { get; } = default!;
+    public string AwsAccessKey { get; set; } = default!;
+    public string AwsSecretAccessKey { get; set; } = default!;
+    public string AwsFoundationIdentityProfilePictureBucket { get; set; } = default!;
+    public string AwsFoundationIdentityProfilePictureUrlFormat { get; set; } = default!;
 }
