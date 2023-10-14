@@ -7,9 +7,11 @@ using Foundation.Services.Identity.Services;
 using Foundation.Services.Identity.Types;
 using Foundation.Services.Identity.Configurations;
 using Amazon.S3;
+using Foundation.Common.Configurations;
 
 new ServiceBuilder(args)
     .WithName("Identity")
+    .BindConfiguration<IBaseConfiguration, BaseConfiguration>()
     .BindConfiguration<IIdentityConfiguration, IdentityConfiguration>()
     .UseMongo()
     .UseGraphQL("/gql", (server, services, builder) =>
