@@ -3,6 +3,8 @@ using Amazon.S3.Model;
 using Foundation.Core.SDK.Auth.JWT;
 using Foundation.Services.Identity.Configurations;
 using Foundation.Services.Identity.Services;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Foundation.Services.Identity.Controllers;
@@ -11,13 +13,13 @@ public class ProfilePictureController : Controller
 {
     IIdentityConfiguration Configuration { get; set; }
 
-    IAuthorizationService AuthorizationService { get; set; }
+    Core.SDK.Auth.JWT.IAuthorizationService AuthorizationService { get; set; }
     IUserService UserService { get; set; }
 
     IAmazonS3 S3Client { get; set; }
 
     public ProfilePictureController(IIdentityConfiguration configuration,
-    IAuthorizationService authorizationService, IUserService userService,
+    Core.SDK.Auth.JWT.IAuthorizationService authorizationService, IUserService userService,
     IAmazonS3 s3Client)
     {
         Configuration = configuration;
@@ -29,16 +31,27 @@ public class ProfilePictureController : Controller
     }
 
     [HttpGet]
-    [Route("profile_picture/{id}")]
+    [Route("profile_picture/get/{id}")]
     public string GetProfilePicture(string id)
     {
         return UserService.GetProfilePictureUrl(id);
     }
 
     [HttpPost]
+    [Authorize]
     [Route("profile_picture/upload")]
-    public async Task<ProfilePictureUploadPayload> UploadProfilePicture(IFormFile file, string token)
+    public async Task<ProfilePictureUploadPayload> UploadProfilePicture(HttpContext context, IFormFile file)
     {
+        string? token = await context.GetTokenAsync("access_token");
+        if (token is null)
+            return new ProfilePictureUploadPayload
+            {
+                Successful = false,
+                Error = "Invalid token."
+            };
+
+        Console.WriteLine($"RECEIVED AUTH HEADER TOKEN: {token}");
+
         // Only allow <= 5MB files.
         const int maxFileSize = 5 * 1_000_000;
 
