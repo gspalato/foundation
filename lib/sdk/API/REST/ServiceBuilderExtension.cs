@@ -9,6 +9,8 @@ public static class ServiceBuilderExtension
     {
         builder.Configure((WebApplicationBuilder b) =>
         {
+            b.Services.AddControllers();
+
             b.Services.AddOpenApiDocument();
 
             configure?.Invoke(b.Services, builder);
