@@ -113,6 +113,7 @@ public class UserService : IUserService
         {
             var request = new GetPreSignedUrlRequest()
             {
+                Verb = HttpVerb.PUT,
                 BucketName = bucketName,
                 Key = id,
                 Expires = DateTime.UtcNow.AddMinutes(duration),
