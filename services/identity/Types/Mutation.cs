@@ -39,4 +39,39 @@ public class Mutation
             };
         }
     }
+
+    public async Task<ProfilePictureUploadUrlPayload> GetProfilePictureUploadUrlAsync(string token,
+    [Service] IAuthorizationService authorizationService, [Service] IUserService userService)
+    {
+        var result = await authorizationService.CheckAuthorizationAsync(token);
+        if (!result.IsValid)
+            return new ProfilePictureUploadUrlPayload
+            {
+                Successful = false,
+                Error = "Not authorized."
+            };
+
+        if (result.Claims.TryGetValue("id", out var userId))
+        {
+            var url = await userService.GetProfilePictureUploadUrlAsync((string)userId);
+            if (url is not null)
+                return new ProfilePictureUploadUrlPayload
+                {
+                    Successful = true,
+                    Url = url
+                };
+            else
+                return new ProfilePictureUploadUrlPayload
+                {
+                    Successful = false,
+                    Error = "Failed to get signed URL."
+                };
+        }
+        else
+            return new ProfilePictureUploadUrlPayload
+            {
+                Successful = false,
+                Error = "Invalid token."
+            };
+    }
 }
