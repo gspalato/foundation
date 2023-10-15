@@ -1,5 +1,8 @@
+using Foundation.Common.Entities;
+using Foundation.Common.Roles;
 using Foundation.Services.Identity.Configurations;
 using Foundation.Services.Identity.Services;
+using Foundation.Services.Identity.Types.Inputs;
 using Foundation.Services.Identity.Types.Payloads;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
@@ -29,7 +32,7 @@ public class AuthenticationController : Controller
 
     [HttpGet]
     [Authorize]
-    [Route("auth")]
+    [Route("auth/")]
     public async Task<CheckAuthenticationPayload> CheckAuthenticationAsync()
     {
         string? token = await HttpContext.GetTokenAsync("access_token");
@@ -74,14 +77,35 @@ public class AuthenticationController : Controller
         };
     }
 
+    [HttpPut]
+    [Authorize]
+    [Route("auth/")]
+    public async Task<FullUser?> RegisterAsync([FromBody] RegisterInput input)
+    {
+        string? token = await HttpContext.GetTokenAsync("access_token");
+        if (token is null || token.Length is 0)
+        {
+            StatusCode(401);
+            return null;
+        }
+
+        var result = await AuthorizationService.CheckAuthorizationAsync(token);
+        var roles = AuthorizationService.ExtractRoles(result);
+
+        if (!roles.Any(r => r == Role.Owner))
+            return null;
+
+        return await UserService.CreateUserAsync(input.Username, input.Password);
+    }
+
     [HttpPost]
     [AllowAnonymous]
     [Route("auth/")]
-    public async Task<AuthenticationPayload> AuthenticateAsync([FromBody] string username, [FromBody] string password)
+    public async Task<AuthenticationPayload> AuthenticateAsync([FromBody] AuthenticateInput input)
     {
         try
         {
-            var result = await AuthenticationService.AuthenticateAsync(username, password);
+            var result = await AuthenticationService.AuthenticateAsync(input.Username, input.Password);
 
             return result;
         }

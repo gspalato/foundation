@@ -37,27 +37,6 @@ public class UserController : Controller
         S3Client = s3Client;
     }
 
-    [HttpPut]
-    [Authorize]
-    [Route("user")]
-    public async Task<FullUser?> CreateUserAsync([FromBody] string username, [FromBody] string password)
-    {
-        string? token = await HttpContext.GetTokenAsync("access_token");
-        if (token is null || token.Length is 0)
-        {
-            StatusCode(401);
-            return null;
-        }
-
-        var result = await AuthorizationService.CheckAuthorizationAsync(token);
-        var roles = AuthorizationService.ExtractRoles(result);
-
-        if (!roles.Any(r => r == Role.Owner))
-            return null;
-
-        return await UserService.CreateUserAsync(username, password);
-    }
-
     [HttpGet]
     [Route("user/avatar/{id}")]
     public string GetAvatar(string id)
