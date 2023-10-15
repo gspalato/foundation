@@ -1,11 +1,10 @@
 using Foundation.Common.Entities;
+using Foundation.Core.SDK.API.REST;
 
 namespace Foundation.Services.Identity.Types.Payloads;
 
-public class CheckAuthenticationPayload
+public class CheckAuthenticationPayload : BasePayload
 {
-    public bool Successful { get; set; } = false;
-
     public User? User { get; set; } = default!;
 }
 

@@ -1,5 +1,3 @@
-public class AvatarUploadPayload
-{
-    public bool Successful { get; set; } = false;
-    public string? Error { get; set; } = default!;
-}
+using Foundation.Core.SDK.API.REST;
+
+public class AvatarUploadPayload : BasePayload { }

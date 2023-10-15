@@ -1,38 +1,65 @@
 using Amazon.S3;
 using Amazon.S3.Model;
+using Foundation.Common.Entities;
+using Foundation.Common.Roles;
 using Foundation.Core.SDK.API.REST;
-using Foundation.Core.SDK.Auth.JWT;
 using Foundation.Services.Identity.Configurations;
 using Foundation.Services.Identity.Services;
+using Foundation.Services.Identity.Types.Payloads;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Foundation.Services.Identity.Controllers;
 
-public class AvatarController : Controller
+public class UserController : Controller
 {
     IIdentityConfiguration Configuration { get; set; }
 
+    Services.IAuthenticationService AuthenticationService { get; set; }
     Core.SDK.Auth.JWT.IAuthorizationService AuthorizationService { get; set; }
     IUserService UserService { get; set; }
 
     IAmazonS3 S3Client { get; set; }
 
-    public AvatarController(IIdentityConfiguration configuration,
-    Core.SDK.Auth.JWT.IAuthorizationService authorizationService, IUserService userService,
-    IAmazonS3 s3Client)
+
+    public UserController(IIdentityConfiguration configuration,
+    Services.IAuthenticationService authenticationService,
+    Core.SDK.Auth.JWT.IAuthorizationService authorizationService,
+    IUserService userService, IAmazonS3 s3Client)
     {
         Configuration = configuration;
 
+        AuthenticationService = authenticationService;
         AuthorizationService = authorizationService;
         UserService = userService;
 
         S3Client = s3Client;
     }
 
+    [HttpPut]
+    [Authorize]
+    [Route("user")]
+    public async Task<FullUser?> CreateUserAsync([FromBody] string username, [FromBody] string password)
+    {
+        string? token = await HttpContext.GetTokenAsync("access_token");
+        if (token is null || token.Length is 0)
+        {
+            StatusCode(401);
+            return null;
+        }
+
+        var result = await AuthorizationService.CheckAuthorizationAsync(token);
+        var roles = AuthorizationService.ExtractRoles(result);
+
+        if (!roles.Any(r => r == Role.Owner))
+            return null;
+
+        return await UserService.CreateUserAsync(username, password);
+    }
+
     [HttpGet]
-    [Route("avatar/{id}")]
+    [Route("user/avatar/{id}")]
     public string GetAvatar(string id)
     {
         return UserService.GetProfilePictureUrl(id);
@@ -40,7 +67,7 @@ public class AvatarController : Controller
 
     [HttpPut]
     [Authorize]
-    [Route("avatar/")]
+    [Route("user/avatar/")]
     public async Task<AvatarUploadPayload> UploadAvatar(IFormFile file)
     {
         string? token = await HttpContext.GetTokenAsync("access_token");
@@ -125,7 +152,7 @@ public class AvatarController : Controller
 
     [HttpDelete]
     [Authorize]
-    [Route("avatar/")]
+    [Route("user/avatar/")]
     public async Task<BasePayload> DeleteAvatarAsync()
     {
         string? token = await HttpContext.GetTokenAsync("access_token");

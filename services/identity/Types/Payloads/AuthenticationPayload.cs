@@ -1,12 +1,12 @@
 ﻿using Foundation.Common.Entities;
+using Foundation.Core.SDK.API.REST;
 
 namespace Foundation.Services.Identity.Types.Payloads;
 
-public class AuthenticationPayload
+public class AuthenticationPayload : BasePayload
 {
-    public bool Successful { get; set; } = false;
     public string? Token { get; set; } = null;
     public User? User { get; set; } = null;
-    public string? Error { get; set; } = "User was not found.";
+    public new string? Error { get; set; } = "User was not found.";
 }
 
