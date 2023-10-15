@@ -1,3 +1,4 @@
+using System.Net;
 using Foundation.Core.SDK.Database.Mongo;
 using Foundation.Services.UPx.Types.Payloads;
 using Microsoft.AspNetCore.Authentication;
@@ -32,7 +33,8 @@ public class EcobucksController : Controller
 
     [HttpGet]
     [Authorize]
-    [Route("ecobucks/profile")]
+    [Route("ecobucks/me")]
+    [ProducesResponseType((int)HttpStatusCode.OK, Type = typeof(GetEcobucksProfilePayload))]
     public async Task<GetEcobucksProfilePayload> GetEcobucksProfileAsync()
     {
         string? token = await HttpContext.GetTokenAsync("access_token");
@@ -118,7 +120,9 @@ public class EcobucksController : Controller
 
     [HttpGet]
     [Authorize]
-    [Route("ecobucks/profile/disposals")]
+    [Route("ecobucks/me/disposals")]
+    [ProducesResponseType((int)HttpStatusCode.OK, Type = typeof(UserDisposalsPayload))]
+    [ProducesResponseType((int)HttpStatusCode.Unauthorized, Type = typeof(UserDisposalsPayload))]
     public async Task<UserDisposalsPayload> GetUserDisposalsAsync()
     {
         string? token = await HttpContext.GetTokenAsync("access_token");
@@ -165,7 +169,9 @@ public class EcobucksController : Controller
 
     [HttpPut]
     [Authorize]
-    [Route("ecobucks/profile/disposals")]
+    [Route("ecobucks/me/disposals")]
+    [ProducesResponseType((int)HttpStatusCode.OK, Type = typeof(RegisterDisposalPayload))]
+    [ProducesResponseType((int)HttpStatusCode.Unauthorized, Type = typeof(RegisterDisposalPayload))]
     public async Task<RegisterDisposalPayload> RegisterDisposalAsync([FromBody] RegisterDisposalInput input)
     {
         string? token = await HttpContext.GetTokenAsync("access_token");
@@ -194,6 +200,7 @@ public class EcobucksController : Controller
         var op = AuthorizationService.ExtractUser(result);
         if (op == null)
         {
+            StatusCode(401);
             return new RegisterDisposalPayload
             {
                 Successful = false,
@@ -206,6 +213,7 @@ public class EcobucksController : Controller
         var profile = await ProfileRepository.GetByIdAsync(op.Id);
         if (!profile.IsOperator)
         {
+            StatusCode(401);
             return new RegisterDisposalPayload
             {
                 Successful = false,
@@ -232,6 +240,8 @@ public class EcobucksController : Controller
         {
             Console.WriteLine("=======> ERROR ON DISPOSAL DATABASE INSERTION <=======");
             Logger.LogError(e.Message);
+
+            StatusCode(500);
             return new RegisterDisposalPayload
             {
                 Successful = false,
@@ -248,12 +258,17 @@ public class EcobucksController : Controller
 
     [HttpPost]
     [Authorize]
-    [Route("ecobucks/profile/disposals")]
+    [Route("ecobucks/me/disposals")]
+    [ProducesResponseType((int)HttpStatusCode.OK, Type = typeof(ClaimDisposalAndCreditsPayload))]
+    [ProducesResponseType((int)HttpStatusCode.BadRequest, Type = typeof(ClaimDisposalAndCreditsPayload))]
+    [ProducesResponseType((int)HttpStatusCode.Unauthorized, Type = typeof(ClaimDisposalAndCreditsPayload))]
+    [ProducesResponseType((int)HttpStatusCode.InternalServerError, Type = typeof(ClaimDisposalAndCreditsPayload))]
     public async Task<ClaimDisposalAndCreditsPayload> ClaimDisposalAndCreditsAsync([FromBody] ClaimDisposalAndCreditsInput input)
     {
         var validationResult = await AuthorizationService.CheckAuthorizationAsync(input.UserToken);
         if (!validationResult.IsValid)
         {
+            StatusCode(401);
             return new ClaimDisposalAndCreditsPayload
             {
                 Successful = false,
@@ -265,6 +280,8 @@ public class EcobucksController : Controller
         if (user == null)
         {
             Console.WriteLine("Invalid token. Failed to extract user.");
+
+            StatusCode(401);
             return new ClaimDisposalAndCreditsPayload
             {
                 Successful = false,
@@ -282,6 +299,7 @@ public class EcobucksController : Controller
             disposal = await DisposalRepository.Collection.Find(disposalFilter).FirstOrDefaultAsync();
             if (disposal is null)
             {
+                StatusCode(400);
                 return new ClaimDisposalAndCreditsPayload
                 {
                     Successful = false,
@@ -291,6 +309,7 @@ public class EcobucksController : Controller
 
             if (disposal.IsClaimed || disposal.UserId is not null)
             {
+                StatusCode(400);
                 return new ClaimDisposalAndCreditsPayload
                 {
                     Successful = false,
@@ -343,6 +362,8 @@ public class EcobucksController : Controller
         catch (Exception e)
         {
             Console.WriteLine(e);
+
+            StatusCode(500);
             return new ClaimDisposalAndCreditsPayload
             {
                 Successful = false,

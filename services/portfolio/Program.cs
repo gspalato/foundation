@@ -1,5 +1,4 @@
-﻿using HotChocolate.Language;
-using Octokit;
+﻿using Octokit;
 using Octokit.Internal;
 using Foundation.Common.Configurations;
 using Foundation.Core.SDK;
@@ -7,13 +6,14 @@ using Foundation.Core.SDK.API.GraphQL;
 using Foundation.Core.SDK.Database.Mongo;
 using Foundation.Services.Portfolio.Configurations;
 using Foundation.Services.Portfolio.Services;
-using Foundation.Services.Portfolio.Types;
+using Foundation.Core.SDK.API.REST;
 
 new ServiceBuilder(args)
     .WithName("Portfolio")
     .BindConfiguration<IBaseConfiguration, Configuration>()
     .BindConfiguration<Configuration>()
     .UseMongo()
+    .UseREST(enableSwagger: true)
     .UseGraphQL("/gql", (server, services, builder) =>
     {
         server

@@ -1,3 +1,4 @@
+using System.Net;
 using Foundation.Common.Entities;
 using Foundation.Common.Roles;
 using Foundation.Services.Identity.Configurations;
@@ -33,6 +34,8 @@ public class AuthenticationController : Controller
     [HttpGet]
     [Authorize]
     [Route("auth/")]
+    [ProducesResponseType((int)HttpStatusCode.OK, Type = typeof(CheckAuthenticationPayload))]
+    [ProducesResponseType((int)HttpStatusCode.Unauthorized, Type = typeof(CheckAuthenticationPayload))]
     public async Task<CheckAuthenticationPayload> CheckAuthenticationAsync()
     {
         string? token = await HttpContext.GetTokenAsync("access_token");
@@ -80,7 +83,9 @@ public class AuthenticationController : Controller
     [HttpPut]
     [Authorize]
     [Route("auth/")]
-    public async Task<FullUser?> RegisterAsync([FromBody] RegisterInput input)
+    [ProducesResponseType((int)HttpStatusCode.OK, Type = typeof(User))]
+    [ProducesResponseType((int)HttpStatusCode.Unauthorized, Type = typeof(User))]
+    public async Task<User?> RegisterAsync([FromBody] RegisterInput input)
     {
         string? token = await HttpContext.GetTokenAsync("access_token");
         if (token is null || token.Length is 0)
@@ -101,6 +106,8 @@ public class AuthenticationController : Controller
     [HttpPost]
     [AllowAnonymous]
     [Route("auth/")]
+    [ProducesResponseType((int)HttpStatusCode.OK, Type = typeof(AuthenticationPayload))]
+    [ProducesResponseType((int)HttpStatusCode.Unauthorized, Type = typeof(AuthenticationPayload))]
     public async Task<AuthenticationPayload> AuthenticateAsync([FromBody] AuthenticateInput input)
     {
         try
@@ -111,6 +118,7 @@ public class AuthenticationController : Controller
         }
         catch (Exception e)
         {
+            StatusCode(401);
             return new AuthenticationPayload
             {
                 Error = e.Message
