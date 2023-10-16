@@ -1,11 +1,5 @@
 services:
   # Reverse Proxy
-  proxy-certbot-service:
-    entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 12h & wait $${!}; done;'"
-    volumes:
-      - ./data/certbot/conf:/etc/letsencrypt
-      - ./data/certbot/www:/var/www/certbot
-
   proxy-service:
     hostname: "proxy-service"
     ports:
@@ -16,8 +10,7 @@ services:
     #  dockerfile: ./Foundation.Services.Proxy/Dockerfile
     volumes:
       - /etc/nginx:/etc/nginx
-      - ./data/certbot/conf:/etc/letsencrypt
-      - ./data/certbot/www:/var/www/certbot
+      - ./etc/letsencrypt:/etc/letsencrypt
     depends_on:
       - gateway-service
 
