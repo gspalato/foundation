@@ -49,7 +49,6 @@
           <a href="#installation">Installation</a>
           <ul>
             <li><a href="#docker-compose">Docker Compose</a></li>
-            <li><a href="#kuberneter">Kubernetes</a></li>
           </ul>
         </li>
       </ul>
@@ -75,7 +74,9 @@
 
 ## About The Project
 
-Foundation is a microservice GraphQL back-end and platform for my projects, allowing easy deployments with an authentication server and database.
+Foundation is a microservice back-end and platform for my projects, allowing easy deployments with an authentication server and database.
+
+Currently, Foundation is adding REST support and, possibly, migrating away from GraphQL; since it wasn't necessary and added more complecity.
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
@@ -100,6 +101,7 @@ Foundation is a microservice GraphQL back-end and platform for my projects, allo
 ### Installation
 
 #### First Steps
+
 1. Clone the repository
 
 ```sh
@@ -114,6 +116,7 @@ alias fgen="dotnet run ./tools/fgen"
 ```
 
 3. Run `fgen` to generate boilerplate code.
+
 ```sh
 fgen
 ```
@@ -138,73 +141,17 @@ GithubToken=your_github_token_here
 DatabaseHost=127.0.0.1
 DatabaseUser=example
 DatabasePassword=example
+
+AwsAccessKey=...
+AwsSecretAccessKey=...
+AwsFoundationIdentityProfilePictureBucket=foundation.identity.avatars
+AwsFoundationIdentityProfilePictureUrlFormat=https://s3.aws.[...].com/{0}/{1}
 ```
 
 6. Start it
 
 ```sh
 fctl compose up
-```
-
-#### Kubernetes
-
-> **⚠️ Warning!** Kubernetes is a work-in-progress and is NOT properly configured.
-> If you aren't familiar, then please use Docker Compose instead.
-
-##### Using a private registry
-
-4. Clone the repo
-
-```sh
-git clone https://github.com/gspalato/foundation.git
-```
-
-5. Create a secrets.yml file:
-
-```yml
-apiVersion: v1
-kind: Secret
-metadata:
-  name: foundation-secrets
-type: Opaque
-stringData:
-  FOUNDATION_JWT_SECURITY_KEY: insert_your_256_byte_key_here
-
-  GithubToken: your_github_token_here
-
-  DatabaseHost: 127.0.0.1
-  DatabaseUser: example
-  DatabasePassword: example
-```
-
-6. Run `docker login` to login to your registry.
-
-7. Configure the Foundation Control Tool (`fctl`) to use your registry.
-
-8. Configure the `kubernetes.yml` files to use your registry for the images.
-
-9. Clone the docker registry's login to Kubernetes
-
-```sh
-kubectl create secret generic foundation-registry --from-file=.dockerconfigjson=/path/to/.docker/config.json --type=kubernetes.io/dockerconfigjson
-```
-
-10. Build the services.
-
-```sh
-fctl k8s build
-```
-
-11. Run MongoDB locally.
-
-```sh
-mongod --dbpath /data/db --port 27017 --logpath mongodb/log --logappend --fork --bind_ip_all
-```
-
-12. Run the services.
-
-```sh
-fctl k8s up
 ```
 
 <p align="right">(<a href="#top">back to top</a>)</p>
@@ -229,9 +176,9 @@ Currently it fetches my projects from GitHub that have a `.project/metadata.yml`
 
 A NGINX instance acting as reverse proxy for the microservices and as a static file server.
 
-### Static
+### UPx
 
-Will handle static file uploads and manipulation, as well as operations such as profile picture fetching.
+A microservice dedicated to my coursework projects' back-ends.
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
@@ -239,7 +186,7 @@ Will handle static file uploads and manipulation, as well as operations such as 
 
 ## Roadmap
 
-- [ ] Add my portfolio's front-end as a service.
+- [x] Add my portfolio's front-end as a service.
 - [ ] Simplify configuration.
 
 See the [open issues](https://github.com/gspalato/foundation/issues) for a full list of proposed features (and known issues).
