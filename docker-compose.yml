@@ -15,6 +15,20 @@ services:
     depends_on:
       - gateway-service
 
+  # Foundation Front-end
+  frontier-app-service:
+    hostname: "frontier-app-service"
+    ports:
+      - "8080:8080"
+    expose:
+      - "8080"
+    build:
+      context: ./apps/frontier
+      dockerfile: ./Dockerfile
+    depends_on:
+      - identity-service
+      - upx-service
+
   # Portfolio Front-end
   portfolio-app-service:
     hostname: "portfolio-app-service"
@@ -27,6 +41,7 @@ services:
       dockerfile: ./Dockerfile
     depends_on:
       - gateway-service
+      - portfolio-service
 
   # Foundation API Gateway
   gateway-service:
