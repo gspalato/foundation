@@ -56,8 +56,8 @@ public class AuthenticationService : IAuthenticationService
             return new AuthenticationPayload
             {
                 Successful = true,
-                Token = GenerateAccessToken((User)user),
-                User = (User)user,
+                Token = GenerateAccessToken(user),
+                User = user,
                 Error = ""
             };
         }
@@ -73,10 +73,10 @@ public class AuthenticationService : IAuthenticationService
 
     private string GenerateAccessToken(User user)
     {
-        var claims = new List<Claim>
+        List<Claim> claims = new()
             {
-                new Claim("id", user.Id.ToString()),
-                new Claim("user", JsonSerializer.Serialize(user))
+                new("id", user.Id.ToString()),
+                new("user", JsonSerializer.Serialize(user))
             };
 
         DateTime expires = user.Roles.Any(r => r is Role.Project) ? DateTime.Now.AddDays(30) : DateTime.Now.AddHours(1);

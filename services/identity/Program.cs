@@ -1,3 +1,5 @@
+using Amazon.S3;
+using Microsoft.AspNetCore.Cors.Infrastructure;
 using Microsoft.AspNetCore.Identity;
 using Foundation.Common.Configurations;
 using Foundation.Core.SDK;
@@ -8,7 +10,6 @@ using Foundation.Core.SDK.Database.Mongo;
 using Foundation.Services.Identity.Services;
 using Foundation.Services.Identity.Types;
 using Foundation.Services.Identity.Configurations;
-using Amazon.S3;
 
 new ServiceBuilder(args)
     .WithName("Identity")
@@ -45,5 +46,12 @@ new ServiceBuilder(args)
                 return new AmazonS3Client(config.AwsAccessKey, config.AwsSecretAccessKey, Amazon.RegionEndpoint.USEast1);
             });
     })
+    .AddCors(
+        "AllowAll",
+        new CorsPolicyBuilder()
+            .AllowAnyOrigin()
+            .AllowAnyHeader()
+            .Build()
+    )
     .Build()
     .Run();
