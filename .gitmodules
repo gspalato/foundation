@@ -13,6 +13,3 @@
 [submodule "services/echo"]
 	path = services/echo
 	url = git@github.com:gspalato/echo.git
-[submodule "echo"]
-	path = echo
-	url = git@github.com:gspalato/echo.git
