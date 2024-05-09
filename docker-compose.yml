@@ -73,7 +73,7 @@ services:
     env_file:
       - .env
     environment:
-      - DatabaseName=Identity
+      - DATABASE_NAME=Identity
     depends_on:
       - db
 
@@ -85,7 +85,7 @@ services:
     env_file:
       - .env
     environment:
-      - DatabaseName=Ecobucks
+      - DATABASE_NAME=Ecobucks
     depends_on:
       - db
 
@@ -97,7 +97,7 @@ services:
     env_file:
       - .env
     environment:
-      - DatabaseName=Portfolio
+      - DATABASE_NAME=Portfolio
     depends_on:
       - db
 
