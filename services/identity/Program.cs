@@ -16,19 +16,6 @@ new ServiceBuilder(args)
     .BindConfiguration<IIdentityConfiguration, IdentityConfiguration>()
     .UseMongo()
     .UseREST(enableSwagger: true)
-    .UseGraphQL("/gql", (server, services, builder) =>
-    {
-        server.AddGeneratedQueryType();
-        server.AddMutationType<Mutation>();
-        server.AddType<UploadType>();
-
-        server
-            .AddMongoDbFiltering()
-            .AddMongoDbPagingProviders()
-            .AddMongoDbProjections()
-            .AddMongoDbSorting()
-            .AddDefaultTransactionScopeHandler();
-    })
     .UseJWT()
     .Configure((WebApplicationBuilder appBuilder) =>
     {
