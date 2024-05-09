@@ -82,6 +82,8 @@ services:
     build:
       context: ./
       dockerfile: ./services/echo/Dockerfile
+    expose:
+      - "4000"
     env_file:
       - .env
     environment:
@@ -94,6 +96,8 @@ services:
     build:
       context: ./
       dockerfile: ./services/ether/Dockerfile
+    expose:
+      - "4000"
     env_file:
       - .env
     environment:
