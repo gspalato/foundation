@@ -13,7 +13,10 @@ services:
       - /etc/nginx:/etc/nginx
       - /etc/letsencrypt:/etc/letsencrypt
     depends_on:
-      - gateway-service
+      - identity-service
+      - echo-service
+      - ether-service
+      - portfolio-app-service
 
   # Foundation Front-end
   #frontier-app-service:
@@ -40,8 +43,7 @@ services:
       context: ./apps/portfolio
       dockerfile: ./Dockerfile
     depends_on:
-      - gateway-service
-      - portfolio-service
+      - ether-service
 
   # Foundation API Gateway
   #gateway-service:
