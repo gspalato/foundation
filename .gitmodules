@@ -1,0 +1,11 @@
+[submodule "apps/portfolio"]
+	path = apps/portfolio
+	url = git@github.com:gspalato/portfolio.git
+
+[submodule "apps/frontier"]
+	path = apps/frontier
+	url = https://github.com/foundationsh/frontier
+
+[submodule "services/ether"]
+	path = services/ether
+	url = git@github.com:gspalato/ether.git

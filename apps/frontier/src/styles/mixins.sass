@@ -1,0 +1,42 @@
+// Functional mixins
+@mixin responsive($query)
+    @media screen and ( min-width: + $query )
+        @content
+
+@mixin responsive-below($query)
+    @media screen and ( max-width: + $query )
+        @content
+
+@mixin adaptive-text($size)
+    font-size: calc($size * 1.1111111111111112vw)
+
+// Style mixins
+@mixin gradient-text
+    -webkit-background-clip: text !important
+    background-clip: text !important
+    -webkit-text-fill-color: transparent !important
+
+@mixin glass($blur: 10px)
+    -webkit-backdrop-filter: blur($blur) brightness(120%)
+    backdrop-filter: blur($blur) brightness(120%)
+
+@mixin blur-gradient()
+    &:after
+        content: ''
+        position: absolute
+        top: 0
+        left: 0
+        right: 0
+        bottom: 0
+        opacity: 0
+        backdrop-filter: blur(10px)
+        background: #00000011
+        mask: linear-gradient(transparent, black 60%)
+        transition: 1s
+
+@mixin mouse-glow
+    background: radial-gradient(800px circle at calc(var(--x) * 1) calc(var(--y) * 1), hsla(0,0%,100%,.2), transparent 40%)
+
+@mixin gradient-border($background: #060607, $border: #1c1c1d)
+    border: 1px solid transparent
+    background: padding-box linear-gradient(to right, $background, $background) no-repeat, border-box linear-gradient(145deg, $border 0%, adjust-color($border, $alpha: -.3), adjust-color($border, $alpha: -.6))

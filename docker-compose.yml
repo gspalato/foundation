@@ -1,0 +1,112 @@
+services:
+  # Reverse Proxy
+  proxy-service:
+    hostname: "proxy-service"
+    ports:
+      - "80:80"
+      - "443:443"
+    image: nginx:latest
+    #build:
+    #  context: ./src
+    #  dockerfile: ./Foundation.Services.Proxy/Dockerfile
+    volumes:
+      - /etc/nginx:/etc/nginx
+      - /etc/letsencrypt:/etc/letsencrypt
+    depends_on:
+      - gateway-service
+
+  # Foundation Front-end
+  frontier-app-service:
+    hostname: "frontier-app-service"
+    ports:
+      - "8080:8080"
+    expose:
+      - "8080"
+    build:
+      context: ./apps/frontier
+      dockerfile: ./Dockerfile
+    depends_on:
+      - identity-service
+      - upx-service
+
+  # Portfolio Front-end
+  portfolio-app-service:
+    hostname: "portfolio-app-service"
+    ports:
+      - "8080:8080"
+    expose:
+      - "8080"
+    build:
+      context: ./apps/portfolio
+      dockerfile: ./Dockerfile
+    depends_on:
+      - gateway-service
+      - portfolio-service
+
+  # Foundation API Gateway
+  gateway-service:
+    hostname: "gateway-service"
+    build:
+      context: ./
+      dockerfile: ./services/gateway/Dockerfile
+    ports:
+      - "4000:80"
+    expose:
+      - "80"
+    env_file:
+      - .env
+    environment:
+      - ServiceUrls=http://identity-service,http://upx-service,http://portfolio-service
+    depends_on:
+      - identity-service
+      - upx-service
+      - portfolio-service
+
+  # Foundation API Microservices
+  identity-service:
+    hostname: "identity-service"
+    build:
+      context: ./
+      dockerfile: ./services/identity/Dockerfile
+    env_file:
+      - .env
+    environment:
+      - DatabaseName=Identity
+    depends_on:
+      - db
+
+  upx-service:
+    hostname: "upx-service"
+    build:
+      context: ./
+      dockerfile: ./services/upx/Dockerfile
+    env_file:
+      - .env
+    environment:
+      - DatabaseName=UPx
+    depends_on:
+      - db
+
+  portfolio-service:
+    hostname: "portfolio-service"
+    build:
+      context: ./
+      dockerfile: ./services/ether/Dockerfile
+    env_file:
+      - .env
+    environment:
+      - DatabaseName=Portfolio
+    depends_on:
+      - db
+
+  # Databases
+  db:
+    hostname: "db"
+    image: mongo
+    restart: always
+    expose:
+      - "27017"
+    ports:
+      - "27017:27017"
+    volumes:
+      - /data/db:/data/db
