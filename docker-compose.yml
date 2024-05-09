@@ -18,20 +18,6 @@ services:
       - ether-service
       - portfolio-app-service
 
-  # Foundation Front-end
-  #frontier-app-service:
-  #  hostname: "frontier-app-service"
-  #  ports:
-  #    - "8080:8080"
-  #  expose:
-  #    - "8080"
-  #  build:
-  #    context: ./apps/frontier
-  #    dockerfile: ./Dockerfile
-  #  depends_on:
-  #    - identity-service
-  #    - upx-service
-
   # Portfolio Front-end
   portfolio-app-service:
     hostname: "portfolio-app-service"
@@ -44,25 +30,6 @@ services:
       dockerfile: ./Dockerfile
     depends_on:
       - ether-service
-
-  # Foundation API Gateway
-  #gateway-service:
-  #  hostname: "gateway-service"
-  #  build:
-  #    context: ./
-  #    dockerfile: ./services/gateway/Dockerfile
-  #  ports:
-  #    - "4000:80"
-  #  expose:
-  #    - "80"
-  #  env_file:
-  #    - .env
-  #  environment:
-  #    - ServiceUrls=http://identity-service,http://upx-service,http://portfolio-service
-  #  depends_on:
-  #    - identity-service
-  #    - echo-service
-  #    - portfolio-service
 
   # Foundation API Microservices
   identity-service:
