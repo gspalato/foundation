@@ -9,3 +9,7 @@
 [submodule "services/ether"]
 	path = services/ether
 	url = git@github.com:gspalato/ether.git
+
+[submodule "services/echo"]
+	path = services/echo
+	url = git@github.com:gspalato/echo.git
