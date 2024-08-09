@@ -5,3 +5,7 @@
 [submodule "services/echo"]
 	path = services/echo
 	url = git@github.com:gspalato/echo.git
+	
+[submodule "apps/portfolio"]
+	path = apps/portfolio
+	url = git@github.com:gspalato/portfolio.git
