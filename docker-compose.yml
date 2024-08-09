@@ -13,7 +13,6 @@ services:
       - /etc/nginx:/etc/nginx
       - /etc/letsencrypt:/etc/letsencrypt
     depends_on:
-      - identity-service
       - echo-service
       - ether-service
       - portfolio-app-service
@@ -31,19 +30,7 @@ services:
     depends_on:
       - ether-service
 
-  # Foundation API Microservices
-  identity-service:
-    hostname: "identity-service"
-    build:
-      context: ./
-      dockerfile: ./services/identity/Dockerfile
-    env_file:
-      - .env
-    environment:
-      - DATABASE_NAME=Identity
-    depends_on:
-      - db
-
+  # Services
   echo-service:
     hostname: "echo-service"
     build:
